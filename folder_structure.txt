@@ -1,0 +1,91 @@
+Folder PATH listing for volume Acer
+Volume serial number is F29C-9514
+C:.
+¦   .env
+¦   .gitignore
+¦   create_structure.sh
+¦   folder_structure.txt
+¦   README.md
+¦   
++---backend
+¦   ¦   app.js
+¦   ¦   package.json
+¦   ¦   server.js
+¦   ¦   test_db_connection.php
+¦   ¦   
+¦   +---config
+¦   ¦       db_connection.php
+¦   ¦       
+¦   +---controllers
+¦   +---models
+¦   +---routes
+¦   +---services
+¦   +---utils
+¦   +---views
+¦           dashboard.php
+¦           login.php
+¦           logout.php
+¦           register.php
+¦           test.php
+¦           
++---database
+¦   ¦   config.js
+¦   ¦   
+¦   +---migrations
+¦   +---models
+¦   +---seeders
++---deployment
+¦       deploy.sh
+¦       docker-compose.yml
+¦       Dockerfile
+¦       hostinger-config.md
+¦       nginx.conf
+¦       
++---docs
+¦       api-specification.md
+¦       design.md
+¦       requirements.md
+¦       
++---frontend
+¦   ¦   package.json
+¦   ¦   
+¦   +---public
+¦   ¦   ¦   index.php
+¦   ¦   ¦   login.html
+¦   ¦   ¦   
+¦   ¦   +---images
+¦   ¦   ¦       2.jpg
+¦   ¦   ¦       user.jpg
+¦   ¦   ¦       
+¦   ¦   +---scripts
+¦   ¦   ¦       main.js
+¦   ¦   ¦       SplashScreen.js
+¦   ¦   ¦       utils.js
+¦   ¦   ¦       
+¦   ¦   +---styles
+¦   ¦           login.css
+¦   ¦           main.css
+¦   ¦           reset.css
+¦   ¦           SplashScreen.css
+¦   ¦           
+¦   +---src
+¦       ¦   App.js
+¦       ¦   
+¦       +---components
+¦       ¦       Footer.js
+¦       ¦       Header.js
+¦       ¦       InventoryItem.js
+¦       ¦       SplashScreen.js
+¦       ¦       
+¦       +---pages
+¦       ¦       Contact.js
+¦       ¦       Home.js
+¦       ¦       Products.js
+¦       ¦       
+¦       +---services
+¦               api.js
+¦               
++---tests
+    +---backend
+    +---frontend
+    +---integration
