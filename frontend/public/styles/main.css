@@ -17,6 +17,7 @@ body {
 .container {
     display: flex;
     height: 100vh; /* Ensure the container takes full height */
+    flex-direction: row; /* Make sure the flex direction is row */
 }
 
 .sidebar {
@@ -153,4 +154,11 @@ body {
 
 .account-section ul {
     padding-top: 10px;
+}
+
+/* Main content styling */
+.main-content {
+    margin-left: 256px; /* Ensure the content starts next to the sidebar */
+    padding: 20px; /* Optional padding for some space around the content */
+    width: calc(100% - 256px); /* Adjust width to fill remaining space */
 }

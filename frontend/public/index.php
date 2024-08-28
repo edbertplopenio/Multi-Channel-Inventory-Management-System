@@ -4,7 +4,7 @@ session_start();
 
 // Redirect to login.php if not authenticated
 if (!isset($_SESSION['user_email'])) {
-    header("Location: login.php");
+    header("Location: login.html");
     exit();
 }
 ?>
@@ -18,6 +18,7 @@ if (!isset($_SESSION['user_email'])) {
     <title>Main System</title>
     <link rel="stylesheet" href="styles/main.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js"></script> <!-- Include jQuery -->
 </head>
 
 <body>
@@ -34,63 +35,42 @@ if (!isset($_SESSION['user_email'])) {
             </div>
             <div class="nav">
                 <div class="menu">
-                    <p class="title">Main</p>
                     <ul>
-                        <li>
-                            <a href="../../backend/views/dashboard.php">
-                                <i class="icon ph-bold ph-house-simple"></i>
+                        <li class="active">
+                            <a href="#" id="dashboard-link">
+                                <i class="icon ph-bold ph-house-simple"></i> <!-- Icon -->
                                 <span class="text">Dashboard</span>
                             </a>
                         </li>
                         <li>
                             <a href="#">
-                                <i class="icon ph-bold ph-user"></i>
-                                <span class="text">Audience</span>
-                                <i class="arrow ph-bold ph-caret-down"></i>
-                            </a>
-                            <ul class="sub-menu">
-                                <li>
-                                    <a href="#">
-                                        <span class="text">Users</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="text">Subscribers</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="icon ph-bold ph-file-text"></i>
-                                <span class="text">Post</span>
+                                <i class="icon ph-bold ph-archive"></i> <!-- Icon -->
+                                <span class="text">Inventory Management</span>
                             </a>
                         </li>
                         <li>
                             <a href="#">
-                                <i class="icon ph-bold ph-calendar-blank"></i>
-                                <span class="text">Schedules</span>
+                                <i class="icon ph-bold ph-file-text"></i> <!-- Icon -->
+                                <span class="text">Sales Record</span>
                             </a>
                         </li>
                         <li>
                             <a href="#">
-                                <i class="icon ph-bold ph-chart-bar"></i>
-                                <span class="text">Income</span>
-                                <i class="arrow ph-bold ph-caret-down"></i>
+                                <i class="icon ph-bold ph-activity"></i> <!-- Icon -->
+                                <span class="text">Demand Forecasting</span>
                             </a>
-                            <ul class="sub-menu">
-                                <li>
-                                    <a href="#">
-                                        <span class="text">Earnings</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <span class="text">Funds</span>
-                                    </a>
-                                </li>
-                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="icon ph ph-arrow-counter-clockwise"></i> <!-- Icon -->
+                                <span class="text">Inventory Replenishment</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="icon ph-bold ph-user"></i> <!-- Icon -->
+                                <span class="text">User Management</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -115,10 +95,27 @@ if (!isset($_SESSION['user_email'])) {
                 </div>
             </div>
         </div>
+
+
+        <!-- Main Content Area -->
+        <div class="main-content" id="main-content">
+            <!-- Dashboard content will be loaded here by default -->
+        </div>
     </div>
-    <!-- Jquery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js"></script>
-    <script src="scripts/main.js"></script>
+
+    <!-- JavaScript to dynamically load content -->
+    <script>
+        $(document).ready(function() {
+            // Load dashboard content by default when the page is loaded
+            $('#main-content').load('../../backend/views/dashboard.php');
+
+            // Load dashboard content when dashboard link is clicked
+            $('#dashboard-link').on('click', function(e) {
+                e.preventDefault();
+                $('#main-content').load('../../backend/views/dashboard.php');
+            });
+        });
+    </script>
 </body>
 
 </html>

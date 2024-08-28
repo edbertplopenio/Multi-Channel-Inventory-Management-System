@@ -54,3 +54,10 @@ submenuItems.forEach(submenuItem => {
         submenuItem.classList.add('active');
     });
 });
+
+// Ensure the Dashboard link is active on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Assuming the Dashboard is the first menu item, make it active by default
+    const dashboardLink = document.getElementById('dashboard-link').parentElement;
+    dashboardLink.classList.add('active');
+});
