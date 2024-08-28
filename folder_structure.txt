@@ -23,10 +23,15 @@ C:.
 ¦   +---utils
 ¦   +---views
 ¦           dashboard.php
+¦           demand_forecasting.php
+¦           inventory_management.php
+¦           inventory_replenishment.php
 ¦           login.php
 ¦           logout.php
 ¦           register.php
+¦           sales_record.php
 ¦           test.php
+¦           user_management.php
 ¦           
 +---database
 ¦   ¦   config.js

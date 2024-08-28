@@ -2,7 +2,7 @@
 // Start the session
 session_start();
 
-// Redirect to login.php if not authenticated
+// Redirect to login.html if not authenticated
 if (!isset($_SESSION['user_email'])) {
     header("Location: login.html");
     exit();
@@ -36,38 +36,38 @@ if (!isset($_SESSION['user_email'])) {
             <div class="nav">
                 <div class="menu">
                     <ul>
-                        <li class="active">
+                        <li class="active" id="dashboard-item">
                             <a href="#" id="dashboard-link">
                                 <i class="icon ph-bold ph-house-simple"></i> <!-- Icon -->
                                 <span class="text">Dashboard</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="#">
+                        <li id="inventory-item">
+                            <a href="#" id="inventory-link">
                                 <i class="icon ph-bold ph-archive"></i> <!-- Icon -->
                                 <span class="text">Inventory Management</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="#">
+                        <li id="sales-item">
+                            <a href="#" id="sales-link">
                                 <i class="icon ph-bold ph-file-text"></i> <!-- Icon -->
                                 <span class="text">Sales Record</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="#">
+                        <li id="forecast-item">
+                            <a href="#" id="forecast-link">
                                 <i class="icon ph-bold ph-activity"></i> <!-- Icon -->
                                 <span class="text">Demand Forecasting</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="#">
+                        <li id="replenishment-item">
+                            <a href="#" id="replenishment-link">
                                 <i class="icon ph ph-arrow-counter-clockwise"></i> <!-- Icon -->
                                 <span class="text">Inventory Replenishment</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="#">
+                        <li id="user-item">
+                            <a href="#" id="user-link">
                                 <i class="icon ph-bold ph-user"></i> <!-- Icon -->
                                 <span class="text">User Management</span>
                             </a>
@@ -79,14 +79,14 @@ if (!isset($_SESSION['user_email'])) {
                 <div class="menu">
                     <p class="title">Account</p>
                     <ul>
-                        <li>
-                            <a href="#">
+                        <li id="help-item">
+                            <a href="#" id="help-link">
                                 <i class="icon ph-bold ph-info"></i>
                                 <span class="text">Help</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="../../backend/views/logout.php">
+                        <li id="logout-item">
+                            <a href="../../backend/views/logout.php" id="logout-link">
                                 <i class="icon ph-bold ph-sign-out"></i>
                                 <span class="text">Logout</span>
                             </a>
@@ -95,7 +95,6 @@ if (!isset($_SESSION['user_email'])) {
                 </div>
             </div>
         </div>
-
 
         <!-- Main Content Area -->
         <div class="main-content" id="main-content">
@@ -109,10 +108,62 @@ if (!isset($_SESSION['user_email'])) {
             // Load dashboard content by default when the page is loaded
             $('#main-content').load('../../backend/views/dashboard.php');
 
-            // Load dashboard content when dashboard link is clicked
+            // Function to handle active class toggle
+            function setActive(linkId, itemId) {
+                // Remove active class from all menu items
+                $('.menu ul li').removeClass('active');
+                // Add active class to the clicked menu item
+                $('#' + itemId).addClass('active');
+            }
+
+            // Load content and set active class when links are clicked
             $('#dashboard-link').on('click', function(e) {
                 e.preventDefault();
                 $('#main-content').load('../../backend/views/dashboard.php');
+                setActive('dashboard-link', 'dashboard-item');
+            });
+
+            $('#inventory-link').on('click', function(e) {
+                e.preventDefault();
+                $('#main-content').load('../../backend/views/inventory_management.php');
+                setActive('inventory-link', 'inventory-item');
+            });
+
+            $('#sales-link').on('click', function(e) {
+                e.preventDefault();
+                $('#main-content').load('../../backend/views/sales_record.php');
+                setActive('sales-link', 'sales-item');
+            });
+
+            $('#forecast-link').on('click', function(e) {
+                e.preventDefault();
+                $('#main-content').load('../../backend/views/demand_forecasting.php');
+                setActive('forecast-link', 'forecast-item');
+            });
+
+            $('#replenishment-link').on('click', function(e) {
+                e.preventDefault();
+                $('#main-content').load('../../backend/views/inventory_replenishment.php');
+                setActive('replenishment-link', 'replenishment-item');
+            });
+
+            $('#user-link').on('click', function(e) {
+                e.preventDefault();
+                $('#main-content').load('../../backend/views/user_management.php');
+                setActive('user-link', 'user-item');
+            });
+
+            // Account section links
+            $('#help-link').on('click', function(e) {
+                e.preventDefault();
+                setActive('help-link', 'help-item');
+                // Load help content if you have a corresponding view, e.g.:
+                // $('#main-content').load('../../backend/views/help.php');
+            });
+
+            $('#logout-link').on('click', function(e) {
+                setActive('logout-link', 'logout-item');
+                // Note: logout typically navigates away from the app, so no need to load content
             });
         });
     </script>
