@@ -68,10 +68,16 @@ C:.
 ¦   ¦   ¦       utils.js
 ¦   ¦   ¦       
 ¦   ¦   +---styles
+¦   ¦           dashboard.css
+¦   ¦           demand_forecasting.css
+¦   ¦           inventory_management.css
+¦   ¦           inventory_replenishment.css
 ¦   ¦           login.css
 ¦   ¦           main.css
 ¦   ¦           reset.css
+¦   ¦           sales_record.css
 ¦   ¦           SplashScreen.css
+¦   ¦           user_management.css
 ¦   ¦           
 ¦   +---src
 ¦       ¦   App.js
