@@ -11,6 +11,7 @@ body {
     background-color: #f4f7fc;
     margin: 0;
     padding: 0;
+    height: 100vh;
 }
 
 .inventory-container {
@@ -20,6 +21,9 @@ body {
     background-color: #ffffff;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
     border-radius: 10px;
+    height: 95vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
@@ -120,8 +124,9 @@ body {
     border-collapse: collapse;
     background-color: #fff;
     border-radius: 10px;
-    overflow: hidden;
+    overflow-y: auto;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    flex-grow: 1;
 }
 
 .inventory-table th, .inventory-table td {
@@ -154,4 +159,54 @@ body {
 
 .tab-content.active {
     display: block;
+    height: 100%;
 }
+
+/* SweetAlert2 Input Alignment */
+.swal2-input {
+    width: calc(100% - 2em); /* Adjust to ensure full width */
+    margin: 0.5em 0; /* Space between inputs */
+}
+
+.swal2-label {
+    display: block;
+    margin-bottom: 0.2em; /* Space between label and input */
+    font-size: 14px;
+    color: #333;
+}
+
+.swal2-file {
+    width: calc(100% - 2em); /* Full width for file input */
+    margin: 0.5em 0; /* Space between inputs */
+}
+
+.swal2-confirm {
+    background-color: #007bff !important;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.swal2-confirm:hover {
+    background-color: #0056b3 !important;
+}
+
+.swal2-cancel {
+    background-color: #ccc !important;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+.swal2-cancel:hover {
+    background-color: #aaa !important;
+}
+
+.custom-swal-popup {
+    height: 500px; /* Set the height you need */
+    max-height: 80vh; /* To make sure it doesn't overflow on smaller screens */
+    overflow-y: auto; /* Ensure content is scrollable if it exceeds the height */
+    width: 600px; /* Ensure the width is the same as defined in JavaScript */
+}
+
