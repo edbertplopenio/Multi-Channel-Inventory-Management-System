@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_email'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,27 +17,24 @@ if (!isset($_SESSION['user_email'])) {
     <link rel="stylesheet" href="../../frontend/public/styles/demand_forecasting.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
+
 <body>
 
     <div class="demand-forecasting-container">
         <div class="header">
             <h1>Demand Forecasting</h1>
-            <button class="new-forecast-button">+ New Forecast</button>
         </div>
 
         <div class="filters">
             <div class="tabs-container">
-                <button class="tab active" data-tab="overview">
-                    <i class="fas fa-chart-line"></i> Overview
+                <button class="tab active" data-tab="physical-store">
+                    <i class="fas fa-store"></i> Physical Store
                 </button>
-                <button class="tab" data-tab="future-demand">
-                    <i class="fas fa-chart-bar"></i> Future Demand
+                <button class="tab" data-tab="shopee">
+                    <i class="fas fa-shopping-cart"></i> Shopee
                 </button>
-                <button class="tab" data-tab="market-analysis">
-                    <i class="fas fa-chart-pie"></i> Market Analysis
-                </button>
-                <button class="tab" data-tab="reports">
-                    <i class="fas fa-file-alt"></i> Reports
+                <button class="tab" data-tab="tiktok">
+                    <i class="fas fa-music"></i> TikTok
                 </button>
             </div>
             <div class="filter-input-container">
@@ -45,114 +43,150 @@ if (!isset($_SESSION['user_email'])) {
             </div>
         </div>
 
-        <!-- Overview Content -->
-        <div id="overview" class="tab-content active">
-            <table class="forecast-table">
-                <thead>
-                    <tr>
-                        <th>Product ID</th>
-                        <th>Product Name</th>
-                        <th>Forecast Date</th>
-                        <th>Projected Sales</th>
-                        <th>Actual Sales</th>
-                        <th>Accuracy (%)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Example rows -->
-                    <tr>
-                        <td>PID001</td>
-                        <td>Product A</td>
-                        <td>2024-08-01</td>
-                        <td>100</td>
-                        <td>95</td>
-                        <td>95%</td>
-                    </tr>
-                    <!-- Additional rows would go here -->
-                </tbody>
-            </table>
+        <div class="forecast-content">
+            <!-- Physical Store Content -->
+            <div id="physical-store" class="tab-content active">
+                <!-- Forecast details container on the left -->
+                <div class="forecast-details-container">
+                    <div class="forecast-details">
+                        <h2>Forecast Details</h2>
+                        <p>Select a product to see detailed demand forecasting information here.</p>
+                        <!-- Add more detailed forecasting info here -->
+                    </div>
+                </div>
+
+                <!-- Table container on the right -->
+                <div class="forecast-table-container">
+                    <table class="forecast-table">
+                        <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Product Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PID001</td>
+                                <td>Product A</td>
+                            </tr>
+                            <tr>
+                                <td>PID002</td>
+                                <td>Product B</td>
+                            </tr>
+                            <tr>
+                                <td>PID003</td>
+                                <td>Product C</td>
+                            </tr>
+                            <tr>
+                                <td>PID004</td>
+                                <td>Product D</td>
+                            </tr>
+                            <tr>
+                                <td>PID005</td>
+                                <td>Product E</td>
+                            </tr>
+                            <tr>
+                                <td>PID006</td>
+                                <td>Product F</td>
+                            </tr>
+                            <tr>
+                                <td>PID007</td>
+                                <td>Product G</td>
+                            </tr>
+                            <tr>
+                                <td>PID008</td>
+                                <td>Product H</td>
+                            </tr>
+                            <tr>
+                                <td>PID009</td>
+                                <td>Product I</td>
+                            </tr>
+                            <tr>
+                                <td>PID010</td>
+                                <td>Product J</td>
+                            </tr>
+                            <tr>
+                                <td>PID011</td>
+                                <td>Product K</td>
+                            </tr>
+                            <tr>
+                                <td>PID012</td>
+                                <td>Product L</td>
+                            </tr>
+                            <tr>
+                                <td>PID013</td>
+                                <td>Product M</td>
+                            </tr>
+                            <tr>
+                                <td>PID014</td>
+                                <td>Product N</td>
+                            </tr>
+                            <tr>
+                                <td>PID015</td>
+                                <td>Product O</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Shopee Content -->
+            <div id="shopee" class="tab-content">
+                <div class="forecast-details-container">
+                    <div class="forecast-details">
+                        <h2>Forecast Details</h2>
+                        <p>Select a product to see detailed demand forecasting information here.</p>
+                        <!-- Add more detailed forecasting info here -->
+                    </div>
+                </div>
+                <div class="forecast-table-container">
+                    <table class="forecast-table" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Product Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PID002</td>
+                                <td>Product B</td>
+                            </tr>
+                            <!-- Add more rows as needed -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TikTok Content -->
+            <div id="tiktok" class="tab-content">
+                <div class="forecast-details-container">
+                    <div class="forecast-details">
+                        <h2>Forecast Details</h2>
+                        <p>Select a product to see detailed demand forecasting information here.</p>
+                        <!-- Add more detailed forecasting info here -->
+                    </div>
+                </div>
+                <div class="forecast-table-container">
+                    <table class="forecast-table" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Product Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>PID003</td>
+                                <td>Product C</td>
+                            </tr>
+                            <!-- Add more rows as needed -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <!-- Future Demand Content -->
-        <div id="future-demand" class="tab-content">
-            <table class="forecast-table">
-                <thead>
-                    <tr>
-                        <th>Product ID</th>
-                        <th>Product Name</th>
-                        <th>Forecast Date</th>
-                        <th>Projected Sales</th>
-                        <th>Accuracy (%)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Example rows -->
-                    <tr>
-                        <td>PID002</td>
-                        <td>Product B</td>
-                        <td>2024-08-02</td>
-                        <td>120</td>
-                        <td>98%</td>
-                    </tr>
-                    <!-- Additional rows would go here -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Market Analysis Content -->
-        <div id="market-analysis" class="tab-content">
-            <table class="forecast-table">
-                <thead>
-                    <tr>
-                        <th>Market ID</th>
-                        <th>Market Name</th>
-                        <th>Analysis Date</th>
-                        <th>Market Growth (%)</th>
-                        <th>Projected Demand</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Example rows -->
-                    <tr>
-                        <td>MKT001</td>
-                        <td>Market A</td>
-                        <td>2024-08-03</td>
-                        <td>15%</td>
-                        <td>130</td>
-                    </tr>
-                    <!-- Additional rows would go here -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Reports Content -->
-        <div id="reports" class="tab-content">
-            <table class="forecast-table">
-                <thead>
-                    <tr>
-                        <th>Report ID</th>
-                        <th>Report Name</th>
-                        <th>Generated Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Example rows -->
-                    <tr>
-                        <td>RPT001</td>
-                        <td>Monthly Forecast Report</td>
-                        <td>2024-08-04</td>
-                        <td><span class="status completed">Completed</span></td>
-                        <td>
-                            <button class="action-button view"><i class="fas fa-eye"></i> View</button>
-                            <button class="action-button download"><i class="fas fa-download"></i> Download</button>
-                        </td>
-                    </tr>
-                    <!-- Additional rows would go here -->
-                </tbody>
-            </table>
-        </div>
     </div>
 
     <script>
@@ -173,6 +207,5 @@ if (!isset($_SESSION['user_email'])) {
     </script>
 
 </body>
+
 </html>
-
-

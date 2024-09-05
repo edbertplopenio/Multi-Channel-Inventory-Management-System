@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload a Film</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .upload-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        .upload-form h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: normal;
+        }
+        .upload-form input[type="text"],
+        .upload-form select,
+        .upload-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .upload-form textarea {
+            resize: none;
+            height: 80px;
+        }
+        .upload-form button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .upload-form .save-btn {
+            background-color: #007bff;
+            color: white;
+            margin-right: 10px;
+        }
+        .upload-form .cancel-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="upload-form">
+    <h2>Upload a film</h2>
+    <form>
+        <input type="text" placeholder="Title" value="Apple WWDC 23" required>
+        <select>
+            <option value="" disabled selected>Select Brand</option>
+            <!-- Add brand options here -->
+        </select>
+        <select>
+            <option value="" disabled selected>Select Category</option>
+            <!-- Add category options here -->
+        </select>
+        <input type="text" placeholder="Share YouTube link" required>
+        <textarea placeholder="Enter a description..."></textarea>
+        <button type="submit" class="save-btn">Save Film</button>
+        <button type="button" class="cancel-btn">Cancel Action</button>
+    </form>
+</div>
+
+</body>
+</html>

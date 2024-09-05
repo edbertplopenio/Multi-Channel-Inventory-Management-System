@@ -99,67 +99,69 @@ if (!isset($_SESSION['user_email'])) {
         // JavaScript to handle SweetAlert2 popup modal
         document.querySelector('.new-item-button').addEventListener('click', () => {
             Swal.fire({
-  title: 'Add New Inventory Item',
-  html: `
-    <form id="new-item-form">
-        <label for="product-id">Product ID</label>
-        <input type="text" id="product-id" name="product-id" class="swal2-input" required>
-        
-        <label for="product-name">Product Name</label>
-        <input type="text" id="product-name" name="product-name" class="swal2-input" required>
-        
-        <label for="stock-level">Stock Level</label>
-        <input type="number" id="stock-level" name="stock-level" class="swal2-input" required>
-        
-        <label for="category">Category</label>
-        <input type="text" id="category" name="category" class="swal2-input" required>
-        
-        <label for="reorder-level">Reorder Level</label>
-        <input type="number" id="reorder-level" name="reorder-level" class="swal2-input" required>
-        
-        <label for="supplier">Supplier</label>
-        <input type="text" id="supplier" name="supplier" class="swal2-input" required>
-        
-        <label for="image">Image</label>
-        <input type="file" id="image" name="image" class="swal2-input">
-    </form>
-  `,
-  width: '600px',  // Adjust width here
-  customClass: {
-    popup: 'custom-swal-popup'  // Add custom class here
-  },
-  showClass: {
-    popup: `
-      animate__animated
-      animate__fadeInUp
-      animate__faster
-    `
-  },
-  hideClass: {
-    popup: `
-      animate__animated
-      animate__fadeOutDown
-      animate__faster
-    `
-  },
-  confirmButtonText: 'Add Item',
-  preConfirm: () => {
-    const form = document.getElementById('new-item-form');
-    if (form.checkValidity()) {
-      return {
-        productId: form.productId.value,
-        productName: form.productName.value,
-        stockLevel: form.stockLevel.value,
-        category: form.category.value,
-        reorderLevel: form.reorderLevel.value,
-        supplier: form.supplier.value,
-        image: form.image.files[0]
-      };
-    } else {
-      Swal.showValidationMessage('Please fill out all required fields.');
-      return false;
-    }
-  }
+                title: 'Add New Inventory Item',
+                html: `
+                    <div class="swal-form-container">
+                        <form id="new-item-form">
+                            <div class="swal-form-group">
+                                <label for="product-id" class="swal-label">Product ID</label>
+                                <input type="text" id="product-id" name="product-id" class="swal-input" required>
+                            </div>
+                            <div class="swal-form-group">
+                                <label for="product-name" class="swal-label">Product Name</label>
+                                <input type="text" id="product-name" name="product-name" class="swal-input" required>
+                            </div>
+                            <div class="swal-form-group">
+                                <label for="stock-level" class="swal-label">Stock Level</label>
+                                <input type="number" id="stock-level" name="stock-level" class="swal-input" required>
+                            </div>
+                            <div class="swal-form-group">
+                                <label for="category" class="swal-label">Category</label>
+                                <input type="text" id="category" name="category" class="swal-input" required>
+                            </div>
+                            <div class="swal-form-group">
+                                <label for="reorder-level" class="swal-label">Reorder Level</label>
+                                <input type="number" id="reorder-level" name="reorder-level" class="swal-input" required>
+                            </div>
+                            <div class="swal-form-group">
+                                <label for="supplier" class="swal-label">Supplier</label>
+                                <input type="text" id="supplier" name="supplier" class="swal-input" required>
+                            </div>
+                            <div class="swal-form-group">
+                                <label for="image" class="swal-label">Image</label>
+                                <input type="file" id="image" name="image" class="swal-input-file">
+                            </div>
+                        </form>
+                    </div>
+                `,
+                width: '700px',
+                customClass: {
+                    popup: 'custom-swal-popup'
+                },
+                showClass: {
+                    popup: 'animate__animated animate__fadeInUp animate__faster'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutDown animate__faster'
+                },
+                confirmButtonText: 'Add Item',
+                preConfirm: () => {
+                    const form = document.getElementById('new-item-form');
+                    if (form.checkValidity()) {
+                        return {
+                            productId: form.productId.value,
+                            productName: form.productName.value,
+                            stockLevel: form.stockLevel.value,
+                            category: form.category.value,
+                            reorderLevel: form.reorderLevel.value,
+                            supplier: form.supplier.value,
+                            image: form.image.files[0]
+                        };
+                    } else {
+                        Swal.showValidationMessage('Please fill out all required fields.');
+                        return false;
+                    }
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Handle the form submission here, e.g., send data to the server

@@ -1,203 +1,189 @@
-@import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700');
+@import url("https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700");
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
 }
 
 body {
-    background-color: #f4f7fc;
-    margin: 0;
-    padding: 0;
-    height: 95vh;
+  background-color: #f4f7fc;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
 }
 
 .demand-forecasting-container {
-    padding: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
-    height: 95vh; /* Make the container take up the full height of the viewport */
-    display: flex;
-    flex-direction: column;
+  padding: 30px;
+  width: 100%;
+  max-width: 100%; /* Full width */
+  margin: 0 auto;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  height: 95vh; /* Make the container take up the full height of the viewport */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent content overflow */
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
 .header h1 {
-    font-size: 28px;
-    color: #333;
-    font-weight: 600;
-}
-
-.new-forecast-button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-}
-
-.new-forecast-button:hover {
-    background-color: #0056b3;
+  font-size: 28px;
+  color: #333;
+  font-weight: 600;
 }
 
 .filters {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .tabs-container {
-    display: flex;
-    align-items: flex-end;
-    gap: 5px;
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
 }
 
 .tab {
-    padding: 12px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 10px 10px 0 0;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, color 0.3s;
-    font-weight: 500;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-    position: relative;
+  padding: 12px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, color 0.3s;
+  font-weight: 500;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  position: relative;
 }
 
 .tab.active {
-    background-color: white;
-    color: #007bff;
-    z-index: 2;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  background-color: white;
+  color: #007bff;
+  z-index: 2;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .tab i {
-    margin-right: 8px;
+  margin-right: 8px;
 }
 
 .tab:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .filter-input-container {
-    display: flex;
-    align-items: center;
-    position: relative;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .filter-input {
-    padding: 10px 20px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    width: 250px;
-    color: #333;
-    font-size: 14px;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  width: 250px;
+  color: #333;
+  font-size: 14px;
 }
 
 .icon-filter {
-    position: absolute;
-    right: 16px;
-    color: #aaa;
+  position: absolute;
+  right: 16px;
+  color: #aaa;
+}
+
+.forecast-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px; /* Add space between the table and forecast details */
+  flex: 1;
+  width: 100%;
+  overflow: auto; /* Allow content to scroll if it overflows */
+}
+
+.forecast-details-container {
+  width: 75%; /* Graph/Forecast Details section takes 75% */
+  background-color: #f4f7fc;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.forecast-details h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.forecast-details p {
+  font-size: 14px;
+  color: #555;
+}
+
+.forecast-table-container {
+  width: 25%; /* Table section takes 25% */
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: stretch;
+  overflow-x: auto; /* Prevent table from overflowing */
 }
 
 .forecast-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.forecast-table th, .forecast-table td {
-    padding: 20px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
+.forecast-table th,
+.forecast-table td {
+  padding: 20px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
 }
 
-.forecast-table th {
-    background-color: #f4f7fc;
-    color: #555;
-    font-size: 14px;
-    font-weight: 600;
+.forecast-table thead th {
+  background-color: #f4f7fc;
+  color: #555;
+  font-size: 14px;
+  font-weight: 600;
+  position: sticky; /* Make the header sticky */
+  top: 0; /* Stick to the top */
+  z-index: 1; /* Ensure it stays above the table content */
 }
 
 .forecast-table td {
-    color: #555;
-    font-size: 14px;
-}
-
-.forecast-table .status {
-    padding: 5px 10px;
-    border-radius: 12px;
-    color: #fff;
-    font-size: 12px;
-    text-align: center;
-    display: inline-block;
-}
-
-.status.completed {
-    background-color: #28a745;
-}
-
-.status.pending {
-    background-color: #ffc107;
+  color: #555;
+  font-size: 14px;
 }
 
 .forecast-table tr:last-child td {
-    border-bottom: none;
+  border-bottom: none;
 }
 
-.action-button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    margin-right: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.action-button.view {
-    background-color: #17a2b8;
-}
-
-.action-button.download {
-    background-color: #28a745;
-}
-
-.action-button:hover {
-    opacity: 0.9;
-}
-
-/* Hidden by default, shown when active */
 .tab-content {
-    display: none;
-    padding-top: 20px;
+  display: none;
+  padding-top: 20px;
+  width: 100%;
 }
 
 .tab-content.active {
-    display: block;
+  display: flex;
+  gap: 20px; /* Add space between the content */
 }

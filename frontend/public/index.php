@@ -7,6 +7,38 @@ if (!isset($_SESSION['user_email'])) {
     header("Location: login.html");
     exit();
 }
+
+// Include the database connection file
+include_once '../../backend/config/db_connection.php';
+
+// Fetch the user role from the database
+$user_email = $_SESSION['user_email'];
+$sql = "SELECT role FROM users WHERE email = ?";
+$stmt = mysqli_prepare($conn, $sql);
+
+if ($stmt) {
+    // Bind parameters and execute the statement
+    mysqli_stmt_bind_param($stmt, "s", $user_email);
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+
+    // Fetch the user's role
+    if ($row = mysqli_fetch_assoc($result)) {
+        $user_role = $row['role'];
+    } else {
+        $user_role = "Unknown Role"; // Default in case of an error
+    }
+
+    // Close the statement
+    mysqli_stmt_close($stmt);
+} else {
+    $user_role = "Unknown Role"; // Default in case of an error
+}
+
+// Close the database connection
+mysqli_close($conn);
 ?>
 
 <!DOCTYPE html>
@@ -29,7 +61,7 @@ if (!isset($_SESSION['user_email'])) {
                     <img src="images/user.jpg" alt="User Image" />
                 </div>
                 <div class="user-details">
-                    <p class="title">Web Developer</p>
+                    <p class="title"><?php echo htmlspecialchars($user_role); ?></p>
                     <p class="name"><?php echo htmlspecialchars($_SESSION['user_email']); ?></p>
                 </div>
             </div>
@@ -66,12 +98,6 @@ if (!isset($_SESSION['user_email'])) {
                                 <span class="text">Inventory Replenishment</span>
                             </a>
                         </li>
-                        <li id="user-item">
-                            <a href="#" id="user-link">
-                                <i class="icon ph-bold ph-user"></i> <!-- Icon -->
-                                <span class="text">User Management</span>
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </div>
@@ -79,10 +105,11 @@ if (!isset($_SESSION['user_email'])) {
                 <div class="menu">
                     <p class="title">Account</p>
                     <ul>
-                        <li id="help-item">
-                            <a href="#" id="help-link">
-                                <i class="icon ph-bold ph-info"></i>
-                                <span class="text">Help</span>
+                        <!-- Replaced Help with User Management -->
+                        <li id="user-account-item">
+                            <a href="#" id="user-account-link">
+                                <i class="icon ph-bold ph-user"></i> <!-- Icon -->
+                                <span class="text">User Management</span>
                             </a>
                         </li>
                         <li id="logout-item">
@@ -95,6 +122,7 @@ if (!isset($_SESSION['user_email'])) {
                 </div>
             </div>
         </div>
+
 
         <!-- Main Content Area -->
         <div class="main-content" id="main-content">
@@ -147,23 +175,15 @@ if (!isset($_SESSION['user_email'])) {
                 setActive('replenishment-link', 'replenishment-item');
             });
 
-            $('#user-link').on('click', function(e) {
+            $('#user-account-link').on('click', function(e) {
                 e.preventDefault();
                 $('#main-content').load('../../backend/views/user_management.php');
-                setActive('user-link', 'user-item');
+                setActive('user-account-link', 'user-account-item');
             });
 
             // Account section links
-            $('#help-link').on('click', function(e) {
-                e.preventDefault();
-                setActive('help-link', 'help-item');
-                // Load help content if you have a corresponding view, e.g.:
-                // $('#main-content').load('../../backend/views/help.php');
-            });
-
             $('#logout-link').on('click', function(e) {
                 setActive('logout-link', 'logout-item');
-                // Note: logout typically navigates away from the app, so no need to load content
             });
         });
     </script>
