@@ -1,207 +1,203 @@
-@import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700');
+@import url("https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700");
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
 }
 
 body {
-    background-color: #f4f7fc;
-    margin: 0;
-    padding: 0;
+  background-color: #f4f7fc;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
 }
 
 .inventory-replenishment-container {
-    padding: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
+  padding: 30px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  height: 95vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
 .header h1 {
-    font-size: 28px;
-    color: #333;
-    font-weight: 600;
-}
-
-.new-order-button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-}
-
-.new-order-button:hover {
-    background-color: #0056b3;
+  font-size: 28px;
+  color: #333;
+  font-weight: 600;
 }
 
 .filters {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .tabs-container {
-    display: flex;
-    align-items: flex-end;
-    gap: 5px;
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
 }
 
 .tab {
-    padding: 12px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 10px 10px 0 0;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, color 0.3s;
-    font-weight: 500;
-    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-    position: relative;
+  padding: 12px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, color 0.3s;
+  font-weight: 500;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  position: relative;
 }
 
 .tab.active {
-    background-color: white;
-    color: #007bff;
-    z-index: 2;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  background-color: white;
+  color: #007bff;
+  z-index: 2;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .tab i {
-    margin-right: 8px;
+  margin-right: 8px;
 }
 
 .tab:hover {
-    background-color: #0056b3;
+  background-color: #0056b3;
 }
 
 .filter-input-container {
-    display: flex;
-    align-items: center;
-    position: relative;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .filter-input {
-    padding: 10px 20px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    width: 250px;
-    color: #333;
-    font-size: 14px;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  width: 250px;
+  color: #333;
+  font-size: 14px;
 }
 
 .icon-filter {
-    position: absolute;
-    right: 16px;
-    color: #aaa;
+  position: absolute;
+  right: 16px;
+  color: #aaa;
 }
 
-.replenishment-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+.inventory-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex: 1;
+  width: 100%;
+  overflow: auto;
 }
 
-.replenishment-table th, .replenishment-table td {
-    padding: 20px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
+.inventory-details-container {
+  width: 75%;
+  background-color: #f4f7fc;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.replenishment-table th {
-    background-color: #f4f7fc;
-    color: #555;
-    font-size: 14px;
-    font-weight: 600;
+.inventory-details h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
-.replenishment-table td {
-    color: #555;
-    font-size: 14px;
+.inventory-details p {
+  font-size: 14px;
+  color: #555;
 }
 
-.replenishment-table .status {
-    padding: 5px 10px;
-    border-radius: 12px;
-    color: #fff;
-    font-size: 12px;
-    text-align: center;
-    display: inline-block;
+.inventory-table-container {
+  width: 25%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.status.pending {
-    background-color: #ffc107;
+.inventory-table-wrapper {
+  overflow-y: auto;
+  max-height: 600px; /* Adjust this value to control the height of the table container */
 }
 
-.status.shipped {
-    background-color: #17a2b8;
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
 }
 
-.status.active {
-    background-color: #28a745;
+.inventory-table thead th {
+  background-color: #f4f7fc;
+  color: #555;
+  font-size: 14px;
+  font-weight: 600;
+  position: sticky;
+  top: 0; /* Ensures the header stays at the top */
+  z-index: 2; /* Keeps header above scrolling content */
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
 }
 
-.status.completed {
-    background-color: #28a745;
+.inventory-table tbody {
+  display: block;
+  overflow-y: auto;
+  max-height: 450px; /* Adjust this value to control the height of the table body */
 }
 
-.replenishment-table tr:last-child td {
-    border-bottom: none;
+.inventory-table thead,
+.inventory-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* Ensures columns in thead and tbody align */
 }
 
-.action-button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    margin-right: 5px;
-    transition: background-color 0.3s ease;
+.inventory-table tbody td {
+  padding: 10px;
+  font-size: 14px;
+  color: #555;
+  text-align: left;
+  border-bottom: 1px solid #eee;
 }
 
-.action-button.view {
-    background-color: #17a2b8;
+.inventory-table tr:last-child td {
+  border-bottom: none;
 }
 
-.action-button.download {
-    background-color: #28a745;
-}
-
-.action-button:hover {
-    opacity: 0.9;
-}
-
-/* Hidden by default, shown when active */
 .tab-content {
-    display: none;
-    padding-top: 20px;
+  display: none;
+  padding-top: 20px;
+  width: 100%;
 }
 
 .tab-content.active {
-    display: block;
+  display: flex;
+  gap: 20px;
 }
+

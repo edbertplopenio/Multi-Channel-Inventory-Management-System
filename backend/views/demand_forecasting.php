@@ -57,76 +57,78 @@ if (!isset($_SESSION['user_email'])) {
 
                 <!-- Table container on the right -->
                 <div class="forecast-table-container">
-                    <table class="forecast-table">
-                        <thead>
-                            <tr>
-                                <th>Product ID</th>
-                                <th>Product Name</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>PID001</td>
-                                <td>Product A</td>
-                            </tr>
-                            <tr>
-                                <td>PID002</td>
-                                <td>Product B</td>
-                            </tr>
-                            <tr>
-                                <td>PID003</td>
-                                <td>Product C</td>
-                            </tr>
-                            <tr>
-                                <td>PID004</td>
-                                <td>Product D</td>
-                            </tr>
-                            <tr>
-                                <td>PID005</td>
-                                <td>Product E</td>
-                            </tr>
-                            <tr>
-                                <td>PID006</td>
-                                <td>Product F</td>
-                            </tr>
-                            <tr>
-                                <td>PID007</td>
-                                <td>Product G</td>
-                            </tr>
-                            <tr>
-                                <td>PID008</td>
-                                <td>Product H</td>
-                            </tr>
-                            <tr>
-                                <td>PID009</td>
-                                <td>Product I</td>
-                            </tr>
-                            <tr>
-                                <td>PID010</td>
-                                <td>Product J</td>
-                            </tr>
-                            <tr>
-                                <td>PID011</td>
-                                <td>Product K</td>
-                            </tr>
-                            <tr>
-                                <td>PID012</td>
-                                <td>Product L</td>
-                            </tr>
-                            <tr>
-                                <td>PID013</td>
-                                <td>Product M</td>
-                            </tr>
-                            <tr>
-                                <td>PID014</td>
-                                <td>Product N</td>
-                            </tr>
-                            <tr>
-                                <td>PID015</td>
-                                <td>Product O</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="forecast-table-wrapper">
+                        <table class="forecast-table">
+                            <thead>
+                                <tr>
+                                    <th>Product ID</th>
+                                    <th>Product Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>PID001</td>
+                                    <td>Product A</td>
+                                </tr>
+                                <tr>
+                                    <td>PID002</td>
+                                    <td>Product B</td>
+                                </tr>
+                                <tr>
+                                    <td>PID003</td>
+                                    <td>Product C</td>
+                                </tr>
+                                <tr>
+                                    <td>PID004</td>
+                                    <td>Product D</td>
+                                </tr>
+                                <tr>
+                                    <td>PID005</td>
+                                    <td>Product E</td>
+                                </tr>
+                                <tr>
+                                    <td>PID006</td>
+                                    <td>Product F</td>
+                                </tr>
+                                <tr>
+                                    <td>PID007</td>
+                                    <td>Product G</td>
+                                </tr>
+                                <tr>
+                                    <td>PID008</td>
+                                    <td>Product H</td>
+                                </tr>
+                                <tr>
+                                    <td>PID009</td>
+                                    <td>Product I</td>
+                                </tr>
+                                <tr>
+                                    <td>PID010</td>
+                                    <td>Product J</td>
+                                </tr>
+                                <tr>
+                                    <td>PID011</td>
+                                    <td>Product K</td>
+                                </tr>
+                                <tr>
+                                    <td>PID012</td>
+                                    <td>Product L</td>
+                                </tr>
+                                <tr>
+                                    <td>PID013</td>
+                                    <td>Product M</td>
+                                </tr>
+                                <tr>
+                                    <td>PID014</td>
+                                    <td>Product N</td>
+                                </tr>
+                                <tr>
+                                    <td>PID015</td>
+                                    <td>Product O</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -140,21 +142,23 @@ if (!isset($_SESSION['user_email'])) {
                     </div>
                 </div>
                 <div class="forecast-table-container">
-                    <table class="forecast-table" style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Product ID</th>
-                                <th>Product Name</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>PID002</td>
-                                <td>Product B</td>
-                            </tr>
-                            <!-- Add more rows as needed -->
-                        </tbody>
-                    </table>
+                    <div class="forecast-table-wrapper">
+                        <table class="forecast-table" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Product ID</th>
+                                    <th>Product Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>PID002</td>
+                                    <td>Product B</td>
+                                </tr>
+                                <!-- Add more rows as needed -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -168,21 +172,23 @@ if (!isset($_SESSION['user_email'])) {
                     </div>
                 </div>
                 <div class="forecast-table-container">
-                    <table class="forecast-table" style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Product ID</th>
-                                <th>Product Name</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>PID003</td>
-                                <td>Product C</td>
-                            </tr>
-                            <!-- Add more rows as needed -->
-                        </tbody>
-                    </table>
+                    <div class="forecast-table-wrapper">
+                        <table class="forecast-table" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Product ID</th>
+                                    <th>Product Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>PID003</td>
+                                    <td>Product C</td>
+                                </tr>
+                                <!-- Add more rows as needed -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -209,3 +215,5 @@ if (!isset($_SESSION['user_email'])) {
 </body>
 
 </html>
+
+
