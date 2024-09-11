@@ -32,11 +32,8 @@ if (!isset($_SESSION['user_email'])) {
                 <button class="tab" data-tab="admins">
                     <i class="fas fa-user-shield"></i> Admins
                 </button>
-                <button class="tab" data-tab="editors">
-                    <i class="fas fa-user-edit"></i> Editors
-                </button>
-                <button class="tab" data-tab="viewers">
-                    <i class="fas fa-user"></i> Viewers
+                <button class="tab" data-tab="inventory-manager">
+                    <i class="fas fa-box"></i> Inventory Manager
                 </button>
             </div>
             <div class="filter-input-container">
@@ -107,8 +104,8 @@ if (!isset($_SESSION['user_email'])) {
             </table>
         </div>
 
-        <!-- Editors Content -->
-        <div id="editors" class="tab-content">
+        <!-- Inventory Manager Content -->
+        <div id="inventory-manager" class="tab-content">
             <table class="user-table">
                 <thead>
                     <tr>
@@ -123,41 +120,10 @@ if (!isset($_SESSION['user_email'])) {
                 <tbody>
                     <!-- Example rows -->
                     <tr>
-                        <td>UID003</td>
-                        <td>Emily Johnson</td>
-                        <td>emily.johnson@example.com</td>
-                        <td>Editor</td>
-                        <td><span class="status active">Active</span></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    </tr>
-                    <!-- Additional rows would go here -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Viewers Content -->
-        <div id="viewers" class="tab-content">
-            <table class="user-table">
-                <thead>
-                    <tr>
-                        <th>User ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Example rows -->
-                    <tr>
-                        <td>UID004</td>
-                        <td>Michael Brown</td>
-                        <td>michael.brown@example.com</td>
-                        <td>Viewer</td>
+                        <td>UID005</td>
+                        <td>Alice Green</td>
+                        <td>alice.green@example.com</td>
+                        <td>Inventory Manager</td>
                         <td><span class="status active">Active</span></td>
                         <td>
                             <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
@@ -213,6 +179,7 @@ body {
     background-color: #ffffff;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
     border-radius: 10px;
+    height: 95vh;
 }
 
 .header {

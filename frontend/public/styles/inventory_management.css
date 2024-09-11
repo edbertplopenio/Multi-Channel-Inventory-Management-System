@@ -130,9 +130,9 @@ body {
 }
 
 .inventory-table th, .inventory-table td {
-    padding: 10px 15px;
+    padding: 20px;
     text-align: left;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
 }
 
 .inventory-table th {
@@ -149,6 +149,10 @@ body {
 
 .inventory-table img {
     border-radius: 5px;
+}
+
+.inventory-table tr:last-child td {
+    border-bottom: none;
 }
 
 /* Hidden by default, shown when active */
