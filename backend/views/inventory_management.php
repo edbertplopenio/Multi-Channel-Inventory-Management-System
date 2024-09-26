@@ -187,7 +187,6 @@ if (!isset($_SESSION['user_email'])) {
 
             const productId = document.getElementById('product-id').value;
             const name = document.getElementById('name').value;
-            const description = document.getElementById('description').value;
             const category = document.getElementById('category').value;
             const quantity = document.getElementById('quantity').value;
             const size = document.getElementById('size').value;
@@ -207,6 +206,7 @@ if (!isset($_SESSION['user_email'])) {
 
 </body>
 </html>
+
 <style>
     @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700');
 
@@ -421,11 +421,11 @@ body {
 .new-item-container {
     padding: 20px;
     max-width: 1200px;
-    height: 95vh;
     margin: 0 auto;
     background-color: #ffffff;
-    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05); /* Same as inventory-container */
     border-radius: 10px;
+    height: 95vh;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -436,55 +436,69 @@ body {
     grid-template-columns: 1fr 1fr;
     column-gap: 20px;
     row-gap: 20px;
+    padding: 20px 0;
+}
+
+.new-item-container .header h1 {
+    font-size: 22px; /* Increased for a more professional look */
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
+    gap: 8px;
 }
 
 .form-group label {
-    font-weight: 600;
-    margin-bottom: 8px;
+    font-weight: 600; /* Increased weight for a bolder appearance */
     color: #333;
+    font-size: 14px;
 }
 
 .form-group input {
-    padding: 12px;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 12px;
+    font-size: 14px; /* Slightly increased input font size for better readability */
     background-color: #f9f9f9;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Added shadow effect on focus */
 }
 
 .form-group input:focus {
     border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.2); /* Focus effect */
     outline: none;
+}
+
+.form-group input[type="file"] {
+    padding: 5px;
 }
 
 .buttons-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Centers the buttons horizontally */
+    gap: 10px;
     margin-top: 20px;
 }
 
 .cancel-button, .save-item-button {
-    padding: 12px 20px;
+    padding: 12px 20px; /* Increased padding for larger, more professional buttons */
     font-size: 14px;
     font-weight: 600;
-    border: none;
-    border-radius: 30px;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .cancel-button {
     background-color: transparent;
-    color: #5e5eff;
-    border: 2px solid #5e5eff;
-    width: 150px;
-    text-align: center;
+    color: #007bff; /* Changed to the main color theme */
+    border: 2px solid #007bff;
+    width: 275px;
 }
 
 .cancel-button:hover {
@@ -492,14 +506,12 @@ body {
 }
 
 .save-item-button {
-    background-color: #5e5eff;
+    background-color: #007bff;
     color: white;
-    width: 200px;
-    text-align: center;
+    width: 275px;
 }
 
 .save-item-button:hover {
-    background-color: #3e3ecf;
+    background-color: #0056b3;
 }
-
 </style>

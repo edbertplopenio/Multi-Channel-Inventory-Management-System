@@ -136,91 +136,91 @@ if (!isset($_SESSION['user_email'])) {
         </div>
     </div>
 
+    <div id="new-user-container" class="new-user-container" style="display: none;">
+        <div class="header">
+            <h1>Add New User</h1>
+            <button class="back-button">← Back to User Management</button>
+        </div>
+
+        <form id="new-user-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first-name">First Name:</label>
+                    <input type="text" id="first-name" name="first-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="last-name">Last Name:</label>
+                    <input type="text" id="last-name" name="last-name" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Role:</label>
+                    <input type="text" id="role" name="role" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+            </div>
+
+            <!-- Buttons side-by-side -->
+            <div class="form-row buttons-row">
+                <button type="button" class="cancel-button">Cancel</button>
+                <button type="submit" class="save-user-button">Save User</button>
+            </div>
+        </form>
+    </div>
+
     <script>
-        // JavaScript to handle tab switching
+        // Handle tab switching
         document.querySelectorAll('.tab').forEach(button => {
             button.addEventListener('click', () => {
-                // Remove active class from all tabs
                 document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-
-                // Hide all content sections
                 document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-                // Add active class to clicked tab and corresponding content
                 button.classList.add('active');
                 document.getElementById(button.getAttribute('data-tab')).classList.add('active');
             });
         });
 
+        // Handle Add New User form
+        document.querySelector('.new-user-button').addEventListener('click', function() {
+            document.querySelector('.user-management-container').style.display = 'none';
+            document.getElementById('new-user-container').style.display = 'block';
+        });
 
+        document.querySelector('.back-button').addEventListener('click', function() {
+            document.querySelector('.user-management-container').style.display = 'block';
+            document.getElementById('new-user-container').style.display = 'none';
+        });
 
-        document.addEventListener('DOMContentLoaded', function () {
+        // Handle form submission (placeholder, you can replace with actual logic)
+        document.getElementById('new-user-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission for now
 
-// Handle Add New User button
-document.querySelector('.new-user-button').addEventListener('click', function () {
-    // Open a modal or form to add a new user
-    let firstName = prompt("Enter First Name:");
-    let lastName = prompt("Enter Last Name:");
-    let email = prompt("Enter Email:");
-    let password = prompt("Enter Password:");
-    let role = prompt("Enter Role (e.g., Admin, Inventory Manager):");
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const email = document.getElementById('email').value;
+            const role = document.getElementById('role').value;
+            const password = document.getElementById('password').value;
 
-    if (firstName && lastName && email && password && role) {
-        // Send data to add_user.php
-        fetch('../controllers/add_user.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `first_name=${firstName}&last_name=${lastName}&email=${email}&password=${password}&role=${role}`
-        })
-        .then(response => response.text())
-        .then(result => alert(result));
-    }
-});
+            // Placeholder for form handling, e.g., adding the new user
+            alert(`User ${firstName} ${lastName} added!`);
 
-// Handle Edit User button
-document.querySelectorAll('.action-button.edit').forEach(button => {
-    button.addEventListener('click', function () {
-        // Get the current row data
-        let row = button.closest('tr');
-        let userId = row.querySelector('td:first-child').textContent;
-        let firstName = prompt("Edit First Name:", row.querySelector('td:nth-child(2)').textContent);
-        let lastName = prompt("Edit Last Name:", row.querySelector('td:nth-child(3)').textContent);
-        let email = prompt("Edit Email:", row.querySelector('td:nth-child(4)').textContent);
-        let role = prompt("Edit Role:", row.querySelector('td:nth-child(5)').textContent);
-
-        if (firstName && lastName && email && role) {
-            // Send updated data to edit_user.php
-            fetch('../controllers/edit_user.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `id=${userId}&first_name=${firstName}&last_name=${lastName}&email=${email}&role=${role}`
-            })
-            .then(response => response.text())
-            .then(result => alert(result));
-        }
-    });
-});
-
-// Handle Delete User button
-document.querySelectorAll('.action-button.delete').forEach(button => {
-    button.addEventListener('click', function () {
-        if (confirm("Are you sure you want to delete this user?")) {
-            // Get the user ID
-            let userId = button.closest('tr').querySelector('td:first-child').textContent;
-
-            // Send delete request to delete_user.php
-            fetch('../controllers/delete_user.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `id=${userId}`
-            })
-            .then(response => response.text())
-            .then(result => alert(result));
-        }
-    });
-});
-});
-
+            document.getElementById('new-user-form').reset(); // Reset the form
+            document.querySelector('.user-management-container').style.display = 'block';
+            document.getElementById('new-user-container').style.display = 'none';
+        });
     </script>
 
 </body>
@@ -243,6 +243,16 @@ body {
 }
 
 .user-management-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    height: 95vh;
+}
+
+.new-user-container {
     padding: 30px;
     max-width: 1200px;
     margin: 0 auto;
@@ -278,6 +288,22 @@ body {
 }
 
 .new-user-button:hover {
+    background-color: #0056b3;
+}
+
+.back-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
     background-color: #0056b3;
 }
 
@@ -428,4 +454,74 @@ body {
     display: block;
 }
 
+.new-user-container form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+    row-gap: 20px;
+    padding: 20px 0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.buttons-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cancel-button, .save-user-button {
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-button {
+    background-color: transparent;
+    color: #007bff;
+    border: 2px solid #007bff;
+    width: 275px;
+}
+
+.cancel-button:hover {
+    background-color: #f0f0ff;
+}
+
+.save-user-button {
+    background-color: #007bff;
+    color: white;
+    width: 275px;
+}
+
+.save-user-button:hover {
+    background-color: #0056b3;
+}
 </style>
