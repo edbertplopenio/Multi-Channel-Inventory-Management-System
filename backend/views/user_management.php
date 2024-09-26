@@ -151,6 +151,76 @@ if (!isset($_SESSION['user_email'])) {
                 document.getElementById(button.getAttribute('data-tab')).classList.add('active');
             });
         });
+
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+// Handle Add New User button
+document.querySelector('.new-user-button').addEventListener('click', function () {
+    // Open a modal or form to add a new user
+    let firstName = prompt("Enter First Name:");
+    let lastName = prompt("Enter Last Name:");
+    let email = prompt("Enter Email:");
+    let password = prompt("Enter Password:");
+    let role = prompt("Enter Role (e.g., Admin, Inventory Manager):");
+
+    if (firstName && lastName && email && password && role) {
+        // Send data to add_user.php
+        fetch('../controllers/add_user.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `first_name=${firstName}&last_name=${lastName}&email=${email}&password=${password}&role=${role}`
+        })
+        .then(response => response.text())
+        .then(result => alert(result));
+    }
+});
+
+// Handle Edit User button
+document.querySelectorAll('.action-button.edit').forEach(button => {
+    button.addEventListener('click', function () {
+        // Get the current row data
+        let row = button.closest('tr');
+        let userId = row.querySelector('td:first-child').textContent;
+        let firstName = prompt("Edit First Name:", row.querySelector('td:nth-child(2)').textContent);
+        let lastName = prompt("Edit Last Name:", row.querySelector('td:nth-child(3)').textContent);
+        let email = prompt("Edit Email:", row.querySelector('td:nth-child(4)').textContent);
+        let role = prompt("Edit Role:", row.querySelector('td:nth-child(5)').textContent);
+
+        if (firstName && lastName && email && role) {
+            // Send updated data to edit_user.php
+            fetch('../controllers/edit_user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${userId}&first_name=${firstName}&last_name=${lastName}&email=${email}&role=${role}`
+            })
+            .then(response => response.text())
+            .then(result => alert(result));
+        }
+    });
+});
+
+// Handle Delete User button
+document.querySelectorAll('.action-button.delete').forEach(button => {
+    button.addEventListener('click', function () {
+        if (confirm("Are you sure you want to delete this user?")) {
+            // Get the user ID
+            let userId = button.closest('tr').querySelector('td:first-child').textContent;
+
+            // Send delete request to delete_user.php
+            fetch('../controllers/delete_user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `id=${userId}`
+            })
+            .then(response => response.text())
+            .then(result => alert(result));
+        }
+    });
+});
+});
+
     </script>
 
 </body>

@@ -23,6 +23,7 @@ if (!isset($_SESSION['user_email'])) {
     <div class="inventory-container">
         <div class="header">
             <h1>Inventory Management</h1>
+            <!-- Button added back, but no functions are associated with it -->
             <button class="new-item-button">+ New Inventory Item</button>
         </div>
 
@@ -104,100 +105,6 @@ if (!isset($_SESSION['user_email'])) {
                 // Add active class to clicked tab and corresponding content
                 button.classList.add('active');
                 document.getElementById(button.getAttribute('data-tab')).classList.add('active');
-            });
-        });
-
-        // JavaScript to handle SweetAlert2 popup modal
-        document.querySelector('.new-item-button').addEventListener('click', () => {
-            Swal.fire({
-                title: 'Add New Inventory Item',
-                html: `
-                    <div class="swal-form-container">
-                        <form id="new-item-form">
-                            <div class="swal-form-group">
-                                <label for="product-id" class="swal-label">Product ID</label>
-                                <input type="text" id="product-id" name="product-id" class="swal-input" required>
-                            </div>
-                            <div class="swal-form-group">
-                                <label for="product-name" class="swal-label">Product Name</label>
-                                <input type="text" id="product-name" name="product-name" class="swal-input" required>
-                            </div>
-                            <div class="swal-form-group">
-                                <label for="description" class="swal-label">Description</label>
-                                <textarea id="description" name="description" class="swal-input" required></textarea>
-                            </div>
-                            <div class="swal-form-group">
-                                <label for="category" class="swal-label">Category</label>
-                                <input type="text" id="category" name="category" class="swal-input" required>
-                            </div>
-                            <div class="swal-form-group">
-                                <label for="quantity" class="swal-label">Quantity</label>
-                                <input type="number" id="quantity" name="quantity" class="swal-input" required>
-                            </div>
-                            <div class="swal-form-group">
-                                <label for="size" class="swal-label">Size</label>
-                                <input type="text" id="size" name="size" class="swal-input" required>
-                            </div>
-                            <div class="swal-form-group">
-                                <label for="color" class="swal-label">Color</label>
-                                <input type="text" id="color" name="color" class="swal-input" required>
-                            </div>
-                            <div class="swal-form-group">
-                                <label for="price" class="swal-label">Price</label>
-                                <input type="number" id="price" name="price" class="swal-input" required>
-                            </div>
-                            <div class="swal-form-group">
-                                <label for="date-added" class="swal-label">Date Added</label>
-                                <input type="date" id="date-added" name="date-added" class="swal-input" required>
-                            </div>
-                            <div class="swal-form-group">
-                                <label for="last-updated" class="swal-label">Last Updated</label>
-                                <input type="date" id="last-updated" name="last-updated" class="swal-input">
-                            </div>
-                            <div class="swal-form-group">
-                                <label for="image" class="swal-label">Image</label>
-                                <input type="file" id="image" name="image" class="swal-input-file">
-                            </div>
-                        </form>
-                    </div>
-                `,
-                width: '500px',  // Reduced the width further
-                padding: '20px',  // Reduced padding
-                customClass: {
-                    popup: 'custom-swal-popup'
-                },
-                showClass: {
-                    popup: 'animate__animated animate__fadeInUp animate__faster'
-                },
-                hideClass: {
-                    popup: 'animate__animated animate__fadeOutDown animate__faster'
-                },
-                confirmButtonText: 'Add Item',
-                preConfirm: () => {
-                    const form = document.getElementById('new-item-form');
-                    if (form.checkValidity()) {
-                        return {
-                            productId: form.productId.value,
-                            productName: form.productName.value,
-                            description: form.description.value,
-                            category: form.category.value,
-                            quantity: form.quantity.value,
-                            size: form.size.value,
-                            color: form.color.value,
-                            price: form.price.value,
-                            dateAdded: form.dateAdded.value,
-                            lastUpdated: form.lastUpdated.value,
-                            image: form.image.files[0]
-                        };
-                    } else {
-                        Swal.showValidationMessage('Please fill out all required fields.');
-                        return false;
-                    }
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log(result.value); // Access the form data
-                }
             });
         });
     </script>
@@ -372,69 +279,6 @@ body {
 .tab-content.active {
     display: block;
     height: 100%;
-}
-
-/* SweetAlert2 Custom Styling for Professional Look */
-.custom-swal-popup {
-    max-width: 500px; /* Reduced popup width */
-    border-radius: 8px;
-    padding: 15px; /* Reduced padding in popup */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.swal-form-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* Reduced gap between form elements */
-}
-
-.swal-form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.swal-label {
-    font-weight: 500; /* Reduced label weight */
-    margin-bottom: 5px;
-    color: #333;
-    font-size: 12px; /* Reduced label font size */
-}
-
-.swal-input, .swal-input-file {
-    padding: 6px; /* Reduced input padding */
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    font-size: 12px; /* Reduced input font size */
-    transition: border-color 0.3s ease;
-}
-
-.swal-input:focus, .swal-input-file:focus {
-    border-color: #007bff;
-}
-
-.swal2-confirm {
-    background-color: #007bff !important;
-    color: #fff !important;
-    border-radius: 5px;
-    padding: 8px 12px; /* Reduced button padding */
-    font-size: 12px; /* Reduced button font size */
-    transition: background-color 0.3s ease;
-}
-
-.swal2-confirm:hover {
-    background-color: #0056b3 !important;
-}
-
-.swal2-cancel {
-    background-color: #ccc !important;
-    color: #333 !important;
-    border-radius: 5px;
-    padding: 8px 12px; /* Reduced button padding */
-    font-size: 12px; /* Reduced button font size */
-}
-
-.swal2-cancel:hover {
-    background-color: #aaa !important;
 }
 
 .action-button {
