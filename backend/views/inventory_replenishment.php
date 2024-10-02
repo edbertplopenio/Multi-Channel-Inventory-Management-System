@@ -46,16 +46,13 @@ if (!isset($_SESSION['user_email'])) {
         <div class="inventory-content">
             <!-- Physical Store Content -->
             <div id="physical-store" class="tab-content active">
-                <!-- Replenishment details container on the left -->
                 <div class="inventory-details-container">
                     <div class="inventory-details">
                         <h2>Replenishment Details</h2>
                         <p>Select a product to see detailed inventory replenishment information here.</p>
-                        <!-- Add more detailed replenishment info here -->
                     </div>
                 </div>
 
-                <!-- Table container on the right -->
                 <div class="inventory-table-container">
                     <div class="inventory-table-wrapper">
                         <table class="inventory-table">
@@ -98,7 +95,6 @@ if (!isset($_SESSION['user_email'])) {
                                     <td>5</td>
                                     <td>3</td>
                                 </tr>
-                                <!-- Add more rows as needed -->
                             </tbody>
                         </table>
                     </div>
@@ -111,12 +107,11 @@ if (!isset($_SESSION['user_email'])) {
                     <div class="inventory-details">
                         <h2>Replenishment Details</h2>
                         <p>Select a product to see detailed inventory replenishment information here.</p>
-                        <!-- Add more detailed replenishment info here -->
                     </div>
                 </div>
                 <div class="inventory-table-container">
                     <div class="inventory-table-wrapper">
-                        <table class="inventory-table" style="width: 100%;">
+                        <table class="inventory-table">
                             <thead>
                                 <tr>
                                     <th>Product ID</th>
@@ -132,7 +127,6 @@ if (!isset($_SESSION['user_email'])) {
                                     <td>30</td>
                                     <td>15</td>
                                 </tr>
-                                <!-- Add more rows as needed -->
                             </tbody>
                         </table>
                     </div>
@@ -145,12 +139,11 @@ if (!isset($_SESSION['user_email'])) {
                     <div class="inventory-details">
                         <h2>Replenishment Details</h2>
                         <p>Select a product to see detailed inventory replenishment information here.</p>
-                        <!-- Add more detailed replenishment info here -->
                     </div>
                 </div>
                 <div class="inventory-table-container">
                     <div class="inventory-table-wrapper">
-                        <table class="inventory-table" style="width: 100%;">
+                        <table class="inventory-table">
                             <thead>
                                 <tr>
                                     <th>Product ID</th>
@@ -166,7 +159,6 @@ if (!isset($_SESSION['user_email'])) {
                                     <td>70</td>
                                     <td>25</td>
                                 </tr>
-                                <!-- Add more rows as needed -->
                             </tbody>
                         </table>
                     </div>
@@ -197,4 +189,206 @@ if (!isset($_SESSION['user_email'])) {
 
 </html>
 
+<style>
+    @import url("https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700");
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  background-color: #f4f7fc;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+.inventory-replenishment-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  height: 95vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 22px;
+  color: #333;
+  font-weight: 600;
+}
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.tabs-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.tab {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s, color 0.3s;
+  font-weight: 500;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  position: relative;
+}
+
+.tab.active {
+  background-color: white;
+  color: #007bff;
+  z-index: 2;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.tab i {
+  margin-right: 8px;
+}
+
+.tab:hover {
+  background-color: #0056b3;
+}
+
+.filter-input-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.filter-input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  width: 220px;
+  color: #333;
+  font-size: 12px;
+}
+
+.icon-filter {
+  position: absolute;
+  right: 16px;
+  color: #aaa;
+}
+
+.inventory-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex: 1;
+  width: 100%;
+  overflow: auto;
+}
+
+.inventory-details-container {
+  width: 75%;
+  background-color: #f4f7fc;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.inventory-details h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.inventory-details p {
+  font-size: 14px;
+  color: #555;
+}
+
+.inventory-table-container {
+  width: 25%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.inventory-table-wrapper {
+  overflow-y: auto;
+  max-height: 600px; /* Adjust this value to control the height of the table container */
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.inventory-table thead th {
+  background-color: #f4f7fc;
+  color: #555;
+  font-size: 12px;
+  font-weight: 600;
+  position: sticky;
+  top: 0; /* Ensures the header stays at the top */
+  z-index: 2; /* Keeps header above scrolling content */
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.inventory-table tbody {
+  display: block;
+  overflow-y: auto;
+  max-height: 450px; /* Adjust this value to control the height of the table body */
+}
+
+.inventory-table thead,
+.inventory-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* Ensures columns in thead and tbody align */
+}
+
+.inventory-table tbody td {
+  padding: 10px;
+  font-size: 12px;
+  color: #555;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.inventory-table tr:last-child td {
+  border-bottom: none;
+}
+
+.tab-content {
+  display: none;
+  padding-top: 20px;
+  width: 100%;
+}
+
+.tab-content.active {
+  display: flex;
+  gap: 20px;
+}
+</style>

@@ -86,122 +86,252 @@ if (!isset($_SESSION['user_email'])) {
                 </tbody>
             </table>
         </div>
-    </div>
 
-    <div id="new-item-container" class="new-item-container" style="display: none;">
-        <div class="header">
-            <h1>Add New Inventory Item</h1>
-            <button class="back-button">← Back to Inventory</button>
+        <div id="physical-store" class="tab-content">
+            <table class="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Date Added</th>
+                        <th>Image</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>INV002</td>
+                        <td>Item B</td>
+                        <td>This is a sample description of Item B.</td>
+                        <td>Category 2</td>
+                        <td>30</td>
+                        <td>L</td>
+                        <td>Blue</td>
+                        <td>$15.00</td>
+                        <td>2023-09-02</td>
+                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
+                        <td>
+                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <form id="new-item-form">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="product-id">Product ID:</label>
-                    <input type="text" id="product-id" name="product-id" required>
-                </div>
+        <div id="shopee" class="tab-content">
+            <table class="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Date Added</th>
+                        <th>Image</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>INV003</td>
+                        <td>Item C</td>
+                        <td>This is a sample description of Item C.</td>
+                        <td>Category 3</td>
+                        <td>20</td>
+                        <td>S</td>
+                        <td>Green</td>
+                        <td>$30.00</td>
+                        <td>2023-09-03</td>
+                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
+                        <td>
+                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
+        <div id="tiktok" class="tab-content">
+            <table class="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Date Added</th>
+                        <th>Image</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>INV004</td>
+                        <td>Item D</td>
+                        <td>This is a sample description of Item D.</td>
+                        <td>Category 4</td>
+                        <td>15</td>
+                        <td>XL</td>
+                        <td>Yellow</td>
+                        <td>$40.00</td>
+                        <td>2023-09-04</td>
+                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
+                        <td>
+                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- New Item Modal -->
+    <div id="new-item-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="header">
+                <h1>Add New Inventory Item</h1>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="category">Category:</label>
-                    <input type="text" id="category" name="category" required>
+            <form id="new-item-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-id">Product ID:</label>
+                        <input type="text" id="product-id" name="product-id" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="quantity">Quantity:</label>
-                    <input type="number" id="quantity" name="quantity" required>
-                </div>
-            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <input type="text" id="category" name="category" required>
+                    </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="size">Size:</label>
-                    <input type="text" id="size" name="size" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="color">Color:</label>
-                    <input type="text" id="color" name="color" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="price">Price:</label>
-                    <input type="text" id="price" name="price" required>
+                    <div class="form-group">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" required>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="date-added">Date Added:</label>
-                    <input type="date" id="date-added" name="date-added" required>
-                </div>
-            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="size">Size:</label>
+                        <input type="text" id="size" name="size" required>
+                    </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="image">Image:</label>
-                    <input type="file" id="image" name="image">
+                    <div class="form-group">
+                        <label for="color">Color:</label>
+                        <input type="text" id="color" name="color" required>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Buttons side-by-side -->
-            <div class="form-row buttons-row">
-                <button type="button" class="cancel-button">Cancel</button>
-                <button type="submit" class="save-item-button">Save Item</button>
-            </div>
-        </form>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="price">Price:</label>
+                        <input type="text" id="price" name="price" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date-added">Date Added:</label>
+                        <input type="date" id="date-added" name="date-added" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="image">Image:</label>
+                        <input type="file" id="image" name="image">
+                    </div>
+                </div>
+
+                <!-- Buttons side-by-side -->
+                <div class="form-row buttons-row">
+                    <button type="button" class="cancel-button">Cancel</button>
+                    <button type="submit" class="save-item-button">Save Item</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
-        // Handle tab switching
-        document.querySelectorAll('.tab').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                button.classList.add('active');
-                document.getElementById(button.getAttribute('data-tab')).classList.add('active');
+        function initializeInventoryManagement() {
+            // Handle tab switching with event delegation
+            document.querySelector('.tabs-container').addEventListener('click', function(event) {
+                if (event.target.classList.contains('tab')) {
+                    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    event.target.classList.add('active');
+                    document.getElementById(event.target.getAttribute('data-tab')).classList.add('active');
+                }
             });
-        });
 
-        // Handle switching to the new item form
-        document.querySelector('.new-item-button').addEventListener('click', function() {
-            document.querySelector('.inventory-container').style.display = 'none';
-            document.getElementById('new-item-container').style.display = 'block';
-        });
+            // Show the modal when the "New Inventory Item" button is clicked
+            const modal = document.getElementById("new-item-modal");
+            const newItemButton = document.querySelector(".new-item-button");
+            const closeButton = document.querySelector(".close-button");
 
-        // Handle going back to the inventory list
-        document.querySelector('.back-button').addEventListener('click', function() {
-            document.querySelector('.inventory-container').style.display = 'block';
-            document.getElementById('new-item-container').style.display = 'none';
-        });
+            newItemButton.addEventListener('click', function() {
+                modal.style.display = "flex"; // Display modal
+            });
 
-        // Handle form submission (placeholder, you can replace with actual logic)
-        document.getElementById('new-item-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission for now
+            // Close the modal when the close button is clicked
+            closeButton.addEventListener('click', function() {
+                modal.style.display = "none"; // Hide modal
+            });
 
-            const productId = document.getElementById('product-id').value;
-            const name = document.getElementById('name').value;
-            const category = document.getElementById('category').value;
-            const quantity = document.getElementById('quantity').value;
-            const size = document.getElementById('size').value;
-            const color = document.getElementById('color').value;
-            const price = document.getElementById('price').value;
-            const dateAdded = document.getElementById('date-added').value;
-            const image = document.getElementById('image').files[0];
+            // Close the modal if the user clicks outside of it
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
 
-            // Placeholder for form handling, e.g., adding the new item to inventory
-            alert(`Product ${name} added!`);
+            // Handle form submission (placeholder, you can replace with actual logic)
+            document.getElementById('new-item-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent form submission for now
 
-            document.getElementById('new-item-form').reset(); // Reset the form
-            document.querySelector('.inventory-container').style.display = 'block';
-            document.getElementById('new-item-container').style.display = 'none';
-        });
+                const productId = document.getElementById('product-id').value;
+                const name = document.getElementById('name').value;
+                const category = document.getElementById('category').value;
+                const quantity = document.getElementById('quantity').value;
+                const size = document.getElementById('size').value;
+                const color = document.getElementById('color').value;
+                const price = document.getElementById('price').value;
+                const dateAdded = document.getElementById('date-added').value;
+                const image = document.getElementById('image').files[0];
+
+                // Placeholder for form handling, e.g., adding the new item to inventory
+                alert(`Product ${name} added!`);
+
+                document.getElementById('new-item-form').reset(); // Reset the form
+                modal.style.display = "none"; // Hide modal
+            });
+        }
+
+        // Call the initialization function when the page loads or when entering the section
+        initializeInventoryManagement();
     </script>
 
 </body>
@@ -440,7 +570,7 @@ body {
 }
 
 .new-item-container .header h1 {
-    font-size: 22px; /* Increased for a more professional look */
+    font-size: 18px; /* Decreased for a smaller, more compact look */
     color: #333;
     font-weight: 600;
     margin-bottom: 20px;
@@ -454,23 +584,23 @@ body {
 }
 
 .form-group label {
-    font-weight: 600; /* Increased weight for a bolder appearance */
+    font-weight: 600;
     color: #333;
-    font-size: 14px;
+    font-size: 12px; /* Decreased label font size */
 }
 
 .form-group input {
-    padding: 10px;
+    padding: 8px; /* Decreased input padding */
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 14px; /* Slightly increased input font size for better readability */
+    font-size: 12px; /* Decreased input font size */
     background-color: #f9f9f9;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Added shadow effect on focus */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-group input:focus {
     border-color: #007bff;
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.2); /* Focus effect */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
     outline: none;
 }
 
@@ -480,14 +610,14 @@ body {
 
 .buttons-row {
     display: flex;
-    justify-content: center; /* Centers the buttons horizontally */
+    justify-content: center;
     gap: 10px;
     margin-top: 20px;
 }
 
 .cancel-button, .save-item-button {
-    padding: 12px 20px; /* Increased padding for larger, more professional buttons */
-    font-size: 14px;
+    padding: 10px 15px; /* Decreased button padding */
+    font-size: 12px; /* Decreased button font size */
     font-weight: 600;
     border-radius: 5px;
     cursor: pointer;
@@ -496,9 +626,9 @@ body {
 
 .cancel-button {
     background-color: transparent;
-    color: #007bff; /* Changed to the main color theme */
+    color: #007bff;
     border: 2px solid #007bff;
-    width: 275px;
+    width: 200px; /* Reduced button width */
 }
 
 .cancel-button:hover {
@@ -508,10 +638,45 @@ body {
 .save-item-button {
     background-color: #007bff;
     color: white;
-    width: 275px;
+    width: 200px; /* Reduced button width */
 }
 
 .save-item-button:hover {
     background-color: #0056b3;
+}
+
+/* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 15px; /* Reduced modal padding */
+    border-radius: 10px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+    width: 40%; /* Reduced modal width */
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 18px; /* Reduced close button size */
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: #ff0000;
 }
 </style>

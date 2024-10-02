@@ -15,6 +15,7 @@ if (!isset($_SESSION['user_email'])) {
     <title>User Management</title>
     <link rel="stylesheet" href="/frontend/public/styles/user_management.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -68,7 +69,6 @@ if (!isset($_SESSION['user_email'])) {
                             <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
                         </td>
                     </tr>
-                    <!-- Additional rows would go here -->
                 </tbody>
             </table>
         </div>
@@ -87,7 +87,6 @@ if (!isset($_SESSION['user_email'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Example rows -->
                     <tr>
                         <td>UID002</td>
                         <td>Jane Smith</td>
@@ -99,7 +98,6 @@ if (!isset($_SESSION['user_email'])) {
                             <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
                         </td>
                     </tr>
-                    <!-- Additional rows would go here -->
                 </tbody>
             </table>
         </div>
@@ -118,7 +116,6 @@ if (!isset($_SESSION['user_email'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Example rows -->
                     <tr>
                         <td>UID005</td>
                         <td>Alice Green</td>
@@ -130,97 +127,112 @@ if (!isset($_SESSION['user_email'])) {
                             <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
                         </td>
                     </tr>
-                    <!-- Additional rows would go here -->
                 </tbody>
             </table>
         </div>
     </div>
 
-    <div id="new-user-container" class="new-user-container" style="display: none;">
-        <div class="header">
-            <h1>Add New User</h1>
-            <button class="back-button">← Back to User Management</button>
+    <!-- New User Modal -->
+    <div id="new-user-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="header">
+                <h1>Add New User</h1>
+            </div>
+
+            <form id="new-user-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first-name">First Name:</label>
+                        <input type="text" id="first-name" name="first-name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="last-name">Last Name:</label>
+                        <input type="text" id="last-name" name="last-name" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Role:</label>
+                        <input type="text" id="role" name="role" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                </div>
+
+                <div class="form-row buttons-row">
+                    <button type="button" class="cancel-button">Cancel</button>
+                    <button type="submit" class="save-user-button">Save User</button>
+                </div>
+            </form>
         </div>
-
-        <form id="new-user-form">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="first-name">First Name:</label>
-                    <input type="text" id="first-name" name="first-name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="last-name">Last Name:</label>
-                    <input type="text" id="last-name" name="last-name" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="role">Role:</label>
-                    <input type="text" id="role" name="role" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-            </div>
-
-            <!-- Buttons side-by-side -->
-            <div class="form-row buttons-row">
-                <button type="button" class="cancel-button">Cancel</button>
-                <button type="submit" class="save-user-button">Save User</button>
-            </div>
-        </form>
     </div>
 
     <script>
-        // Handle tab switching
-        document.querySelectorAll('.tab').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                button.classList.add('active');
-                document.getElementById(button.getAttribute('data-tab')).classList.add('active');
+        function initializeUserManagement() {
+            // Handle tab switching
+            document.querySelector('.tabs-container').addEventListener('click', function(event) {
+                if (event.target.classList.contains('tab')) {
+                    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    event.target.classList.add('active');
+                    document.getElementById(event.target.getAttribute('data-tab')).classList.add('active');
+                }
             });
-        });
 
-        // Handle Add New User form
-        document.querySelector('.new-user-button').addEventListener('click', function() {
-            document.querySelector('.user-management-container').style.display = 'none';
-            document.getElementById('new-user-container').style.display = 'block';
-        });
+            // Show the modal when the "Add New User" button is clicked
+            const modal = document.getElementById("new-user-modal");
+            const newUserButton = document.querySelector(".new-user-button");
+            const closeButton = document.querySelector(".close-button");
 
-        document.querySelector('.back-button').addEventListener('click', function() {
-            document.querySelector('.user-management-container').style.display = 'block';
-            document.getElementById('new-user-container').style.display = 'none';
-        });
+            newUserButton.addEventListener('click', function() {
+                modal.style.display = "flex"; // Display modal
+            });
 
-        // Handle form submission (placeholder, you can replace with actual logic)
-        document.getElementById('new-user-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission for now
+            // Close the modal when the close button is clicked
+            closeButton.addEventListener('click', function() {
+                modal.style.display = "none"; // Hide modal
+            });
 
-            const firstName = document.getElementById('first-name').value;
-            const lastName = document.getElementById('last-name').value;
-            const email = document.getElementById('email').value;
-            const role = document.getElementById('role').value;
-            const password = document.getElementById('password').value;
+            // Close the modal if the user clicks outside of it
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
 
-            // Placeholder for form handling, e.g., adding the new user
-            alert(`User ${firstName} ${lastName} added!`);
+            // Handle form submission (placeholder, you can replace with actual logic)
+            document.getElementById('new-user-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent form submission for now
 
-            document.getElementById('new-user-form').reset(); // Reset the form
-            document.querySelector('.user-management-container').style.display = 'block';
-            document.getElementById('new-user-container').style.display = 'none';
-        });
+                const firstName = document.getElementById('first-name').value;
+                const lastName = document.getElementById('last-name').value;
+                const email = document.getElementById('email').value;
+                const role = document.getElementById('role').value;
+                const password = document.getElementById('password').value;
+
+                // Placeholder for form handling, e.g., adding the new user
+                alert(`User ${firstName} ${lastName} added!`);
+
+                document.getElementById('new-user-form').reset(); // Reset the form
+                modal.style.display = "none"; // Hide modal
+            });
+        }
+
+        // Call the initialization function when the page loads or when entering the section
+        initializeUserManagement();
     </script>
 
 </body>
@@ -240,26 +252,20 @@ body {
     background-color: #f4f7fc;
     margin: 0;
     padding: 0;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .user-management-container {
-    padding: 30px;
+    padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
     background-color: #ffffff;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
     border-radius: 10px;
     height: 95vh;
-}
-
-.new-user-container {
-    padding: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
-    height: 95vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
@@ -270,7 +276,7 @@ body {
 }
 
 .header h1 {
-    font-size: 28px;
+    font-size: 22px;
     color: #333;
     font-weight: 600;
 }
@@ -278,32 +284,16 @@ body {
 .new-user-button {
     background-color: #007bff;
     color: #fff;
-    padding: 10px 20px;
+    padding: 6px 12px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 500;
     transition: background-color 0.3s ease;
 }
 
 .new-user-button:hover {
-    background-color: #0056b3;
-}
-
-.back-button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-}
-
-.back-button:hover {
     background-color: #0056b3;
 }
 
@@ -321,13 +311,13 @@ body {
 }
 
 .tab {
-    padding: 12px 20px;
+    padding: 8px 12px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 10px 10px 0 0;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 12px;
     transition: background-color 0.3s, color 0.3s;
     font-weight: 500;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
@@ -357,12 +347,12 @@ body {
 }
 
 .filter-input {
-    padding: 10px 20px;
+    padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 20px;
-    width: 250px;
+    width: 220px;
     color: #333;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .icon-filter {
@@ -376,12 +366,13 @@ body {
     border-collapse: collapse;
     background-color: #fff;
     border-radius: 10px;
-    overflow: hidden;
+    overflow-y: auto;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    flex-grow: 1;
 }
 
 .user-table th, .user-table td {
-    padding: 20px;
+    padding: 10px;
     text-align: left;
     border-bottom: 1px solid #eee;
 }
@@ -389,13 +380,13 @@ body {
 .user-table th {
     background-color: #f4f7fc;
     color: #555;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
 }
 
 .user-table td {
     color: #555;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .user-table .status {
@@ -422,11 +413,11 @@ body {
 .action-button {
     background-color: #007bff;
     color: #fff;
-    padding: 8px 12px;
+    padding: 6px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     margin-right: 5px;
     transition: background-color 0.3s ease;
@@ -454,6 +445,41 @@ body {
     display: block;
 }
 
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+    width: 40%;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: #ff0000;
+}
+
 .new-user-container form {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -471,14 +497,14 @@ body {
 .form-group label {
     font-weight: 600;
     color: #333;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .form-group input {
-    padding: 10px;
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 12px;
     background-color: #f9f9f9;
     transition: border-color 0.3s ease;
 }
@@ -496,8 +522,8 @@ body {
 }
 
 .cancel-button, .save-user-button {
-    padding: 12px 20px;
-    font-size: 14px;
+    padding: 10px 15px;
+    font-size: 12px;
     font-weight: 600;
     border-radius: 5px;
     cursor: pointer;
@@ -508,7 +534,7 @@ body {
     background-color: transparent;
     color: #007bff;
     border: 2px solid #007bff;
-    width: 275px;
+    width: 200px;
 }
 
 .cancel-button:hover {
@@ -518,7 +544,7 @@ body {
 .save-user-button {
     background-color: #007bff;
     color: white;
-    width: 275px;
+    width: 200px;
 }
 
 .save-user-button:hover {

@@ -75,100 +75,205 @@ if (!isset($_SESSION['user_email'])) {
             </table>
         </div>
 
-        <!-- Additional content for tabs (Physical Store, Shopee, TikTok) -->
+        <!-- Physical Store Content -->
+        <div id="physical-store" class="tab-content">
+            <table class="sales-table">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Sale Date</th>
+                        <th>Quantity</th>
+                        <th>Category</th>
+                        <th>Image</th>
+                        <th>Quantity Sold</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example rows for Physical Store -->
+                    <tr>
+                        <td>PID002</td>
+                        <td>Product B</td>
+                        <td>2024-08-02</td>
+                        <td>5</td>
+                        <td>Category 2</td>
+                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
+                        <td>4</td>
+                    </tr>
+                    <!-- Additional rows would go here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Shopee Content -->
+        <div id="shopee" class="tab-content">
+            <table class="sales-table">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Sale Date</th>
+                        <th>Quantity</th>
+                        <th>Category</th>
+                        <th>Image</th>
+                        <th>Quantity Sold</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example rows for Shopee -->
+                    <tr>
+                        <td>PID003</td>
+                        <td>Product C</td>
+                        <td>2024-08-03</td>
+                        <td>20</td>
+                        <td>Category 3</td>
+                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
+                        <td>15</td>
+                    </tr>
+                    <!-- Additional rows would go here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- TikTok Content -->
+        <div id="tiktok" class="tab-content">
+            <table class="sales-table">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Sale Date</th>
+                        <th>Quantity</th>
+                        <th>Category</th>
+                        <th>Image</th>
+                        <th>Quantity Sold</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example rows for TikTok -->
+                    <tr>
+                        <td>PID004</td>
+                        <td>Product D</td>
+                        <td>2024-08-04</td>
+                        <td>15</td>
+                        <td>Category 4</td>
+                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
+                        <td>12</td>
+                    </tr>
+                    <!-- Additional rows would go here -->
+                </tbody>
+            </table>
+        </div>
 
     </div>
 
-    <div id="new-order-container" class="new-order-container" style="display: none;">
-        <div class="header">
-            <h1>Add New Sales Order</h1>
-            <button class="back-button">← Back to Sales Record</button>
+    <!-- New Sales Order Modal -->
+    <div id="new-order-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="header">
+                <h1>Add New Sales Order</h1>
+            </div>
+
+            <form id="new-order-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="product-id">Product ID:</label>
+                        <input type="text" id="product-id" name="product-id" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Product Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sale-date">Sale Date:</label>
+                        <input type="date" id="sale-date" name="sale-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantity">Quantity Sold:</label>
+                        <input type="number" id="quantity" name="quantity" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <input type="text" id="category" name="category" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image">Product Image:</label>
+                        <input type="file" id="image" name="image">
+                    </div>
+                </div>
+
+                <!-- Buttons side-by-side -->
+                <div class="form-row buttons-row">
+                    <button type="button" class="cancel-button">Cancel</button>
+                    <button type="submit" class="save-order-button">Save Order</button>
+                </div>
+            </form>
         </div>
-
-        <form id="new-order-form">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="product-id">Product ID:</label>
-                    <input type="text" id="product-id" name="product-id" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="name">Product Name:</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="sale-date">Sale Date:</label>
-                    <input type="date" id="sale-date" name="sale-date" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="quantity">Quantity Sold:</label>
-                    <input type="number" id="quantity" name="quantity" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="category">Category:</label>
-                    <input type="text" id="category" name="category" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="image">Product Image:</label>
-                    <input type="file" id="image" name="image">
-                </div>
-            </div>
-
-            <!-- Buttons side-by-side -->
-            <div class="form-row buttons-row">
-                <button type="button" class="cancel-button">Cancel</button>
-                <button type="submit" class="save-order-button">Save Order</button>
-            </div>
-        </form>
     </div>
 
     <script>
-        // Handle tab switching
-        document.querySelectorAll('.tab').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                button.classList.add('active');
-                document.getElementById(button.getAttribute('data-tab')).classList.add('active');
+        function initializeSalesRecord() {
+            // Handle tab switching
+            document.querySelector('.tabs-container').addEventListener('click', function(event) {
+                if (event.target.classList.contains('tab')) {
+                    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    event.target.classList.add('active');
+                    document.getElementById(event.target.getAttribute('data-tab')).classList.add('active');
+                }
             });
-        });
 
-        // Handle New Sales Order form
-        document.querySelector('.new-order-button').addEventListener('click', function() {
-            document.querySelector('.sales-record-container').style.display = 'none';
-            document.getElementById('new-order-container').style.display = 'block';
-        });
+            // Show the modal when the "New Sales Order" button is clicked
+            const modal = document.getElementById("new-order-modal");
+            const newOrderButton = document.querySelector(".new-order-button");
+            const closeButton = document.querySelector(".close-button");
 
-        document.querySelector('.back-button').addEventListener('click', function() {
-            document.querySelector('.sales-record-container').style.display = 'block';
-            document.getElementById('new-order-container').style.display = 'none';
-        });
+            newOrderButton.addEventListener('click', function() {
+                modal.style.display = "flex"; // Display modal
+            });
 
-        // Handle form submission (placeholder, you can replace with actual logic)
-        document.getElementById('new-order-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission for now
+            // Close the modal when the close button is clicked
+            closeButton.addEventListener('click', function() {
+                modal.style.display = "none"; // Hide modal
+            });
 
-            const productId = document.getElementById('product-id').value;
-            const name = document.getElementById('name').value;
-            const saleDate = document.getElementById('sale-date').value;
-            const quantity = document.getElementById('quantity').value;
-            const category = document.getElementById('category').value;
+            // Close the modal if the user clicks outside of it
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
 
-            // Placeholder for form handling, e.g., adding the new sales order
-            alert(`Order for ${name} added!`);
+            // Handle form submission (placeholder, you can replace with actual logic)
+            document.getElementById('new-order-form').addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent form submission for now
 
-            document.getElementById('new-order-form').reset(); // Reset the form
-            document.querySelector('.sales-record-container').style.display = 'block';
-            document.getElementById('new-order-container').style.display = 'none';
-        });
+                const productId = document.getElementById('product-id').value;
+                const name = document.getElementById('name').value;
+                const saleDate = document.getElementById('sale-date').value;
+                const quantity = document.getElementById('quantity').value;
+                const category = document.getElementById('category').value;
+
+                // Placeholder for form handling, e.g., adding the new sales order
+                alert(`Order for ${name} added!`);
+
+                document.getElementById('new-order-form').reset(); // Reset the form
+                modal.style.display = "none"; // Hide modal
+            });
+        }
+
+        // Call the initialization function when the page loads or when entering the section
+        initializeSalesRecord();
     </script>
 
 </body>
@@ -188,11 +293,11 @@ body {
     background-color: #f4f7fc;
     margin: 0;
     padding: 0;
-    height: 95vh;
+    height: 100vh;
 }
 
-.sales-record-container, .new-order-container {
-    padding: 30px;
+.sales-record-container {
+    padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
     background-color: #ffffff;
@@ -208,11 +313,11 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .header h1 {
-    font-size: 28px;
+    font-size: 22px;
     color: #333;
     font-weight: 600;
 }
@@ -220,11 +325,11 @@ body {
 .new-order-button {
     background-color: #007bff;
     color: #fff;
-    padding: 10px 20px;
+    padding: 8px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 500;
     transition: background-color 0.3s ease;
 }
@@ -233,27 +338,11 @@ body {
     background-color: #0056b3;
 }
 
-.back-button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-}
-
-.back-button:hover {
-    background-color: #0056b3;
-}
-
 .filters {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .tabs-container {
@@ -263,13 +352,13 @@ body {
 }
 
 .tab {
-    padding: 12px 20px;
+    padding: 8px 12px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 10px 10px 0 0;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 12px;
     transition: background-color 0.3s, color 0.3s;
     font-weight: 500;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
@@ -299,12 +388,12 @@ body {
 }
 
 .filter-input {
-    padding: 10px 20px;
+    padding: 8px 12px;
     border: 1px solid #ccc;
     border-radius: 20px;
-    width: 250px;
+    width: 200px;
     color: #333;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .icon-filter {
@@ -323,7 +412,7 @@ body {
 }
 
 .sales-table th, .sales-table td {
-    padding: 20px;
+    padding: 12px;
     text-align: left;
     border-bottom: 1px solid #eee;
 }
@@ -331,13 +420,13 @@ body {
 .sales-table th {
     background-color: #f4f7fc;
     color: #555;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
 }
 
 .sales-table td {
     color: #555;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .sales-table tr:last-child td {
@@ -353,6 +442,40 @@ body {
 
 .tab-content.active {
     display: block;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000; /* Ensure it's above everything else */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Background overlay */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 15px; /* Reduced modal padding */
+    border-radius: 10px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+    width: 40%; /* Reduced modal width */
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: #ff0000;
 }
 
 .new-order-container form {
@@ -372,16 +495,16 @@ body {
 .form-group label {
     font-weight: 600;
     color: #333;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .form-group input {
-    padding: 10px;
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 12px;
     background-color: #f9f9f9;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s;
 }
 
 .form-group input:focus {
@@ -397,8 +520,8 @@ body {
 }
 
 .cancel-button, .save-order-button {
-    padding: 12px 20px;
-    font-size: 14px;
+    padding: 10px 15px;
+    font-size: 12px;
     font-weight: 600;
     border-radius: 5px;
     cursor: pointer;
@@ -409,7 +532,7 @@ body {
     background-color: transparent;
     color: #007bff;
     border: 2px solid #007bff;
-    width: 275px;
+    width: 200px;
 }
 
 .cancel-button:hover {
@@ -419,7 +542,7 @@ body {
 .save-order-button {
     background-color: #007bff;
     color: white;
-    width: 275px;
+    width: 200px;
 }
 
 .save-order-button:hover {
