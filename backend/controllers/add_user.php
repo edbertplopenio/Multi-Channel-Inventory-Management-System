@@ -1,37 +1,61 @@
 <?php
-// Include database connection
-include '../config/db_connection.php';
+// add_user.php
+include '../config/db_connection.php'; // Include the database connection
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);  // Hash the password
-    $role = $_POST['role'];
+// Test database connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
-    // Check if email already exists
-    $checkEmailQuery = "SELECT * FROM users WHERE email = ?";
-    $stmt = $conn->prepare($checkEmailQuery);
-    $stmt->bind_param('s', $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    error_log(print_r($_POST, true)); // Log POST data for debugging
 
-    if ($result->num_rows > 0) {
-        echo "Error: Email already exists!";
+    $firstName = trim($_POST['first-name']);
+    $lastName = trim($_POST['last-name']);
+    $email = trim($_POST['email']);
+    $cellphone = trim($_POST['cellphone']);
+    $role = trim($_POST['role']);
+    $password = $_POST['password'];
+    
+    // Check for empty fields
+    if (empty($firstName) || empty($lastName) || empty($email) || empty($cellphone) || empty($role) || empty($password)) {
+        echo json_encode(['status' => 'error', 'message' => 'All fields are required.']);
+        exit();
+    }
+
+    // Check if the email already exists in the database
+    $checkEmail = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $checkEmail->bind_param("s", $email);
+    $checkEmail->execute();
+    $checkEmail->store_result();
+    if ($checkEmail->num_rows > 0) {
+        echo json_encode(['status' => 'error', 'message' => 'Email is already registered.']);
+        exit();
+    }
+    $checkEmail->close();
+
+    // Check password length
+    if (strlen($password) < 6) {
+        echo json_encode(['status' => 'error', 'message' => 'Password must be at least 6 characters long.']);
+        exit();
+    }
+
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT); // Hash the password
+
+    // Prepare and bind
+    $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, cellphone, role, password, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+    $stmt->bind_param("ssssss", $firstName, $lastName, $email, $cellphone, $role, $hashedPassword);
+
+    // Execute the query
+    if ($stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'User added successfully']);
     } else {
-        // Insert new user into the users table
-        $query = "INSERT INTO users (first_name, last_name, email, password, role, created_at) VALUES (?, ?, ?, ?, ?, NOW())";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param('sssss', $first_name, $last_name, $email, $password, $role);
-
-        if ($stmt->execute()) {
-            echo "New user added successfully!";
-        } else {
-            echo "Error: " . $stmt->error;
-        }
+        error_log("SQL Error: " . $stmt->error); // Log SQL error
+        echo json_encode(['status' => 'error', 'message' => 'Error adding user: ' . $stmt->error]);
     }
 
     $stmt->close();
     $conn->close();
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
 }
-?>

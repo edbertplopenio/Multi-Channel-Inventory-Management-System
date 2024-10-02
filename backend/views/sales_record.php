@@ -53,10 +53,10 @@ if (!isset($_SESSION['user_email'])) {
                         <th>Product ID</th>
                         <th>Name</th>
                         <th>Sale Date</th>
-                        <th>Quantity</th>
-                        <th>Category</th>
-                        <th>Image</th>
+                        <th>Stock Level</th>
+                        <th>Cost</th>
                         <th>Quantity Sold</th>
+                        <th>Sales Channel</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,10 +65,10 @@ if (!isset($_SESSION['user_email'])) {
                         <td>PID001</td>
                         <td>Product A</td>
                         <td>2024-08-01</td>
+                        <td>100</td>
+                        <td>$50.00</td>
                         <td>10</td>
-                        <td>Category 1</td>
-                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
-                        <td>8</td>
+                        <td>Shopee</td>
                     </tr>
                     <!-- Additional rows would go here -->
                 </tbody>
@@ -83,9 +83,8 @@ if (!isset($_SESSION['user_email'])) {
                         <th>Product ID</th>
                         <th>Name</th>
                         <th>Sale Date</th>
-                        <th>Quantity</th>
-                        <th>Category</th>
-                        <th>Image</th>
+                        <th>Stock Level</th>
+                        <th>Cost</th>
                         <th>Quantity Sold</th>
                     </tr>
                 </thead>
@@ -95,10 +94,9 @@ if (!isset($_SESSION['user_email'])) {
                         <td>PID002</td>
                         <td>Product B</td>
                         <td>2024-08-02</td>
+                        <td>50</td>
+                        <td>$30.00</td>
                         <td>5</td>
-                        <td>Category 2</td>
-                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
-                        <td>4</td>
                     </tr>
                     <!-- Additional rows would go here -->
                 </tbody>
@@ -113,9 +111,8 @@ if (!isset($_SESSION['user_email'])) {
                         <th>Product ID</th>
                         <th>Name</th>
                         <th>Sale Date</th>
-                        <th>Quantity</th>
-                        <th>Category</th>
-                        <th>Image</th>
+                        <th>Stock Level</th>
+                        <th>Cost</th>
                         <th>Quantity Sold</th>
                     </tr>
                 </thead>
@@ -125,9 +122,8 @@ if (!isset($_SESSION['user_email'])) {
                         <td>PID003</td>
                         <td>Product C</td>
                         <td>2024-08-03</td>
-                        <td>20</td>
-                        <td>Category 3</td>
-                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
+                        <td>200</td>
+                        <td>$40.00</td>
                         <td>15</td>
                     </tr>
                     <!-- Additional rows would go here -->
@@ -143,9 +139,8 @@ if (!isset($_SESSION['user_email'])) {
                         <th>Product ID</th>
                         <th>Name</th>
                         <th>Sale Date</th>
-                        <th>Quantity</th>
-                        <th>Category</th>
-                        <th>Image</th>
+                        <th>Stock Level</th>
+                        <th>Cost</th>
                         <th>Quantity Sold</th>
                     </tr>
                 </thead>
@@ -155,10 +150,9 @@ if (!isset($_SESSION['user_email'])) {
                         <td>PID004</td>
                         <td>Product D</td>
                         <td>2024-08-04</td>
-                        <td>15</td>
-                        <td>Category 4</td>
-                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
-                        <td>12</td>
+                        <td>150</td>
+                        <td>$60.00</td>
+                        <td>8</td>
                     </tr>
                     <!-- Additional rows would go here -->
                 </tbody>
@@ -195,20 +189,27 @@ if (!isset($_SESSION['user_email'])) {
                     </div>
 
                     <div class="form-group">
-                        <label for="quantity">Quantity Sold:</label>
-                        <input type="number" id="quantity" name="quantity" required>
+                        <label for="stock-level">Stock Level:</label>
+                        <input type="number" id="stock-level" name="stock-level" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="category">Category:</label>
-                        <input type="text" id="category" name="category" required>
+                        <label for="cost">Cost:</label>
+                        <input type="number" id="cost" name="cost" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="image">Product Image:</label>
-                        <input type="file" id="image" name="image">
+                        <label for="quantity-sold">Quantity Sold:</label>
+                        <input type="number" id="quantity-sold" name="quantity-sold" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sales-channel">Sales Channel:</label>
+                        <input type="text" id="sales-channel" name="sales-channel" required>
                     </div>
                 </div>
 
@@ -261,8 +262,10 @@ if (!isset($_SESSION['user_email'])) {
                 const productId = document.getElementById('product-id').value;
                 const name = document.getElementById('name').value;
                 const saleDate = document.getElementById('sale-date').value;
-                const quantity = document.getElementById('quantity').value;
-                const category = document.getElementById('category').value;
+                const stockLevel = document.getElementById('stock-level').value;
+                const cost = document.getElementById('cost').value;
+                const quantitySold = document.getElementById('quantity-sold').value;
+                const salesChannel = document.getElementById('sales-channel').value;
 
                 // Placeholder for form handling, e.g., adding the new sales order
                 alert(`Order for ${name} added!`);
@@ -278,6 +281,8 @@ if (!isset($_SESSION['user_email'])) {
 
 </body>
 </html>
+
+
 
 <style>
     @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700');

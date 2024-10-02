@@ -5,6 +5,30 @@ if (!isset($_SESSION['user_email'])) {
     header("Location: ../../frontend/public/login.html");
     exit();
 }
+
+// Fetch users from the database
+include '../config/db_connection.php';
+
+$sql = "SELECT * FROM users";
+$result = $conn->query($sql);
+
+$users = [];
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $users[] = $row;
+    }
+}
+$conn->close();
+
+// Function to filter users by role
+function filterUsersByRole($users, $role) {
+    return array_filter($users, function($user) use ($role) {
+        return $user['role'] === $role;
+    });
+}
+
+$admins = filterUsersByRole($users, 'Admin');
+$inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +69,7 @@ if (!isset($_SESSION['user_email'])) {
 
         <!-- All Users Content -->
         <div id="all-users" class="tab-content active">
-            <table class="user-table">
+            <table class="user-table" id="user-table">
                 <thead>
                     <tr>
                         <th>User ID</th>
@@ -57,18 +81,20 @@ if (!isset($_SESSION['user_email'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Example rows -->
-                    <tr>
-                        <td>UID001</td>
-                        <td>John Doe</td>
-                        <td>john.doe@example.com</td>
-                        <td>Admin</td>
-                        <td><span class="status active">Active</span></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    </tr>
+                    <?php foreach ($users as $user): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($user['id']); ?></td>
+                            <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></td>
+                            <td><?= htmlspecialchars($user['email']); ?></td>
+                            <td><?= htmlspecialchars($user['role']); ?></td>
+                            <td><span class="status <?= $user['status'] === 'active' ? 'active' : 'inactive'; ?>">
+                                <?= htmlspecialchars(ucfirst($user['status'])); ?></span></td>
+                            <td>
+                                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -87,17 +113,20 @@ if (!isset($_SESSION['user_email'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>UID002</td>
-                        <td>Jane Smith</td>
-                        <td>jane.smith@example.com</td>
-                        <td>Admin</td>
-                        <td><span class="status inactive">Inactive</span></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    </tr>
+                    <?php foreach ($admins as $admin): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($admin['id']); ?></td>
+                            <td><?= htmlspecialchars($admin['first_name'] . ' ' . $admin['last_name']); ?></td>
+                            <td><?= htmlspecialchars($admin['email']); ?></td>
+                            <td><?= htmlspecialchars($admin['role']); ?></td>
+                            <td><span class="status <?= $admin['status'] === 'active' ? 'active' : 'inactive'; ?>">
+                                <?= htmlspecialchars(ucfirst($admin['status'])); ?></span></td>
+                            <td>
+                                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -116,17 +145,20 @@ if (!isset($_SESSION['user_email'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>UID005</td>
-                        <td>Alice Green</td>
-                        <td>alice.green@example.com</td>
-                        <td>Inventory Manager</td>
-                        <td><span class="status active">Active</span></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    </tr>
+                    <?php foreach ($inventoryManagers as $inventoryManager): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($inventoryManager['id']); ?></td>
+                            <td><?= htmlspecialchars($inventoryManager['first_name'] . ' ' . $inventoryManager['last_name']); ?></td>
+                            <td><?= htmlspecialchars($inventoryManager['email']); ?></td>
+                            <td><?= htmlspecialchars($inventoryManager['role']); ?></td>
+                            <td><span class="status <?= $inventoryManager['status'] === 'active' ? 'active' : 'inactive'; ?>">
+                                <?= htmlspecialchars(ucfirst($inventoryManager['status'])); ?></span></td>
+                            <td>
+                                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -135,7 +167,6 @@ if (!isset($_SESSION['user_email'])) {
     <!-- New User Modal -->
     <div id="new-user-modal" class="modal">
         <div class="modal-content">
-            <span class="close-button">&times;</span>
             <div class="header">
                 <h1>Add New User</h1>
             </div>
@@ -160,15 +191,28 @@ if (!isset($_SESSION['user_email'])) {
                     </div>
 
                     <div class="form-group">
-                        <label for="role">Role:</label>
-                        <input type="text" id="role" name="role" required>
+                        <label for="cellphone">Cellphone Number:</label>
+                        <input type="text" id="cellphone" name="cellphone" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
+                        <label for="role">Role:</label>
+                        <select id="role" name="role" required>
+                            <option value="Admin">Admin</option>
+                            <option value="Inventory Manager">Inventory Manager</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label for="password">Password:</label>
                         <input type="password" id="password" name="password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password:</label>
+                        <input type="password" id="confirm-password" name="confirm-password" required>
                     </div>
                 </div>
 
@@ -195,39 +239,85 @@ if (!isset($_SESSION['user_email'])) {
             // Show the modal when the "Add New User" button is clicked
             const modal = document.getElementById("new-user-modal");
             const newUserButton = document.querySelector(".new-user-button");
-            const closeButton = document.querySelector(".close-button");
 
             newUserButton.addEventListener('click', function() {
                 modal.style.display = "flex"; // Display modal
+                modal.classList.add('show-modal'); // Add show class for animation
             });
 
-            // Close the modal when the close button is clicked
-            closeButton.addEventListener('click', function() {
-                modal.style.display = "none"; // Hide modal
+            // Close the modal when the "Cancel" button is clicked
+            const cancelButton = document.querySelector(".cancel-button");
+            cancelButton.addEventListener('click', function() {
+                modal.classList.remove('show-modal'); // Remove show class for animation
+                setTimeout(() => modal.style.display = "none", 300); // Delay for smooth transition
             });
 
-            // Close the modal if the user clicks outside of it
+            // Prevent closing the modal when clicking outside of it
             window.addEventListener('click', function(event) {
                 if (event.target === modal) {
-                    modal.style.display = "none";
+                    event.stopPropagation(); // Stop event propagation to avoid closing the modal
                 }
             });
 
-            // Handle form submission (placeholder, you can replace with actual logic)
+            // Handle form submission for adding new user
             document.getElementById('new-user-form').addEventListener('submit', function(event) {
-                event.preventDefault(); // Prevent form submission for now
+                event.preventDefault(); // Prevent default form submission
 
-                const firstName = document.getElementById('first-name').value;
-                const lastName = document.getElementById('last-name').value;
-                const email = document.getElementById('email').value;
-                const role = document.getElementById('role').value;
-                const password = document.getElementById('password').value;
+                const formData = new FormData(this); // Get form data
 
-                // Placeholder for form handling, e.g., adding the new user
-                alert(`User ${firstName} ${lastName} added!`);
+                fetch('../../backend/controllers/add_user.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            // Add the new user to the user table without reloading the page
+                            const newUserRow = `
+                                <tr>
+                                    <td>${data.user.id}</td>
+                                    <td>${data.user.first_name} ${data.user.last_name}</td>
+                                    <td>${data.user.email}</td>
+                                    <td>${data.user.role}</td>
+                                    <td><span class="status ${data.user.status === 'active' ? 'active' : 'inactive'}">
+                                        ${data.user.status.charAt(0).toUpperCase() + data.user.status.slice(1)}
+                                    </span></td>
+                                    <td>
+                                        <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                    </td>
+                                </tr>
+                            `;
+                            document.querySelector("#user-table tbody").insertAdjacentHTML('beforeend', newUserRow);
 
-                document.getElementById('new-user-form').reset(); // Reset the form
-                modal.style.display = "none"; // Hide modal
+                            // Close the modal after clicking "OK" in the Swal alert
+                            modal.classList.remove('show-modal');
+                            setTimeout(() => modal.style.display = "none", 300);
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error); // Log the error to the console
+                    Swal.fire({
+                        title: 'Error!',
+                        text: `An unexpected error occurred: ${error.message}`,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
             });
         }
 
@@ -237,6 +327,7 @@ if (!isset($_SESSION['user_email'])) {
 
 </body>
 </html>
+
 
 <style>
     @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700');
@@ -457,27 +548,33 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal.show-modal {
+    opacity: 1;
 }
 
 .modal-content {
     background-color: #ffffff;
-    padding: 15px;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
     width: 40%;
+    transition: transform 0.3s ease;
+    transform: translateY(-20px);
+    animation: modalFadeIn 0.3s forwards;
 }
 
-.close-button {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close-button:hover {
-    color: #ff0000;
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .new-user-container form {
@@ -513,6 +610,26 @@ body {
     border-color: #007bff;
     outline: none;
 }
+
+.form-group select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+    width: 100%; /* Ensures the dropdown spans the full width of the form */
+}
+
+.form-group select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.form-group select option {
+    padding: 10px;
+}
+
 
 .buttons-row {
     display: flex;
