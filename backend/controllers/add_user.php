@@ -48,7 +48,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Execute the query
     if ($stmt->execute()) {
-        echo json_encode(['status' => 'success', 'message' => 'User added successfully']);
+        // Get the inserted user ID
+        $newUserId = $stmt->insert_id;
+
+        // Return user details
+        echo json_encode([
+            'status' => 'success', 
+            'message' => 'User added successfully',
+            'user' => [
+                'id' => $newUserId,
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'email' => $email,
+                'role' => $role,
+                'status' => 'active' // Assume the new user is active
+            ]
+        ]);
     } else {
         error_log("SQL Error: " . $stmt->error); // Log SQL error
         echo json_encode(['status' => 'error', 'message' => 'Error adding user: ' . $stmt->error]);

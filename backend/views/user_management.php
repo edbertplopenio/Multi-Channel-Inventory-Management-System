@@ -82,7 +82,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                 </thead>
                 <tbody>
                     <?php foreach ($users as $user): ?>
-                        <tr>
+                        <tr data-user-id="<?= htmlspecialchars($user['id']); ?>" data-role="<?= htmlspecialchars($user['role']); ?>">
                             <td><?= htmlspecialchars($user['id']); ?></td>
                             <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></td>
                             <td><?= htmlspecialchars($user['email']); ?></td>
@@ -91,7 +91,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                                 <?= htmlspecialchars(ucfirst($user['status'])); ?></span></td>
                             <td>
                                 <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                <button class="action-button delete" data-user-id="<?= htmlspecialchars($user['id']); ?>"><i class="fas fa-trash"></i> Delete</button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -101,7 +101,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
 
         <!-- Admins Content -->
         <div id="admins" class="tab-content">
-            <table class="user-table">
+            <table class="user-table" id="admin-table">
                 <thead>
                     <tr>
                         <th>User ID</th>
@@ -114,7 +114,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                 </thead>
                 <tbody>
                     <?php foreach ($admins as $admin): ?>
-                        <tr>
+                        <tr data-user-id="<?= htmlspecialchars($admin['id']); ?>" data-role="Admin">
                             <td><?= htmlspecialchars($admin['id']); ?></td>
                             <td><?= htmlspecialchars($admin['first_name'] . ' ' . $admin['last_name']); ?></td>
                             <td><?= htmlspecialchars($admin['email']); ?></td>
@@ -123,7 +123,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                                 <?= htmlspecialchars(ucfirst($admin['status'])); ?></span></td>
                             <td>
                                 <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                <button class="action-button delete" data-user-id="<?= htmlspecialchars($admin['id']); ?>"><i class="fas fa-trash"></i> Delete</button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -133,7 +133,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
 
         <!-- Inventory Manager Content -->
         <div id="inventory-manager" class="tab-content">
-            <table class="user-table">
+            <table class="user-table" id="inventory-manager-table">
                 <thead>
                     <tr>
                         <th>User ID</th>
@@ -146,7 +146,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                 </thead>
                 <tbody>
                     <?php foreach ($inventoryManagers as $inventoryManager): ?>
-                        <tr>
+                        <tr data-user-id="<?= htmlspecialchars($inventoryManager['id']); ?>" data-role="Inventory Manager">
                             <td><?= htmlspecialchars($inventoryManager['id']); ?></td>
                             <td><?= htmlspecialchars($inventoryManager['first_name'] . ' ' . $inventoryManager['last_name']); ?></td>
                             <td><?= htmlspecialchars($inventoryManager['email']); ?></td>
@@ -155,7 +155,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                                 <?= htmlspecialchars(ucfirst($inventoryManager['status'])); ?></span></td>
                             <td>
                                 <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                <button class="action-button delete" data-user-id="<?= htmlspecialchars($inventoryManager['id']); ?>"><i class="fas fa-trash"></i> Delete</button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -224,6 +224,51 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
         </div>
     </div>
 
+    <!-- Edit User Modal -->
+    <div id="edit-user-modal" class="modal">
+        <div class="modal-content">
+            <div class="header">
+                <h1>Edit User</h1>
+            </div>
+
+            <form id="edit-user-form">
+                <input type="hidden" id="edit-user-id" name="id">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-first-name">First Name:</label>
+                        <input type="text" id="edit-first-name" name="first_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-last-name">Last Name:</label>
+                        <input type="text" id="edit-last-name" name="last_name" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-email">Email:</label>
+                        <input type="email" id="edit-email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-role">Role:</label>
+                        <select id="edit-role" name="role" required>
+                            <option value="Admin">Admin</option>
+                            <option value="Inventory Manager">Inventory Manager</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row buttons-row">
+                    <button type="button" class="cancel-button">Cancel</button>
+                    <button type="submit" class="save-user-button">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         function initializeUserManagement() {
             // Handle tab switching
@@ -252,54 +297,144 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                 setTimeout(() => modal.style.display = "none", 300); // Delay for smooth transition
             });
 
-            // Prevent closing the modal when clicking outside of it
-            window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    event.stopPropagation(); // Stop event propagation to avoid closing the modal
-                }
+            // Delete user functionality
+            document.querySelectorAll('.delete').forEach(button => {
+                button.addEventListener('click', function () {
+                    const userId = this.getAttribute('data-user-id');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You won\'t be able to revert this!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // AJAX request to delete the user
+                            fetch('../../backend/controllers/delete_user.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ id: userId }),
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    Swal.fire(
+                                        'Deleted!',
+                                        'User has been deleted.',
+                                        'success'
+                                    );
+                                    // Remove the user row from the table
+                                    document.querySelector(`tr[data-user-id="${userId}"]`).remove();
+                                } else {
+                                    Swal.fire(
+                                        'Error!',
+                                        data.message,
+                                        'error'
+                                    );
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire(
+                                    'Error!',
+                                    'An unexpected error occurred. Please try again.',
+                                    'error'
+                                );
+                            });
+                        }
+                    });
+                });
             });
 
-            // Handle form submission for adding new user
-            document.getElementById('new-user-form').addEventListener('submit', function(event) {
+            // Handle edit button click
+            document.querySelectorAll('.action-button.edit').forEach(button => {
+                button.addEventListener('click', function () {
+                    const userId = this.closest('tr').getAttribute('data-user-id');
+
+                    // Fetch user data from the row
+                    const row = this.closest('tr');
+                    const firstName = row.cells[1].textContent.split(" ")[0];
+                    const lastName = row.cells[1].textContent.split(" ")[1];
+                    const email = row.cells[2].textContent;
+                    const role = row.cells[3].textContent;
+
+                    // Pre-fill the edit form with existing user data
+                    document.getElementById('edit-user-id').value = userId;
+                    document.getElementById('edit-first-name').value = firstName;
+                    document.getElementById('edit-last-name').value = lastName;
+                    document.getElementById('edit-email').value = email;
+                    document.getElementById('edit-role').value = role;
+
+                    // Show the Edit User modal
+                    const modal = document.getElementById("edit-user-modal");
+                    modal.style.display = "flex";
+                    modal.classList.add('show-modal');
+                });
+            });
+
+            // Close Edit User modal when the Cancel button is clicked
+            const cancelButtonEdit = document.querySelector("#edit-user-modal .cancel-button");
+            cancelButtonEdit.addEventListener('click', function() {
+                const modal = document.getElementById("edit-user-modal");
+                modal.classList.remove('show-modal');
+                setTimeout(() => modal.style.display = "none", 300);
+            });
+
+            // Submit the Edit User form
+            document.getElementById('edit-user-form').addEventListener('submit', function(event) {
                 event.preventDefault(); // Prevent default form submission
 
                 const formData = new FormData(this); // Get form data
 
-                fetch('../../backend/controllers/add_user.php', {
+                fetch('../../backend/controllers/edit_user.php', {
                     method: 'POST',
                     body: formData,
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
+                        // Update the user data dynamically in all relevant tables
+                        const userId = document.getElementById('edit-user-id').value;
+                        const firstName = document.getElementById('edit-first-name').value;
+                        const lastName = document.getElementById('edit-last-name').value;
+                        const email = document.getElementById('edit-email').value;
+                        const role = document.getElementById('edit-role').value;
+
+                        // Remove the user from the old role table
+                        const oldRole = document.querySelector(`tr[data-user-id="${userId}"]`).getAttribute('data-role');
+                        if (oldRole !== role) {
+                            removeUserRow(userId, oldRole);
+                        }
+
+                        // Update the user in the All Users table
+                        updateUserRow(userId, firstName, lastName, email, role, "user-table");
+
+                        // Update the user in the specific role table (Admins or Inventory Managers)
+                        if (role === 'Admin') {
+                            updateUserRow(userId, firstName, lastName, email, role, "admin-table");
+                        } else if (role === 'Inventory Manager') {
+                            updateUserRow(userId, firstName, lastName, email, role, "inventory-manager-table");
+                        }
+
+                        // Re-initialize the event listeners for the new rows
+                        initializeEditAndDeleteButtons();
+
                         Swal.fire({
                             title: 'Success!',
-                            text: data.message,
+                            text: 'User details updated successfully.',
                             icon: 'success',
                             confirmButtonText: 'OK'
-                        }).then(() => {
-                            // Add the new user to the user table without reloading the page
-                            const newUserRow = `
-                                <tr>
-                                    <td>${data.user.id}</td>
-                                    <td>${data.user.first_name} ${data.user.last_name}</td>
-                                    <td>${data.user.email}</td>
-                                    <td>${data.user.role}</td>
-                                    <td><span class="status ${data.user.status === 'active' ? 'active' : 'inactive'}">
-                                        ${data.user.status.charAt(0).toUpperCase() + data.user.status.slice(1)}
-                                    </span></td>
-                                    <td>
-                                        <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                                    </td>
-                                </tr>
-                            `;
-                            document.querySelector("#user-table tbody").insertAdjacentHTML('beforeend', newUserRow);
-
-                            // Close the modal after clicking "OK" in the Swal alert
-                            modal.classList.remove('show-modal');
-                            setTimeout(() => modal.style.display = "none", 300);
                         });
+
+                        // Close the modal and reset the form
+                        const modal = document.getElementById("edit-user-modal");
+                        modal.classList.remove('show-modal');
+                        setTimeout(() => modal.style.display = "none", 300);
                     } else {
                         Swal.fire({
                             title: 'Error!',
@@ -310,7 +445,6 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error); // Log the error to the console
                     Swal.fire({
                         title: 'Error!',
                         text: `An unexpected error occurred: ${error.message}`,
@@ -321,12 +455,150 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
             });
         }
 
-        // Call the initialization function when the page loads or when entering the section
+        // Function to reinitialize the Edit and Delete buttons after updating rows
+        function initializeEditAndDeleteButtons() {
+            // Re-initialize the Edit button functionality
+            document.querySelectorAll('.action-button.edit').forEach(button => {
+                button.addEventListener('click', function () {
+                    const userId = this.closest('tr').getAttribute('data-user-id');
+                    const row = this.closest('tr');
+                    const firstName = row.cells[1].textContent.split(" ")[0];
+                    const lastName = row.cells[1].textContent.split(" ")[1];
+                    const email = row.cells[2].textContent;
+                    const role = row.cells[3].textContent;
+
+                    document.getElementById('edit-user-id').value = userId;
+                    document.getElementById('edit-first-name').value = firstName;
+                    document.getElementById('edit-last-name').value = lastName;
+                    document.getElementById('edit-email').value = email;
+                    document.getElementById('edit-role').value = role;
+
+                    const modal = document.getElementById("edit-user-modal");
+                    modal.style.display = "flex";
+                    modal.classList.add('show-modal');
+                });
+            });
+
+            // Re-initialize the Delete button functionality
+            document.querySelectorAll('.action-button.delete').forEach(button => {
+                button.addEventListener('click', function () {
+                    const userId = this.getAttribute('data-user-id');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You won\'t be able to revert this!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch('../../backend/controllers/delete_user.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ id: userId }),
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    Swal.fire(
+                                        'Deleted!',
+                                        'User has been deleted.',
+                                        'success'
+                                    );
+                                    document.querySelector(`tr[data-user-id="${userId}"]`).remove();
+                                } else {
+                                    Swal.fire(
+                                        'Error!',
+                                        data.message,
+                                        'error'
+                                    );
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire(
+                                    'Error!',
+                                    'An unexpected error occurred. Please try again.',
+                                    'error'
+                                );
+                            });
+                        }
+                    });
+                });
+            });
+        }
+
+        // Function to update the user row in a given table by userId
+        function updateUserRow(userId, firstName, lastName, email, role, tableId) {
+            const table = document.getElementById(tableId);
+            const userRow = table.querySelector(`tr[data-user-id="${userId}"]`);
+
+            if (userRow) {
+                userRow.cells[1].textContent = `${firstName} ${lastName}`;
+                userRow.cells[2].textContent = email;
+                userRow.cells[3].textContent = role;
+
+                // Update the role attribute for the row
+                userRow.setAttribute('data-role', role);
+            } else {
+                // If the user row does not exist in the table, add it
+                addUserRow(userId, firstName, lastName, email, role, tableId);
+            }
+        }
+
+        // Function to remove a user row from a specific role tab
+        function removeUserRow(userId, oldRole) {
+            const tableId = oldRole === 'Admin' ? 'admin-table' : 'inventory-manager-table';
+            const table = document.getElementById(tableId);
+            const userRow = table.querySelector(`tr[data-user-id="${userId}"]`);
+            if (userRow) {
+                userRow.remove();
+            }
+        }
+
+        // Function to add a new user row in a given table by userId
+        function addUserRow(userId, firstName, lastName, email, role, tableId) {
+            const table = document.getElementById(tableId).querySelector('tbody');
+            const newRow = document.createElement('tr');
+            newRow.setAttribute('data-user-id', userId);
+            newRow.setAttribute('data-role', role);
+            newRow.innerHTML = `
+                <td>${userId}</td>
+                <td>${firstName} ${lastName}</td>
+                <td>${email}</td>
+                <td>${role}</td>
+                <td><span class="status active">Active</span></td>
+                <td>
+                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="action-button delete" data-user-id="${userId}"><i class="fas fa-trash"></i> Delete</button>
+                </td>
+            `;
+            table.appendChild(newRow);
+
+            // Re-initialize the event listeners for the new row
+            initializeEditAndDeleteButtons();
+        }
+
+        // Initialize the User Management functionality
         initializeUserManagement();
+        initializeEditAndDeleteButtons(); // Initialize edit/delete buttons when the page loads
     </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
 
 
 <style>

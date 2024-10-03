@@ -2,8 +2,11 @@
 // Include database connection
 include '../config/db_connection.php';
 
+// Ensure request method is POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = $_POST['id'];
+    // Get the POST data (JSON)
+    $data = json_decode(file_get_contents("php://input"), true);
+    $id = $data['id'];
 
     // Check if the user exists before attempting to delete
     $checkUserQuery = "SELECT * FROM users WHERE id = ?";
@@ -13,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $result = $stmt->get_result();
 
     if ($result->num_rows === 0) {
-        echo "Error: User not found!";
+        echo json_encode(['status' => 'error', 'message' => 'User not found!']);
     } else {
         // Delete user from users table
         $query = "DELETE FROM users WHERE id = ?";
@@ -21,13 +24,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bind_param('i', $id);
 
         if ($stmt->execute()) {
-            echo "User deleted successfully!";
+            echo json_encode(['status' => 'success', 'message' => 'User deleted successfully!']);
         } else {
-            echo "Error: " . $stmt->error;
+            echo json_encode(['status' => 'error', 'message' => 'Error deleting user: ' . $stmt->error]);
         }
     }
 
     $stmt->close();
     $conn->close();
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
 }
-?>

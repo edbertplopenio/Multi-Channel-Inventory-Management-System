@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        echo "Error: Email already exists for another user!";
+        echo json_encode(['status' => 'error', 'message' => 'Email already exists for another user!']);
     } else {
         // Update user details in the users table
         $query = "UPDATE users SET first_name = ?, last_name = ?, email = ?, role = ?, updated_at = NOW() WHERE id = ?";
@@ -25,13 +25,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bind_param('ssssi', $first_name, $last_name, $email, $role, $id);
 
         if ($stmt->execute()) {
-            echo "User updated successfully!";
+            // Check if any rows were affected
+            if ($stmt->affected_rows > 0) {
+                echo json_encode(['status' => 'success', 'id' => $id, 'first_name' => $first_name, 'last_name' => $last_name, 'email' => $email, 'role' => $role]);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No changes made.']);
+            }
         } else {
-            echo "Error: " . $stmt->error;
+            echo json_encode(['status' => 'error', 'message' => $stmt->error]);
         }
     }
 
     $stmt->close();
     $conn->close();
 }
-?>
