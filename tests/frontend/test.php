@@ -457,102 +457,102 @@ function initializeInventoryManagement() {
 
     // Handle form submission to add a new inventory item
     document.getElementById('new-item-form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent default form submission
+        event.preventDefault(); // Prevent default form submission
 
-    const formData = new FormData();  // Using FormData to send multipart data
+        const formData = new FormData();  // Using FormData to send multipart data
 
-    formData.append('name', document.getElementById('name').value);
-    formData.append('category', document.getElementById('category').value);
-    formData.append('size', document.getElementById('size').value);
-    formData.append('color', document.getElementById('color').value);
-    formData.append('price', document.getElementById('price').value);
-    formData.append('date-added', document.getElementById('date-added').value);
-    formData.append('image', document.getElementById('image').files[0]);  // Handling image upload
+        formData.append('name', document.getElementById('name').value);
+        formData.append('category', document.getElementById('category').value);
+        formData.append('size', document.getElementById('size').value);
+        formData.append('color', document.getElementById('color').value);
+        formData.append('price', document.getElementById('price').value);
+        formData.append('date-added', document.getElementById('date-added').value);
+        formData.append('image', document.getElementById('image').files[0]);  // Handling image upload
 
-    // Get quantities for each channel
-    const channels = [];
-    let totalQuantity = 0;
+        // Get quantities for each channel
+        const channels = [];
+        let totalQuantity = 0;
 
-    const physicalStoreQty = parseInt(document.querySelector('input[name="quantity-physical-store"]').value) || 0;
-    const shopeeQty = parseInt(document.querySelector('input[name="quantity-shopee"]').value) || 0;
-    const tiktokQty = parseInt(document.querySelector('input[name="quantity-tiktok"]').value) || 0;
+        const physicalStoreQty = parseInt(document.querySelector('input[name="quantity-physical-store"]').value) || 0;
+        const shopeeQty = parseInt(document.querySelector('input[name="quantity-shopee"]').value) || 0;
+        const tiktokQty = parseInt(document.querySelector('input[name="quantity-tiktok"]').value) || 0;
 
-    if (physicalStoreQty > 0) {
-        channels.push({ channel: 'Physical Store', quantity: physicalStoreQty });
-        totalQuantity += physicalStoreQty;
-    }
-    if (shopeeQty > 0) {
-        channels.push({ channel: 'Shopee', quantity: shopeeQty });
-        totalQuantity += shopeeQty;
-    }
-    if (tiktokQty > 0) {
-        channels.push({ channel: 'TikTok', quantity: tiktokQty });
-        totalQuantity += tiktokQty;
-    }
+        if (physicalStoreQty > 0) {
+            channels.push({ channel: 'Physical Store', quantity: physicalStoreQty });
+            totalQuantity += physicalStoreQty;
+        }
+        if (shopeeQty > 0) {
+            channels.push({ channel: 'Shopee', quantity: shopeeQty });
+            totalQuantity += shopeeQty;
+        }
+        if (tiktokQty > 0) {
+            channels.push({ channel: 'TikTok', quantity: tiktokQty });
+            totalQuantity += tiktokQty;
+        }
 
-    formData.append('quantity', totalQuantity); // Send total quantity
-    formData.append('channels', JSON.stringify(channels)); // Send channels as JSON string
+        formData.append('quantity', totalQuantity); // Send total quantity
+        formData.append('channels', JSON.stringify(channels)); // Send channels as JSON string
 
-    // Send the form data to the backend using fetch
-    fetch('../../backend/controllers/add_item.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())  // Ensure we parse the response as JSON
-    .then(data => {
-        if (data.success) {
-            // Show success message using SweetAlert
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Product added successfully!',
-                confirmButtonText: 'OK'
-            });
+        // Send the form data to the backend using fetch
+        fetch('../../backend/controllers/add_item.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())  // Ensure we parse the response as JSON
+        .then(data => {
+            if (data.success) {
+                // Show success message using SweetAlert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Product added successfully!',
+                    confirmButtonText: 'OK'
+                });
 
-            // Append the new item to the table dynamically
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>${data.product_id}</td>
-                <td>${document.getElementById('name').value}</td>
-                <td>${document.getElementById('category').value}</td>
-                <td>${totalQuantity}</td>
-                <td>${document.getElementById('size').value}</td>
-                <td>${document.getElementById('color').value}</td>
-                <td>${document.getElementById('price').value}</td>
-                <td>${document.getElementById('date-added').value}</td>
-                <td>${channels.map(c => c.channel).join(', ')}</td>
-                <td><img src="../../frontend/public/images/${data.image_name || 'image-placeholder.png'}" alt="Image" width="50"></td>
-                <td>
-                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                </td>
-            `;
+                // Append the new item to the table dynamically
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td>${data.product_id}</td>
+                    <td>${document.getElementById('name').value}</td>
+                    <td>${document.getElementById('category').value}</td>
+                    <td>${totalQuantity}</td>
+                    <td>${document.getElementById('size').value}</td>
+                    <td>${document.getElementById('color').value}</td>
+                    <td>${document.getElementById('price').value}</td>
+                    <td>${document.getElementById('date-added').value}</td>
+                    <td>${channels.map(c => c.channel).join(', ')}</td>
+                    <td><img src="../../frontend/public/images/${data.image_name || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                    <td>
+                        <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                    </td>
+                `;
 
-            document.querySelector('.inventory-table tbody').appendChild(newRow); // Append the new row to the table
+                document.querySelector('.inventory-table tbody').appendChild(newRow); // Append the new row to the table
 
-        } else {
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error: ' + data.message,
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Error: ' + data.message,
+                text: 'Something went wrong!',
                 confirmButtonText: 'OK'
             });
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Something went wrong!',
-            confirmButtonText: 'OK'
         });
-    });
 
-    // Reset the form and close the modal
-    document.getElementById('new-item-form').reset();
-    modal.style.display = "none"; // Hide modal
-});
+        // Reset the form and close the modal
+        document.getElementById('new-item-form').reset();
+        modal.style.display = "none"; // Hide modal
+    });
 
 
     // Call this function to store the original state of the table when the page loads
@@ -563,6 +563,7 @@ function initializeInventoryManagement() {
 initializeInventoryManagement();
 
 </script>
+
 
 
 </body>
