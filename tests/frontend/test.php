@@ -52,26 +52,9 @@ if (!isset($_SESSION['user_email'])) {
                     <tr>
                         <th>Product ID</th>
                         <th>Name</th>
-                        <th>Category</th>
                         <th>Quantity</th>
-                        <th>
-                            <select id="size-filter">
-                                <option value="">Size</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                            </select>
-                        </th>
-                        <th>
-                            <select id="color-filter">
-                                <option value="">Color</option>
-                                <option value="Red">Red</option>
-                                <option value="Blue">Blue</option>
-                                <option value="Green">Green</option>
-                                <option value="Yellow">Yellow</option>
-                            </select>
-                        </th>
+                        <th>Size</th>
+                        <th>Color</th>
                         <th>Price</th>
                         <th>Date Added</th>
                         <th>Channel</th>
@@ -80,22 +63,6 @@ if (!isset($_SESSION['user_email'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>INV001</td>
-                        <td>Item A</td>
-                        <td>Category 1</td>
-                        <td>50</td>
-                        <td>M</td>
-                        <td>Red</td>
-                        <td>$25.00</td>
-                        <td>2023-09-01</td>
-                        <td>All Channels</td>
-                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -106,26 +73,9 @@ if (!isset($_SESSION['user_email'])) {
                     <tr>
                         <th>Product ID</th>
                         <th>Name</th>
-                        <th>Category</th>
                         <th>Quantity</th>
-                        <th>
-                            <select id="size-filter">
-                                <option value="">Size</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                            </select>
-                        </th>
-                        <th>
-                            <select id="color-filter">
-                                <option value="">Color</option>
-                                <option value="Red">Red</option>
-                                <option value="Blue">Blue</option>
-                                <option value="Green">Green</option>
-                                <option value="Yellow">Yellow</option>
-                            </select>
-                        </th>
+                        <th>Size</th>
+                        <th>Color</th>
                         <th>Price</th>
                         <th>Date Added</th>
                         <th>Image</th>
@@ -133,21 +83,6 @@ if (!isset($_SESSION['user_email'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>INV002</td>
-                        <td>Item B</td>
-                        <td>Category 2</td>
-                        <td>30</td>
-                        <td>L</td>
-                        <td>Blue</td>
-                        <td>$15.00</td>
-                        <td>2023-09-02</td>
-                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -158,26 +93,9 @@ if (!isset($_SESSION['user_email'])) {
                     <tr>
                         <th>Product ID</th>
                         <th>Name</th>
-                        <th>Category</th>
                         <th>Quantity</th>
-                        <th>
-                            <select id="size-filter">
-                                <option value="">Size</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                            </select>
-                        </th>
-                        <th>
-                            <select id="color-filter">
-                                <option value="">Color</option>
-                                <option value="Red">Red</option>
-                                <option value="Blue">Blue</option>
-                                <option value="Green">Green</option>
-                                <option value="Yellow">Yellow</option>
-                            </select>
-                        </th>
+                        <th>Size</th>
+                        <th>Color</th>
                         <th>Price</th>
                         <th>Date Added</th>
                         <th>Image</th>
@@ -185,21 +103,6 @@ if (!isset($_SESSION['user_email'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>INV003</td>
-                        <td>Item C</td>
-                        <td>Category 3</td>
-                        <td>20</td>
-                        <td>S</td>
-                        <td>Green</td>
-                        <td>$30.00</td>
-                        <td>2023-09-03</td>
-                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -210,26 +113,9 @@ if (!isset($_SESSION['user_email'])) {
                     <tr>
                         <th>Product ID</th>
                         <th>Name</th>
-                        <th>Category</th>
                         <th>Quantity</th>
-                        <th>
-                            <select id="size-filter">
-                                <option value="">Size</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                            </select>
-                        </th>
-                        <th>
-                            <select id="color-filter">
-                                <option value="">Color</option>
-                                <option value="Red">Red</option>
-                                <option value="Blue">Blue</option>
-                                <option value="Green">Green</option>
-                                <option value="Yellow">Yellow</option>
-                            </select>
-                        </th>
+                        <th>Size</th>
+                        <th>Color</th>
                         <th>Price</th>
                         <th>Date Added</th>
                         <th>Image</th>
@@ -237,21 +123,6 @@ if (!isset($_SESSION['user_email'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>INV004</td>
-                        <td>Item D</td>
-                        <td>Category 4</td>
-                        <td>15</td>
-                        <td>XL</td>
-                        <td>Yellow</td>
-                        <td>$40.00</td>
-                        <td>2023-09-04</td>
-                        <td><img src="image-placeholder.png" alt="Image" width="50"></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         </div>
@@ -271,11 +142,6 @@ if (!isset($_SESSION['user_email'])) {
                         <label for="name">Name:</label>
                         <input type="text" id="name" name="name" required>
                     </div>
-
-                    <div class="form-group">
-                        <label for="category">Category:</label>
-                        <input type="text" id="category" name="category" required>
-                    </div>
                 </div>
 
                 <div class="form-row">
@@ -291,20 +157,16 @@ if (!isset($_SESSION['user_email'])) {
                     </div>
 
                     <div class="form-group">
-    <label for="color">Color:</label>
-    <select id="color" name="color" required>
-        <option value="" selected>Select Color</option>
-        <option value="Red">Red</option>
-        <option value="Blue">Blue</option>
-        <option value="Green">Green</option>
-        <option value="Yellow">Yellow</option>
-        <option value="custom">Add Custom Color</option> <!-- Add custom option -->
-    </select>
-    
-    <!-- Hidden color picker initially -->
-    <input type="color" id="custom-color-picker" style="display: none; margin-top: 10px;">
-</div>
-
+                        <label for="color">Color:</label>
+                        <select id="color" name="color" required>
+                            <option value="" selected>Select Color</option>
+                            <option value="Red">Red</option>
+                            <option value="Blue">Blue</option>
+                            <option value="Green">Green</option>
+                            <option value="Yellow">Yellow</option>
+                            <option value="custom">Add Custom Color</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -360,68 +222,122 @@ if (!isset($_SESSION['user_email'])) {
         </div>
     </div>
 
-    <script>
-        function initializeInventoryManagement() {
-            // Handle tab switching with event delegation
-            document.querySelector('.tabs-container').addEventListener('click', function(event) {
-                if (event.target.classList.contains('tab')) {
-                    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                    event.target.classList.add('active');
-                    document.getElementById(event.target.getAttribute('data-tab')).classList.add('active');
+<script>
+    function initializeInventoryManagement() {
+    // Handle tab switching with event delegation
+    document.querySelector('.tabs-container').addEventListener('click', function(event) {
+        if (event.target.classList.contains('tab')) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(event.target.getAttribute('data-tab')).classList.add('active');
+        }
+    });
+
+    // Show the modal when the "New Inventory Item" button is clicked
+    const modal = document.getElementById("new-item-modal");
+    const newItemButton = document.querySelector(".new-item-button");
+    const closeButton = document.querySelector(".close-button");
+
+    newItemButton.addEventListener('click', function() {
+        modal.style.display = "flex"; // Display modal
+    });
+
+    // Close the modal when the cancel button is clicked, not when clicking outside
+    closeButton.addEventListener('click', function() {
+        modal.style.display = "none"; // Hide modal
+    });
+
+    // Close the modal if the cancel button is clicked
+    document.querySelector('.cancel-button').addEventListener('click', function() {
+        modal.style.display = "none"; // Hide modal
+    });
+
+    // Prevent modal from closing when clicking outside of the content
+    window.addEventListener('click', function(event) {
+        if (event.target !== modal && !modal.contains(event.target)) {
+            return; // Do nothing when clicking outside
+        }
+    });
+
+    // Handle the custom color addition with validation and duplicate check
+    document.getElementById('color').addEventListener('change', function(event) {
+        if (event.target.value === 'custom') {
+            Swal.fire({
+                title: 'Enter a custom color',
+                input: 'text',
+                inputLabel: 'Custom Color',
+                inputPlaceholder: 'e.g., Purple, #ff0000, rgb(255,0,0)',
+                showCancelButton: true,
+                allowOutsideClick: false, // Disable closing by clicking outside
+                inputValidator: (value) => {
+                    const isColorValid = validateColor(value);
+                    const colorAlreadyExists = checkIfColorExists(value);
+
+                    if (!isColorValid) {
+                        return 'Invalid color format! Please enter a valid color name, hex code, or rgb value.';
+                    }
+                    if (colorAlreadyExists) {
+                        return 'This color already exists in the dropdown!';
+                    }
                 }
-            });
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const customColor = result.value;
 
+                    // Add the custom color to the dropdown if confirmed
+                    const colorDropdown = document.getElementById('color');
+                    const newOption = document.createElement('option');
+                    newOption.value = customColor;
+                    newOption.text = customColor;
+                    colorDropdown.add(newOption);
 
-            
-
-            // Show the modal when the "New Inventory Item" button is clicked
-            const modal = document.getElementById("new-item-modal");
-            const newItemButton = document.querySelector(".new-item-button");
-            const closeButton = document.querySelector(".close-button");
-
-            newItemButton.addEventListener('click', function() {
-                modal.style.display = "flex"; // Display modal
-            });
-
-            // Close the modal when the close button is clicked
-            closeButton.addEventListener('click', function() {
-                modal.style.display = "none"; // Hide modal
-            });
-
-            // Close the modal if the user clicks outside of it
-            window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    modal.style.display = "none";
+                    // Select the newly added color
+                    colorDropdown.value = customColor;
+                } else {
+                    // Reset dropdown to default if cancelled
+                    document.getElementById('color').value = ""; 
                 }
-            });
-
-            // Handle form submission (placeholder, you can replace with actual logic)
-            document.getElementById('new-item-form').addEventListener('submit', function(event) {
-                event.preventDefault(); // Prevent form submission for now
-
-                const name = document.getElementById('name').value;
-                const category = document.getElementById('category').value;
-                const size = document.getElementById('size').value;
-                const color = document.getElementById('color').value;
-                const price = document.getElementById('price').value;
-                const dateAdded = document.getElementById('date-added').value;
-                const image = document.getElementById('image').files[0];
-
-                // Placeholder for form handling, e.g., adding the new item to inventory
-                alert(`Product ${name} added!`);
-
-                document.getElementById('new-item-form').reset(); // Reset the form
-                modal.style.display = "none"; // Hide modal
             });
         }
+    });
 
-        // Call the initialization function when the page loads
-        initializeInventoryManagement();
-    </script>
+    // Function to check if color already exists in the dropdown
+    function checkIfColorExists(color) {
+        const colorDropdown = document.getElementById('color');
+        for (let i = 0; i < colorDropdown.options.length; i++) {
+            if (colorDropdown.options[i].value.toLowerCase() === color.toLowerCase()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Function to validate color names, hex codes, and rgb values
+    function validateColor(value) {
+        const hexColorRegex = /^#([0-9A-F]{3}){1,2}$/i;
+        const rgbColorRegex = /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/;
+        const namedColors = [
+            "red", "blue", "green", "yellow", "purple", "black", "white", "gray", "orange", "pink", "brown", "cyan", "magenta"
+        ];
+
+        // Check if value is a valid hex code, rgb value, or named color
+        return hexColorRegex.test(value) || rgbColorRegex.test(value) || namedColors.includes(value.toLowerCase());
+    }
+}
+
+// Call the initialization function when the page loads
+initializeInventoryManagement();
+
+</script>
 
 </body>
 </html>
+
+
+
+
+
 
 <style>
     @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700');

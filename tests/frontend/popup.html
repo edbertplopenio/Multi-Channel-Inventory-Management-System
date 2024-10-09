@@ -3,267 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agent Registration</title>
+    <title>Product Inventory Form with Custom Color</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="form-container">
-        <div class="form-box">
-            <div class="form-header">
-                <h2>Agent Registration</h2>
-                <div class="steps">
-                    <div class="step active">Personal Details</div>
-                    <div class="step active">Agency Details</div>
-                    <div class="step">Contact Person Details</div>
-                    <div class="step">Work Order Scope</div>
-                </div>
+    <div class="container">
+        <h2>Add New Cloth Product</h2>
+        <form action="#" method="post">
+            <label for="productName">Product Name:</label>
+            <input type="text" id="productName" name="productName" placeholder="e.g., Cloth T-Shirt" required>
+
+            <label for="productPrice">Price:</label>
+            <input type="number" id="productPrice" name="productPrice" placeholder="Enter price" required>
+
+            <label for="totalStock">Total Stock:</label>
+            <input type="number" id="totalStock" name="totalStock" placeholder="Enter total stock" required>
+
+            <label for="color">Select Colors:</label>
+            <select id="color" name="color" multiple>
+                <option value="red">Red</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="black">Black</option>
+                <option value="custom">Custom Color</option>
+            </select>
+
+            <div id="customColorPicker" style="display: none;">
+                <label for="customColor">Select Custom Color:</label>
+                <input type="color" id="customColor" name="customColor">
             </div>
-            
-            <form class="registration-form">
-                <div class="form-group">
-                    <label for="agencyName">Agency Name*</label>
-                    <input type="text" id="agencyName" placeholder="Enter agency name">
-                </div>
 
-                <div class="form-group">
-                    <label for="agencyType">Agency Type*</label>
-                    <input type="text" id="agencyType" value="Agent" readonly>
-                </div>
+            <label for="size">Select Sizes:</label>
+            <select id="size" name="size" multiple>
+                <option value="S">Small</option>
+                <option value="M">Medium</option>
+                <option value="L">Large</option>
+                <option value="XL">Extra Large</option>
+            </select>
 
-                <div class="form-group">
-                    <label for="password">Password*</label>
-                    <input type="password" id="password" placeholder="Enter password">
-                </div>
+            <label for="sku">SKU:</label>
+            <input type="text" id="sku" name="sku" placeholder="Unique SKU for each variant" required>
 
-                <div class="form-group">
-                    <label for="address">Address*</label>
-                    <input type="text" id="address" placeholder="Enter address">
-                </div>
+            <label for="description">Product Description:</label>
+            <textarea id="description" name="description" rows="4" placeholder="Enter product description"></textarea>
 
-                <div class="form-group">
-                    <label for="city">City*</label>
-                    <input type="text" id="city" placeholder="Enter city">
-                </div>
-
-                <div class="form-group">
-                    <label for="state">State*</label>
-                    <input type="text" id="state" placeholder="Enter state">
-                </div>
-
-                <div class="form-group">
-                    <label for="telephone">Telephone Number*</label>
-                    <input type="text" id="telephone" placeholder="Enter telephone number">
-                </div>
-
-                <div class="form-group">
-                    <label for="tollFree">Toll Free Number*</label>
-                    <input type="text" id="tollFree" placeholder="Enter toll-free number">
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email ID*</label>
-                    <input type="email" id="email" placeholder="Enter email address">
-                </div>
-
-                <div class="form-group">
-                    <label for="website">Website</label>
-                    <input type="url" id="website" placeholder="Enter website (optional)">
-                </div>
-
-                <div class="form-group">
-                    <label for="companyName">Company Name*</label>
-                    <input type="text" id="companyName" placeholder="Enter company name">
-                </div>
-
-                <div class="form-group">
-                    <label>Office Space</label>
-                    <div class="radio-group">
-                        <input type="radio" id="owned" name="officeSpace" value="Owned">
-                        <label for="owned">Owned</label>
-                        <input type="radio" id="rental" name="officeSpace" value="Rental">
-                        <label for="rental">Rental</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="companyLogo">Company Logo*</label>
-                    <input type="file" id="companyLogo">
-                </div>
-
-                <div class="form-footer">
-                    <button type="button" class="cancel-btn">Cancel</button>
-                    <button type="submit" class="continue-btn">Continue</button>
-                </div>
-            </form>
-        </div>
+            <button type="submit">Add Product</button>
+        </form>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
-
-
 <style>
     * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
 }
 
 body {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f5f6fa;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
 }
 
-.form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-
-.form-box {
-    background-color: #ffffff;
-    padding: 40px;
-    width: 600px;
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.form-header {
-    text-align: center;
-    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
-    font-size: 22px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.steps {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.step {
-    width: 23%;
-    padding: 10px;
-    background-color: #e0e0e0;
     text-align: center;
-    border-radius: 4px;
-    font-size: 12px;
-    color: #666;
+    color: #333;
 }
 
-.step.active {
-    background-color: #67c23a;
-    color: white;
-}
-
-.registration-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 20px;
-}
-
-.form-group {
+form {
     display: flex;
     flex-direction: column;
 }
 
 label {
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 5px;
+    margin-top: 10px;
+    font-weight: bold;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="url"],
-input[type="file"] {
+input, select, textarea {
     padding: 10px;
-    font-size: 14px;
+    margin-top: 5px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border-color 0.2s;
+    border-radius: 5px;
+    font-size: 1rem;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus,
-input[type="url"]:focus {
-    border-color: #67c23a;
+input:focus, select:focus, textarea:focus {
     outline: none;
+    border-color: #007BFF;
 }
 
-.radio-group {
-    display: flex;
-    align-items: center;
-}
-
-.radio-group label {
-    margin-left: 10px;
-    margin-right: 20px;
-}
-
-.radio-group input[type="radio"] {
-    margin-right: 5px;
-}
-
-.form-footer {
-    grid-column: span 2;
-    display: flex;
-    justify-content: flex-end;
+button {
     margin-top: 20px;
-}
-
-.cancel-btn,
-.continue-btn {
-    padding: 12px 20px;
-    border-radius: 4px;
-    font-size: 14px;
+    padding: 12px;
     border: none;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.cancel-btn {
-    background-color: #cccccc;
-    color: #333;
-    margin-right: 10px;
-}
-
-.cancel-btn:hover {
-    background-color: #b3b3b3;
-}
-
-.continue-btn {
-    background-color: #67c23a;
+    background-color: #28a745;
     color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
-.continue-btn:hover {
-    background-color: #58b32c;
+button:hover {
+    background-color: #218838;
 }
 
-@media (max-width: 768px) {
-    .form-box {
-        width: 100%;
-        padding: 20px;
-    }
-
-    .registration-form {
-        grid-template-columns: 1fr;
-    }
-
-    .form-footer {
-        justify-content: center;
-    }
+#customColorPicker {
+    margin-top: 10px;
 }
 
 </style>
+
+<script>
+    document.getElementById('color').addEventListener('change', function() {
+    const colorSelect = document.getElementById('color');
+    const customColorPicker = document.getElementById('customColorPicker');
+
+    // Check if the "Custom Color" option is selected
+    if ([...colorSelect.options].some(option => option.selected && option.value === 'custom')) {
+        // Show the custom color picker
+        customColorPicker.style.display = 'block';
+    } else {
+        // Hide the custom color picker
+        customColorPicker.style.display = 'none';
+    }
+});
+
+</script>

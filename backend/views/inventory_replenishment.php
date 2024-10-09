@@ -60,40 +60,28 @@ if (!isset($_SESSION['user_email'])) {
                                 <tr>
                                     <th>Product ID</th>
                                     <th>Product Name</th>
-                                    <th>Stock Level</th>
-                                    <th>Reorder Level</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>PID001</td>
                                     <td>Product A</td>
-                                    <td>50</td>
-                                    <td>20</td>
                                 </tr>
                                 <tr>
                                     <td>PID002</td>
                                     <td>Product B</td>
-                                    <td>30</td>
-                                    <td>15</td>
                                 </tr>
                                 <tr>
                                     <td>PID003</td>
                                     <td>Product C</td>
-                                    <td>70</td>
-                                    <td>25</td>
                                 </tr>
                                 <tr>
                                     <td>PID004</td>
                                     <td>Product D</td>
-                                    <td>15</td>
-                                    <td>10</td>
                                 </tr>
                                 <tr>
                                     <td>PID005</td>
                                     <td>Product E</td>
-                                    <td>5</td>
-                                    <td>3</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -116,16 +104,12 @@ if (!isset($_SESSION['user_email'])) {
                                 <tr>
                                     <th>Product ID</th>
                                     <th>Product Name</th>
-                                    <th>Stock Level</th>
-                                    <th>Reorder Level</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>PID002</td>
                                     <td>Product B</td>
-                                    <td>30</td>
-                                    <td>15</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -148,16 +132,12 @@ if (!isset($_SESSION['user_email'])) {
                                 <tr>
                                     <th>Product ID</th>
                                     <th>Product Name</th>
-                                    <th>Stock Level</th>
-                                    <th>Reorder Level</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>PID003</td>
                                     <td>Product C</td>
-                                    <td>70</td>
-                                    <td>25</td>
                                 </tr>
                             </tbody>
                         </table>
