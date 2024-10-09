@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $size = $_POST['size'];
     $color = $_POST['color'];
     $price = $_POST['price'];
-    $date_added = $_POST['date-added'];
+    $date_added = $_POST['date_added'];  // Changed to underscore
     $channels = json_decode($_POST['channels'], true);  // Channels as a JSON string
     $total_quantity = $_POST['quantity'];
 
@@ -58,6 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'success' => true, 
                 'message' => 'Item added successfully!',
                 'product_id' => $product_id,
+                'name' => $name,    // Returning the form values for table rendering
+                'category' => $category,
+                'size' => $size,
+                'color' => $color,
+                'price' => $price,
+                'date_added' => $date_added,
+                'channels' => $channels, // Return the channels for proper rendering in the frontend
                 'image_name' => $image_name
             ]);
         } else {
@@ -75,4 +82,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
 }
-?>
