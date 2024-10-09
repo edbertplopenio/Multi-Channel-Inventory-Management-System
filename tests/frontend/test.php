@@ -41,8 +41,78 @@ if (!isset($_SESSION['user_email'])) {
                 </button>
             </div>
             <div class="filter-input-container">
-                <input type="text" class="filter-input" placeholder="Filter inventory items">
+                <input type="text" class="filter-input" placeholder="Type to filter inventory items">
                 <i class="fas fa-filter icon-filter"></i>
+
+                <!-- Dropdown with filter options -->
+                <div class="filter-dropdown" id="filter-dropdown">
+                    <div class="filter-section">
+                        <label for="filter-size">Filter by Size:</label>
+                        <select id="filter-size">
+                            <option value="">All Sizes</option>
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                            <option value="3XL">3XL</option>
+                            <option value="4XL">4XL</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-section">
+                        <label for="filter-color">Filter by Color:</label>
+                        <select id="filter-color">
+                            <option value="">All Colors</option>
+                            <option value="White">White</option>
+                            <option value="Beige">Beige</option>
+                            <option value="Dark Choco">Dark Choco</option>
+                            <option value="Fushia Pink">Fushia Pink</option>
+                            <option value="Royal Blue">Royal Blue</option>
+                            <option value="Black">Black</option>
+                            <option value="Tan">Tan</option>
+                            <option value="Raw Umber">Raw Umber</option>
+                            <option value="Gray">Gray</option>
+                            <option value="Pale Mauve">Pale Mauve</option>
+                            <option value="Pantone Simply Taupe">Pantone Simply Taupe</option>
+                            <option value="Salmon Pink">Salmon Pink</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-section">
+                        <label for="filter-category">Filter by Category:</label>
+                        <select id="filter-category">
+                            <option value="">All Categories</option>
+                            <option value="Pants">Pants</option>
+                            <option value="Jackets & Outerwear">Jackets & Outerwear</option>
+                            <option value="Tops">Tops</option>
+                            <option value="Sets">Sets</option>
+                            <option value="Shorts">Shorts</option>
+                            <option value="Dresses">Dresses</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-section">
+                        <label for="filter-date">Filter by Date Added:</label>
+                        <input type="date" id="filter-date">
+                    </div>
+
+                    <div class="filter-section">
+                        <label for="filter-channel">Filter by Channel:</label>
+                        <select id="filter-channel">
+                            <option value="">All Channels</option>
+                            <option value="Physical Store">Physical Store</option>
+                            <option value="Shopee">Shopee</option>
+                            <option value="TikTok">TikTok</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-section">
+                        <button id="apply-filters">Apply Filters</button>
+                        <button id="reset-filters">Reset Filters</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -52,6 +122,7 @@ if (!isset($_SESSION['user_email'])) {
                     <tr>
                         <th>Product ID</th>
                         <th>Name</th>
+                        <th>Category</th>
                         <th>Quantity</th>
                         <th>Size</th>
                         <th>Color</th>
@@ -73,6 +144,7 @@ if (!isset($_SESSION['user_email'])) {
                     <tr>
                         <th>Product ID</th>
                         <th>Name</th>
+                        <th>Category</th>
                         <th>Quantity</th>
                         <th>Size</th>
                         <th>Color</th>
@@ -93,6 +165,7 @@ if (!isset($_SESSION['user_email'])) {
                     <tr>
                         <th>Product ID</th>
                         <th>Name</th>
+                        <th>Category</th>
                         <th>Quantity</th>
                         <th>Size</th>
                         <th>Color</th>
@@ -113,6 +186,7 @@ if (!isset($_SESSION['user_email'])) {
                     <tr>
                         <th>Product ID</th>
                         <th>Name</th>
+                        <th>Category</th>
                         <th>Quantity</th>
                         <th>Size</th>
                         <th>Color</th>
@@ -140,7 +214,22 @@ if (!isset($_SESSION['user_email'])) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="name">Name:</label>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" required minlength="2">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Pants">Pants</option>
+                            <option value="Jackets & Outerwear">Jackets & Outerwear</option>
+                            <option value="Tops">Tops</option>
+                            <option value="Sets">Sets</option>
+                            <option value="Shorts">Shorts</option>
+                            <option value="Dresses">Dresses</option>
+                        </select>
                     </div>
                 </div>
 
@@ -149,10 +238,14 @@ if (!isset($_SESSION['user_email'])) {
                         <label for="size">Size:</label>
                         <select id="size" name="size" required>
                             <option value="">Select Size</option>
+                            <option value="XS">XS</option>
                             <option value="S">S</option>
                             <option value="M">M</option>
                             <option value="L">L</option>
                             <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                            <option value="3XL">3XL</option>
+                            <option value="4XL">4XL</option>
                         </select>
                     </div>
 
@@ -160,10 +253,18 @@ if (!isset($_SESSION['user_email'])) {
                         <label for="color">Color:</label>
                         <select id="color" name="color" required>
                             <option value="" selected>Select Color</option>
-                            <option value="Red">Red</option>
-                            <option value="Blue">Blue</option>
-                            <option value="Green">Green</option>
-                            <option value="Yellow">Yellow</option>
+                            <option value="White">White</option>
+                            <option value="Beige">Beige</option>
+                            <option value="Dark Choco">Dark Choco</option>
+                            <option value="Fushia Pink">Fushia Pink</option>
+                            <option value="Royal Blue">Royal Blue</option>
+                            <option value="Black">Black</option>
+                            <option value="Tan">Tan</option>
+                            <option value="Raw Umber">Raw Umber</option>
+                            <option value="Gray">Gray</option>
+                            <option value="Pale Mauve">Pale Mauve</option>
+                            <option value="Pantone Simply Taupe">Pantone Simply Taupe</option>
+                            <option value="Salmon Pink">Salmon Pink</option>
                             <option value="custom">Add Custom Color</option>
                         </select>
                     </div>
@@ -174,22 +275,22 @@ if (!isset($_SESSION['user_email'])) {
                         <label>Channels:</label>
                         <div class="channel-list">
                             <label>
-                                <input type="checkbox" name="channel[]" value="Physical Store">
+                                <input type="checkbox" name="channel[]" value="Physical Store" class="channel-checkbox">
                                 Physical Store
                             </label>
-                            <input type="number" name="quantity-physical-store" placeholder="Qty" min="0">
+                            <input type="number" name="quantity-physical-store" placeholder="Qty" min="1" class="quantity-input" disabled>
 
                             <label>
-                                <input type="checkbox" name="channel[]" value="Shopee">
+                                <input type="checkbox" name="channel[]" value="Shopee" class="channel-checkbox">
                                 Shopee
                             </label>
-                            <input type="number" name="quantity-shopee" placeholder="Qty" min="0">
+                            <input type="number" name="quantity-shopee" placeholder="Qty" min="1" class="quantity-input" disabled>
 
                             <label>
-                                <input type="checkbox" name="channel[]" value="TikTok">
+                                <input type="checkbox" name="channel[]" value="TikTok" class="channel-checkbox">
                                 TikTok
                             </label>
-                            <input type="number" name="quantity-tiktok" placeholder="Qty" min="0">
+                            <input type="number" name="quantity-tiktok" placeholder="Qty" min="1" class="quantity-input" disabled>
                         </div>
                     </div>
                 </div>
@@ -197,7 +298,7 @@ if (!isset($_SESSION['user_email'])) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="price">Price:</label>
-                        <input type="text" id="price" name="price" required>
+                        <input type="number" id="price" name="price" required min="1">
                     </div>
 
                     <div class="form-group">
@@ -209,7 +310,7 @@ if (!isset($_SESSION['user_email'])) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="image">Image:</label>
-                        <input type="file" id="image" name="image">
+                        <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/jpg">
                     </div>
                 </div>
 
@@ -222,117 +323,154 @@ if (!isset($_SESSION['user_email'])) {
         </div>
     </div>
 
-<script>
+    <script>
     function initializeInventoryManagement() {
-    // Handle tab switching with event delegation
-    document.querySelector('.tabs-container').addEventListener('click', function(event) {
-        if (event.target.classList.contains('tab')) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById(event.target.getAttribute('data-tab')).classList.add('active');
+        let originalData = [];
+
+        // Fetch original data (if using real data, fetch and store)
+        function fetchOriginalData() {
+            const rows = document.querySelectorAll('.inventory-table tbody tr');
+            originalData = Array.from(rows).map(row => row.outerHTML);
         }
-    });
 
-    // Show the modal when the "New Inventory Item" button is clicked
-    const modal = document.getElementById("new-item-modal");
-    const newItemButton = document.querySelector(".new-item-button");
-    const closeButton = document.querySelector(".close-button");
-
-    newItemButton.addEventListener('click', function() {
-        modal.style.display = "flex"; // Display modal
-    });
-
-    // Close the modal when the cancel button is clicked, not when clicking outside
-    closeButton.addEventListener('click', function() {
-        modal.style.display = "none"; // Hide modal
-    });
-
-    // Close the modal if the cancel button is clicked
-    document.querySelector('.cancel-button').addEventListener('click', function() {
-        modal.style.display = "none"; // Hide modal
-    });
-
-    // Prevent modal from closing when clicking outside of the content
-    window.addEventListener('click', function(event) {
-        if (event.target !== modal && !modal.contains(event.target)) {
-            return; // Do nothing when clicking outside
+        // Restore the original data
+        function restoreOriginalData() {
+            const tableBody = document.querySelector('.inventory-table tbody');
+            tableBody.innerHTML = originalData.join('');
         }
-    });
 
-    // Handle the custom color addition with validation and duplicate check
-    document.getElementById('color').addEventListener('change', function(event) {
-        if (event.target.value === 'custom') {
-            Swal.fire({
-                title: 'Enter a custom color',
-                input: 'text',
-                inputLabel: 'Custom Color',
-                inputPlaceholder: 'e.g., Purple, #ff0000, rgb(255,0,0)',
-                showCancelButton: true,
-                allowOutsideClick: false, // Disable closing by clicking outside
-                inputValidator: (value) => {
-                    const isColorValid = validateColor(value);
-                    const colorAlreadyExists = checkIfColorExists(value);
+        // Handle tab switching with event delegation
+        document.querySelector('.tabs-container').addEventListener('click', function(event) {
+            if (event.target.classList.contains('tab')) {
+                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                event.target.classList.add('active');
+                document.getElementById(event.target.getAttribute('data-tab')).classList.add('active');
+            }
+        });
 
-                    if (!isColorValid) {
-                        return 'Invalid color format! Please enter a valid color name, hex code, or rgb value.';
-                    }
-                    if (colorAlreadyExists) {
-                        return 'This color already exists in the dropdown!';
-                    }
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const customColor = result.value;
+        // Show the modal when the "New Inventory Item" button is clicked
+        const modal = document.getElementById("new-item-modal");
+        const newItemButton = document.querySelector(".new-item-button");
+        const closeButton = document.querySelector(".close-button");
 
-                    // Add the custom color to the dropdown if confirmed
-                    const colorDropdown = document.getElementById('color');
-                    const newOption = document.createElement('option');
-                    newOption.value = customColor;
-                    newOption.text = customColor;
-                    colorDropdown.add(newOption);
+        newItemButton.addEventListener('click', function() {
+            modal.style.display = "flex"; // Display modal
+        });
 
-                    // Select the newly added color
-                    colorDropdown.value = customColor;
+        // Close the modal when the cancel button is clicked
+        closeButton.addEventListener('click', function() {
+            modal.style.display = "none"; // Hide modal
+        });
+
+        // Close the modal if the cancel button is clicked
+        document.querySelector('.cancel-button').addEventListener('click', function() {
+            modal.style.display = "none"; // Hide modal
+        });
+
+        // Prevent modal from closing when clicking outside of the content
+        window.addEventListener('click', function(event) {
+            if (event.target !== modal && !modal.contains(event.target)) {
+                return; // Do nothing when clicking outside
+            }
+        });
+
+        // Enable or disable quantity inputs based on channel checkbox
+        document.querySelectorAll('.channel-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const quantityInput = this.closest('.channel-list').querySelector(`input[name="quantity-${this.value.toLowerCase().replace(' ', '-')}"]`);
+                if (this.checked) {
+                    quantityInput.removeAttribute('disabled'); // Enable quantity input
                 } else {
-                    // Reset dropdown to default if cancelled
-                    document.getElementById('color').value = ""; 
+                    quantityInput.setAttribute('disabled', 'disabled'); // Disable quantity input
+                    quantityInput.value = ""; // Clear quantity input
                 }
             });
-        }
-    });
+        });
 
-    // Function to check if color already exists in the dropdown
-    function checkIfColorExists(color) {
-        const colorDropdown = document.getElementById('color');
-        for (let i = 0; i < colorDropdown.options.length; i++) {
-            if (colorDropdown.options[i].value.toLowerCase() === color.toLowerCase()) {
-                return true;
-            }
-        }
-        return false;
+        // Filter dropdown toggle
+        document.querySelector('.icon-filter').addEventListener('click', function() {
+            const filterDropdown = document.getElementById('filter-dropdown');
+            filterDropdown.classList.toggle('active');  // Toggle the dropdown visibility
+        });
+
+        // Apply filters functionality
+        document.getElementById('apply-filters').addEventListener('click', function() {
+            const selectedSize = document.getElementById('filter-size').value;
+            const selectedColor = document.getElementById('filter-color').value;
+            const selectedCategory = document.getElementById('filter-category').value;
+            const selectedDate = document.getElementById('filter-date').value;
+            const selectedChannel = document.getElementById('filter-channel').value;
+
+            const rows = document.querySelectorAll('.inventory-table tbody tr');
+
+            rows.forEach(row => {
+                const size = row.querySelector('td:nth-child(5)').textContent;
+                const color = row.querySelector('td:nth-child(6)').textContent;
+                const category = row.querySelector('td:nth-child(3)').textContent;
+                const dateAdded = row.querySelector('td:nth-child(8)').textContent;
+                const channel = row.querySelector('td:nth-child(9)').textContent;
+
+                let showRow = true;
+
+                if (selectedSize && size !== selectedSize) {
+                    showRow = false;
+                }
+
+                if (selectedColor && color !== selectedColor) {
+                    showRow = false;
+                }
+
+                if (selectedCategory && category !== selectedCategory) {
+                    showRow = false;
+                }
+
+                if (selectedDate && dateAdded !== selectedDate) {
+                    showRow = false;
+                }
+
+                if (selectedChannel && channel !== selectedChannel) {
+                    showRow = false;
+                }
+
+                row.style.display = showRow ? '' : 'none';
+            });
+
+            // Hide the filter dropdown after applying
+            document.getElementById('filter-dropdown').classList.remove('active');
+        });
+
+        // Reset filters functionality
+        document.getElementById('reset-filters').addEventListener('click', function() {
+            document.getElementById('filter-size').value = "";
+            document.getElementById('filter-color').value = "";
+            document.getElementById('filter-category').value = "";
+            document.getElementById('filter-date').value = "";
+            document.getElementById('filter-channel').value = "";
+
+            // Restore the original data
+            restoreOriginalData();
+
+            // Hide the filter dropdown after resetting
+            document.getElementById('filter-dropdown').classList.remove('active');
+        });
+
+        // Call this function to store the original state of the table when the page loads
+        fetchOriginalData();
     }
 
-    // Function to validate color names, hex codes, and rgb values
-    function validateColor(value) {
-        const hexColorRegex = /^#([0-9A-F]{3}){1,2}$/i;
-        const rgbColorRegex = /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/;
-        const namedColors = [
-            "red", "blue", "green", "yellow", "purple", "black", "white", "gray", "orange", "pink", "brown", "cyan", "magenta"
-        ];
-
-        // Check if value is a valid hex code, rgb value, or named color
-        return hexColorRegex.test(value) || rgbColorRegex.test(value) || namedColors.includes(value.toLowerCase());
-    }
-}
-
-// Call the initialization function when the page loads
-initializeInventoryManagement();
-
-</script>
-
+    // Call the initialization function when the page loads
+    initializeInventoryManagement();
+    </script>
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 
@@ -706,4 +844,116 @@ body {
     padding: 5px;
     font-size: 12px;
 }
+
+
+
+
+
+        /* Filter input styling */
+        .filter-input-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 10px; /* Smaller spacing */
+        }
+
+        .filter-input {
+            padding: 6px 10px; /* Reduced padding */
+            font-size: 12px; /* Smaller font size */
+            border: 1px solid #ccc;
+            border-radius: 18px;
+            width: 220px; /* Smaller width */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus {
+            border-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        }
+
+        .icon-filter {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px; /* Smaller icon */
+            color: #888;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .icon-filter:hover {
+            color: #0056b3; /* Blue */
+        }
+
+        /* Dropdown styling for filters */
+        .filter-dropdown {
+            background-color: white;
+            border: 1px solid #ccc;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            padding: 8px; /* Reduced padding */
+            width: 220px; /* Smaller width */
+            border-radius: 4px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        .filter-dropdown.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .filter-section {
+            margin-bottom: 10px; /* Smaller spacing */
+        }
+
+        .filter-section label {
+            font-size: 11px; /* Smaller font size */
+            font-weight: 600;
+            color: #004085;
+            margin-bottom: 5px;
+        }
+
+        .filter-section select,
+        .filter-section input {
+            width: 100%;
+            padding: 5px; /* Smaller padding */
+            font-size: 11px; /* Smaller font size */
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #f8f9fa;
+        }
+
+        .filter-section select:focus,
+        .filter-section input:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+
+        #apply-filters, #reset-filters {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 6px; /* Smaller padding */
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 5px;
+            font-size: 12px; /* Smaller font size */
+            transition: background-color 0.3s ease;
+        }
+
+        #apply-filters:hover, #reset-filters:hover {
+            background-color: #004085;
+        }
+
+
+
+
+
+
 </style>
