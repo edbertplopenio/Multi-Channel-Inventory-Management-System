@@ -324,144 +324,247 @@ if (!isset($_SESSION['user_email'])) {
     </div>
 
     <script>
-    function initializeInventoryManagement() {
-        let originalData = [];
+function initializeInventoryManagement() {
+    let originalData = [];
 
-        // Fetch original data (if using real data, fetch and store)
-        function fetchOriginalData() {
-            const rows = document.querySelectorAll('.inventory-table tbody tr');
-            originalData = Array.from(rows).map(row => row.outerHTML);
-        }
-
-        // Restore the original data
-        function restoreOriginalData() {
-            const tableBody = document.querySelector('.inventory-table tbody');
-            tableBody.innerHTML = originalData.join('');
-        }
-
-        // Handle tab switching with event delegation
-        document.querySelector('.tabs-container').addEventListener('click', function(event) {
-            if (event.target.classList.contains('tab')) {
-                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                event.target.classList.add('active');
-                document.getElementById(event.target.getAttribute('data-tab')).classList.add('active');
-            }
-        });
-
-        // Show the modal when the "New Inventory Item" button is clicked
-        const modal = document.getElementById("new-item-modal");
-        const newItemButton = document.querySelector(".new-item-button");
-        const closeButton = document.querySelector(".close-button");
-
-        newItemButton.addEventListener('click', function() {
-            modal.style.display = "flex"; // Display modal
-        });
-
-        // Close the modal when the cancel button is clicked
-        closeButton.addEventListener('click', function() {
-            modal.style.display = "none"; // Hide modal
-        });
-
-        // Close the modal if the cancel button is clicked
-        document.querySelector('.cancel-button').addEventListener('click', function() {
-            modal.style.display = "none"; // Hide modal
-        });
-
-        // Prevent modal from closing when clicking outside of the content
-        window.addEventListener('click', function(event) {
-            if (event.target !== modal && !modal.contains(event.target)) {
-                return; // Do nothing when clicking outside
-            }
-        });
-
-        // Enable or disable quantity inputs based on channel checkbox
-        document.querySelectorAll('.channel-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const quantityInput = this.closest('.channel-list').querySelector(`input[name="quantity-${this.value.toLowerCase().replace(' ', '-')}"]`);
-                if (this.checked) {
-                    quantityInput.removeAttribute('disabled'); // Enable quantity input
-                } else {
-                    quantityInput.setAttribute('disabled', 'disabled'); // Disable quantity input
-                    quantityInput.value = ""; // Clear quantity input
-                }
-            });
-        });
-
-        // Filter dropdown toggle
-        document.querySelector('.icon-filter').addEventListener('click', function() {
-            const filterDropdown = document.getElementById('filter-dropdown');
-            filterDropdown.classList.toggle('active');  // Toggle the dropdown visibility
-        });
-
-        // Apply filters functionality
-        document.getElementById('apply-filters').addEventListener('click', function() {
-            const selectedSize = document.getElementById('filter-size').value;
-            const selectedColor = document.getElementById('filter-color').value;
-            const selectedCategory = document.getElementById('filter-category').value;
-            const selectedDate = document.getElementById('filter-date').value;
-            const selectedChannel = document.getElementById('filter-channel').value;
-
-            const rows = document.querySelectorAll('.inventory-table tbody tr');
-
-            rows.forEach(row => {
-                const size = row.querySelector('td:nth-child(5)').textContent;
-                const color = row.querySelector('td:nth-child(6)').textContent;
-                const category = row.querySelector('td:nth-child(3)').textContent;
-                const dateAdded = row.querySelector('td:nth-child(8)').textContent;
-                const channel = row.querySelector('td:nth-child(9)').textContent;
-
-                let showRow = true;
-
-                if (selectedSize && size !== selectedSize) {
-                    showRow = false;
-                }
-
-                if (selectedColor && color !== selectedColor) {
-                    showRow = false;
-                }
-
-                if (selectedCategory && category !== selectedCategory) {
-                    showRow = false;
-                }
-
-                if (selectedDate && dateAdded !== selectedDate) {
-                    showRow = false;
-                }
-
-                if (selectedChannel && channel !== selectedChannel) {
-                    showRow = false;
-                }
-
-                row.style.display = showRow ? '' : 'none';
-            });
-
-            // Hide the filter dropdown after applying
-            document.getElementById('filter-dropdown').classList.remove('active');
-        });
-
-        // Reset filters functionality
-        document.getElementById('reset-filters').addEventListener('click', function() {
-            document.getElementById('filter-size').value = "";
-            document.getElementById('filter-color').value = "";
-            document.getElementById('filter-category').value = "";
-            document.getElementById('filter-date').value = "";
-            document.getElementById('filter-channel').value = "";
-
-            // Restore the original data
-            restoreOriginalData();
-
-            // Hide the filter dropdown after resetting
-            document.getElementById('filter-dropdown').classList.remove('active');
-        });
-
-        // Call this function to store the original state of the table when the page loads
-        fetchOriginalData();
+    // Fetch original data (if using real data, fetch and store)
+    function fetchOriginalData() {
+        const rows = document.querySelectorAll('.inventory-table tbody tr');
+        originalData = Array.from(rows).map(row => row.outerHTML);
     }
 
-    // Call the initialization function when the page loads
-    initializeInventoryManagement();
-    </script>
+    // Restore the original data
+    function restoreOriginalData() {
+        const tableBody = document.querySelector('.inventory-table tbody');
+        tableBody.innerHTML = originalData.join('');
+    }
+
+    // Handle tab switching with event delegation
+    document.querySelector('.tabs-container').addEventListener('click', function(event) {
+        if (event.target.classList.contains('tab')) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(event.target.getAttribute('data-tab')).classList.add('active');
+        }
+    });
+
+    // Show the modal when the "New Inventory Item" button is clicked
+    const modal = document.getElementById("new-item-modal");
+    const newItemButton = document.querySelector(".new-item-button");
+    const closeButton = document.querySelector(".close-button");
+
+    newItemButton.addEventListener('click', function() {
+        modal.style.display = "flex"; // Display modal
+    });
+
+    // Close the modal when the cancel button is clicked
+    closeButton.addEventListener('click', function() {
+        modal.style.display = "none"; // Hide modal
+    });
+
+    // Close the modal if the cancel button is clicked
+    document.querySelector('.cancel-button').addEventListener('click', function() {
+        modal.style.display = "none"; // Hide modal
+    });
+
+    // Prevent modal from closing when clicking outside of the content
+    window.addEventListener('click', function(event) {
+        if (event.target !== modal && !modal.contains(event.target)) {
+            return; // Do nothing when clicking outside
+        }
+    });
+
+    // Enable or disable quantity inputs based on channel checkbox
+    document.querySelectorAll('.channel-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const quantityInput = this.closest('.channel-list').querySelector(`input[name="quantity-${this.value.toLowerCase().replace(' ', '-')}"]`);
+            if (this.checked) {
+                quantityInput.removeAttribute('disabled'); // Enable quantity input
+            } else {
+                quantityInput.setAttribute('disabled', 'disabled'); // Disable quantity input
+                quantityInput.value = ""; // Clear quantity input
+            }
+        });
+    });
+
+    // Filter dropdown toggle
+    document.querySelector('.icon-filter').addEventListener('click', function() {
+        const filterDropdown = document.getElementById('filter-dropdown');
+        filterDropdown.classList.toggle('active');  // Toggle the dropdown visibility
+    });
+
+    // Apply filters functionality
+    document.getElementById('apply-filters').addEventListener('click', function() {
+        const selectedSize = document.getElementById('filter-size').value;
+        const selectedColor = document.getElementById('filter-color').value;
+        const selectedCategory = document.getElementById('filter-category').value;
+        const selectedDate = document.getElementById('filter-date').value;
+        const selectedChannel = document.getElementById('filter-channel').value;
+
+        const rows = document.querySelectorAll('.inventory-table tbody tr');
+
+        rows.forEach(row => {
+            const size = row.querySelector('td:nth-child(5)').textContent;
+            const color = row.querySelector('td:nth-child(6)').textContent;
+            const category = row.querySelector('td:nth-child(3)').textContent;
+            const dateAdded = row.querySelector('td:nth-child(8)').textContent;
+            const channel = row.querySelector('td:nth-child(9)').textContent;
+
+            let showRow = true;
+
+            if (selectedSize && size !== selectedSize) {
+                showRow = false;
+            }
+
+            if (selectedColor && color !== selectedColor) {
+                showRow = false;
+            }
+
+            if (selectedCategory && category !== selectedCategory) {
+                showRow = false;
+            }
+
+            if (selectedDate && dateAdded !== selectedDate) {
+                showRow = false;
+            }
+
+            if (selectedChannel && channel !== selectedChannel) {
+                showRow = false;
+            }
+
+            row.style.display = showRow ? '' : 'none';
+        });
+
+        // Hide the filter dropdown after applying
+        document.getElementById('filter-dropdown').classList.remove('active');
+    });
+
+    // Reset filters functionality
+    document.getElementById('reset-filters').addEventListener('click', function() {
+        document.getElementById('filter-size').value = "";
+        document.getElementById('filter-color').value = "";
+        document.getElementById('filter-category').value = "";
+        document.getElementById('filter-date').value = "";
+        document.getElementById('filter-channel').value = "";
+
+        // Restore the original data
+        restoreOriginalData();
+
+        // Hide the filter dropdown after resetting
+        document.getElementById('filter-dropdown').classList.remove('active');
+    });
+
+    // Handle form submission to add a new inventory item
+    document.getElementById('new-item-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const formData = new FormData();  // Using FormData to send multipart data
+
+    formData.append('name', document.getElementById('name').value);
+    formData.append('category', document.getElementById('category').value);
+    formData.append('size', document.getElementById('size').value);
+    formData.append('color', document.getElementById('color').value);
+    formData.append('price', document.getElementById('price').value);
+    formData.append('date-added', document.getElementById('date-added').value);
+    formData.append('image', document.getElementById('image').files[0]);  // Handling image upload
+
+    // Get quantities for each channel
+    const channels = [];
+    let totalQuantity = 0;
+
+    const physicalStoreQty = parseInt(document.querySelector('input[name="quantity-physical-store"]').value) || 0;
+    const shopeeQty = parseInt(document.querySelector('input[name="quantity-shopee"]').value) || 0;
+    const tiktokQty = parseInt(document.querySelector('input[name="quantity-tiktok"]').value) || 0;
+
+    if (physicalStoreQty > 0) {
+        channels.push({ channel: 'Physical Store', quantity: physicalStoreQty });
+        totalQuantity += physicalStoreQty;
+    }
+    if (shopeeQty > 0) {
+        channels.push({ channel: 'Shopee', quantity: shopeeQty });
+        totalQuantity += shopeeQty;
+    }
+    if (tiktokQty > 0) {
+        channels.push({ channel: 'TikTok', quantity: tiktokQty });
+        totalQuantity += tiktokQty;
+    }
+
+    formData.append('quantity', totalQuantity); // Send total quantity
+    formData.append('channels', JSON.stringify(channels)); // Send channels as JSON string
+
+    // Send the form data to the backend using fetch
+    fetch('../../backend/controllers/add_item.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())  // Ensure we parse the response as JSON
+    .then(data => {
+        if (data.success) {
+            // Show success message using SweetAlert
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Product added successfully!',
+                confirmButtonText: 'OK'
+            });
+
+            // Append the new item to the table dynamically
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${data.product_id}</td>
+                <td>${document.getElementById('name').value}</td>
+                <td>${document.getElementById('category').value}</td>
+                <td>${totalQuantity}</td>
+                <td>${document.getElementById('size').value}</td>
+                <td>${document.getElementById('color').value}</td>
+                <td>${document.getElementById('price').value}</td>
+                <td>${document.getElementById('date-added').value}</td>
+                <td>${channels.map(c => c.channel).join(', ')}</td>
+                <td><img src="../../frontend/public/images/${data.image_name || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                <td>
+                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                </td>
+            `;
+
+            document.querySelector('.inventory-table tbody').appendChild(newRow); // Append the new row to the table
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error: ' + data.message,
+                confirmButtonText: 'OK'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Something went wrong!',
+            confirmButtonText: 'OK'
+        });
+    });
+
+    // Reset the form and close the modal
+    document.getElementById('new-item-form').reset();
+    modal.style.display = "none"; // Hide modal
+});
+
+
+    // Call this function to store the original state of the table when the page loads
+    fetchOriginalData();
+}
+
+// Call the initialization function when the page loads
+initializeInventoryManagement();
+
+</script>
+
+
 </body>
 </html>
 
