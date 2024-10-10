@@ -736,6 +736,12 @@ function initializeInventoryManagement() {
     function submitForm(existingProductId) {
         const formData = new FormData(document.getElementById('new-item-form'));
 
+        // Gather the selected channels from checkboxes
+        const selectedChannels = Array.from(document.querySelectorAll('.channel-checkbox:checked')).map(checkbox => checkbox.value);
+
+        // Add the channels as a JSON string to the form data
+        formData.append('channels', JSON.stringify(selectedChannels));
+
         if (existingProductId) {
             formData.append('existing_product_id', existingProductId);  // Add the existing product ID if available
         }
@@ -787,6 +793,7 @@ function initializeInventoryManagement() {
 // Call the initialization function when the page loads
 initializeInventoryManagement();
 </script>
+
 
 
 

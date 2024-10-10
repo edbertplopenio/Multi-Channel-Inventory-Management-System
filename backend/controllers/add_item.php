@@ -24,7 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $channels = json_decode($_POST['channels'], true);
+    // Decode the channels JSON from the request
+    $channels = isset($_POST['channels']) ? json_decode($_POST['channels'], true) : [];
     $quantity_physical_store = isset($_POST['quantity-physical-store']) ? (int)$_POST['quantity-physical-store'] : 0;
     $quantity_shopee = isset($_POST['quantity-shopee']) ? (int)$_POST['quantity-shopee'] : 0;
     $quantity_tiktok = isset($_POST['quantity-tiktok']) ? (int)$_POST['quantity-tiktok'] : 0;
