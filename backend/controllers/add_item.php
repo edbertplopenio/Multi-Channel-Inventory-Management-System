@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $size = $_POST['size'];
     $color = $_POST['color'];
     $price = (float)$_POST['price'];
+    $existing_product_id = $_POST['existing_product_id'] ?? null;
 
     // Check if the date is provided, otherwise handle the error
     if (!empty($_POST['date_added'])) {
@@ -34,44 +35,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $product_id = 'INV' . time();
-
-    // Handle the image upload
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-        $image = $_FILES['image'];
-        $image_name = time() . '_' . basename($image['name']);
-        $upload_dir = '../../frontend/public/images/';
-        $image_path = $upload_dir . $image_name;
-        if (!move_uploaded_file($image['tmp_name'], $image_path)) {
-            echo json_encode(['success' => false, 'message' => 'Failed to upload image.']);
-            exit();
-        }
+    if ($existing_product_id) {
+        // Update the existing product quantities
+        $sql = "UPDATE inventory SET quantity_physical_store = quantity_physical_store + $quantity_physical_store,
+                                     quantity_shopee = quantity_shopee + $quantity_shopee,
+                                     quantity_tiktok = quantity_tiktok + $quantity_tiktok,
+                                     quantity = quantity + $total_quantity
+                WHERE product_id = '$existing_product_id'";
     } else {
-        $image_name = null;
-    }
+        // Create a new product entry
+        $product_id = 'INV' . time();
 
-    // SQL Insert Query (without prepared statement)
-    $channels_json = json_encode($channels);
-    $sql = "INSERT INTO inventory (product_id, name, category, size, color, price, date_added, quantity_physical_store, quantity_shopee, quantity_tiktok, quantity, image, channel)
-            VALUES ('$product_id', '$name', '$category', '$size', '$color', $price, '$date_added', $quantity_physical_store, $quantity_shopee, $quantity_tiktok, $total_quantity, '$image_name', '$channels_json')";
+        // Handle the image upload
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+            $image = $_FILES['image'];
+            $image_name = time() . '_' . basename($image['name']);
+            $upload_dir = '../../frontend/public/images/';
+            $image_path = $upload_dir . $image_name;
+            if (!move_uploaded_file($image['tmp_name'], $image_path)) {
+                echo json_encode(['success' => false, 'message' => 'Failed to upload image.']);
+                exit();
+            }
+        } else {
+            $image_name = null;
+        }
+
+        // SQL Insert Query (without prepared statement)
+        $channels_json = json_encode($channels);
+        $sql = "INSERT INTO inventory (product_id, name, category, size, color, price, date_added, quantity_physical_store, quantity_shopee, quantity_tiktok, quantity, image, channel)
+                VALUES ('$product_id', '$name', '$category', '$size', '$color', $price, '$date_added', $quantity_physical_store, $quantity_shopee, $quantity_tiktok, $total_quantity, '$image_name', '$channels_json')";
+    }
 
     // Execute the SQL Query
     if (mysqli_query($conn, $sql)) {
-        echo json_encode([
-            'success' => true, 
-            'message' => 'Item added successfully!',
-            'product_id' => $product_id,
-            'name' => $name,
-            'category' => $category,
-            'size' => $size,
-            'color' => $color,
-            'price' => $price,
-            'date_added' => $date_added,
-            'quantity_physical_store' => $quantity_physical_store,
-            'quantity_shopee' => $quantity_shopee,
-            'quantity_tiktok' => $quantity_tiktok,
-            'image_name' => $image_name
-        ]);
+        echo json_encode(['success' => true, 'message' => 'Item added successfully!']);
     } else {
         echo json_encode(['success' => false, 'message' => 'Failed to add item: ' . mysqli_error($conn)]);
     }
@@ -81,4 +78,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
 }
-?>

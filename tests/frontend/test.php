@@ -680,148 +680,82 @@ function initializeInventoryManagement() {
     // Handle form submission to add a new inventory item
     document.getElementById('new-item-form').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
-        console.log(document.getElementById('date_added').value); // Log the date value
 
-        const formData = new FormData();  // Using FormData to send multipart data
+        const productName = document.getElementById('name').value;
 
-        formData.append('name', document.getElementById('name').value);
-        formData.append('category', document.getElementById('category').value);
-        formData.append('size', document.getElementById('size').value);
-        formData.append('color', document.getElementById('color').value);
-        formData.append('price', document.getElementById('price').value);
-        formData.append('date_added', document.getElementById('date_added').value);
-        formData.append('image', document.getElementById('image').files[0]);  // Handling image upload
+        // Check if the product already exists in the inventory
+        fetch('../../backend/controllers/check_product_exists.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: productName })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.exists) {
+                // If product exists, show a confirmation prompt to the user
+                Swal.fire({
+                    title: 'Product Already Exists',
+                    text: 'Are you adding a variant of this product?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, it\'s a variant',
+                    cancelButtonText: 'No, cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If confirmed, add the product as a variant
+                        submitForm(data.product_id);
+                    } else {
+                        // If not confirmed, show an error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'The product name is already in use.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            } else {
+                // If the product doesn't exist, submit the form as a new product
+                submitForm(null);
+            }
+        })
+        .catch(error => {
+            console.error('Error checking product:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to check if product exists.',
+                confirmButtonText: 'OK'
+            });
+        });
+    });
 
-        // Get quantities for each channel
-        const channels = [];
-        const physicalStoreQty = parseInt(document.querySelector('input[name="quantity-physical-store"]').value) || 0;
-        const shopeeQty = parseInt(document.querySelector('input[name="quantity-shopee"]').value) || 0;
-        const tiktokQty = parseInt(document.querySelector('input[name="quantity-tiktok"]').value) || 0;
+    // Function to submit the form with the product ID if it exists
+    function submitForm(existingProductId) {
+        const formData = new FormData(document.getElementById('new-item-form'));
 
-        // Add selected channels to the channels array
-        if (physicalStoreQty > 0) {
-            channels.push('Physical Store');
+        if (existingProductId) {
+            formData.append('existing_product_id', existingProductId);  // Add the existing product ID if available
         }
-        if (shopeeQty > 0) {
-            channels.push('Shopee');
-        }
-        if (tiktokQty > 0) {
-            channels.push('TikTok');
-        }
 
-        formData.append('quantity-physical-store', physicalStoreQty);  // Physical Store Quantity
-        formData.append('quantity-shopee', shopeeQty);  // Shopee Quantity
-        formData.append('quantity-tiktok', tiktokQty);  // TikTok Quantity
-        formData.append('quantity', physicalStoreQty + shopeeQty + tiktokQty); // Total quantity across all channels
-        formData.append('channels', JSON.stringify(channels)); // Pass the channels as a JSON string
-
-        // Send the form data to the backend using fetch
+        // Continue with the form submission (AJAX call)
         fetch('../../backend/controllers/add_item.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())  // Parse the response as JSON
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Show success message using SweetAlert
+                // Show success message
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
                     text: 'Product added successfully!',
                     confirmButtonText: 'OK'
                 });
-
-                // Determine what to show in the Channels column
-                const channelsText = channels.length === 3 ? 'All Channels' : channels.join(' and ');
-
-                // Create a new row for the "All Inventory" tab
-                const totalQuantity = physicalStoreQty + shopeeQty + tiktokQty;
-                const newRow = `
-                    <tr>
-                        <td>${data.product_id}</td>
-                        <td>${data.name}</td>
-                        <td>${data.category}</td>
-                        <td>${totalQuantity}</td>  <!-- Total quantity -->
-                        <td>${data.size}</td>
-                        <td>${data.color}</td>
-                        <td>${data.price}</td>
-                        <td>${data.date_added}</td>
-                        <td>${channelsText}</td>  <!-- Channel Display -->
-                        <td><img src="../../frontend/public/images/${data.image_name || 'image-placeholder.png'}" alt="Image" width="50"></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    </tr>
-                `;
-
-                // Append the row to the "All Inventory" tab's table
-                document.querySelector('#all-inventory .inventory-table tbody').insertAdjacentHTML('beforeend', newRow);
-
-                // Append the row to the respective channel tab with the correct quantity for each tab
-                if (physicalStoreQty > 0) {
-                    const physicalRow = `
-                        <tr>
-                            <td>${data.product_id}</td>
-                            <td>${data.name}</td>
-                            <td>${data.category}</td>
-                            <td>${physicalStoreQty}</td>
-                            <td>${data.size}</td>
-                            <td>${data.color}</td>
-                            <td>${data.price}</td>
-                            <td>${data.date_added}</td>
-                            <td><img src="../../frontend/public/images/${data.image_name || 'image-placeholder.png'}" alt="Image" width="50"></td>
-                            <td>
-                                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                    document.querySelector('#physical-store .inventory-table tbody').insertAdjacentHTML('beforeend', physicalRow);
-                }
-
-                if (shopeeQty > 0) {
-                    const shopeeRow = `
-                        <tr>
-                            <td>${data.product_id}</td>
-                            <td>${data.name}</td>
-                            <td>${data.category}</td>
-                            <td>${shopeeQty}</td>
-                            <td>${data.size}</td>
-                            <td>${data.color}</td>
-                            <td>${data.price}</td>
-                            <td>${data.date_added}</td>
-                            <td><img src="../../frontend/public/images/${data.image_name || 'image-placeholder.png'}" alt="Image" width="50"></td>
-                            <td>
-                                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                    document.querySelector('#shopee .inventory-table tbody').insertAdjacentHTML('beforeend', shopeeRow);
-                }
-
-                if (tiktokQty > 0) {
-                    const tiktokRow = `
-                        <tr>
-                            <td>${data.product_id}</td>
-                            <td>${data.name}</td>
-                            <td>${data.category}</td>
-                            <td>${tiktokQty}</td>
-                            <td>${data.size}</td>
-                            <td>${data.color}</td>
-                            <td>${data.price}</td>
-                            <td>${data.date_added}</td>
-                            <td><img src="../../frontend/public/images/${data.image_name || 'image-placeholder.png'}" alt="Image" width="50"></td>
-                            <td>
-                                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                    document.querySelector('#tiktok .inventory-table tbody').insertAdjacentHTML('beforeend', tiktokRow);
-                }
-
+                // Refresh or add the item to the table
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -844,7 +778,7 @@ function initializeInventoryManagement() {
         // Reset the form and close the modal
         document.getElementById('new-item-form').reset();
         modal.style.display = "none"; // Hide modal
-    });
+    }
 
     // Call this function to store the original state of the table when the page loads
     fetchOriginalData();
@@ -853,6 +787,7 @@ function initializeInventoryManagement() {
 // Call the initialization function when the page loads
 initializeInventoryManagement();
 </script>
+
 
 
 
