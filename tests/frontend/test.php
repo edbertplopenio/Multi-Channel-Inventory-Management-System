@@ -431,9 +431,10 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
                     </div>
 
                     <div class="form-group">
-                        <label for="date_added">Date Added:</label>
-                        <input type="date" id="date_added" name="date_added" required>
-                    </div>
+    <label for="date_added">Date Added:</label>
+    <input type="date" id="date_added" name="date_added" required>
+</div>
+
                 </div>
 
                 <div class="form-row">
@@ -679,6 +680,7 @@ function initializeInventoryManagement() {
     // Handle form submission to add a new inventory item
     document.getElementById('new-item-form').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
+        console.log(document.getElementById('date_added').value); // Log the date value
 
         const formData = new FormData();  // Using FormData to send multipart data
 
