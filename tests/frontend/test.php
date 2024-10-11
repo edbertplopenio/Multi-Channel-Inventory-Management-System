@@ -476,7 +476,6 @@ function initializeInventoryManagement() {
     // Populate inventory tables
     function populateInventoryTables(items) {
         items.forEach(item => {
-            // All Inventory Tab (Total quantity across all channels)
             const totalQuantity = item.quantity_physical_store + item.quantity_shopee + item.quantity_tiktok;
             const channelsText = item.channels.length === 3 ? 'All Channels' : item.channels.join(' and ');
 
@@ -485,12 +484,12 @@ function initializeInventoryManagement() {
                     <td>${item.product_id}</td>
                     <td>${item.name}</td>
                     <td>${item.category}</td>
-                    <td>${totalQuantity}</td>  <!-- Total quantity -->
+                    <td>${totalQuantity}</td>
                     <td>${item.size}</td>
                     <td>${item.color}</td>
                     <td>${item.price}</td>
                     <td>${item.date_added}</td>
-                    <td>${channelsText}</td>  <!-- Channel Display -->
+                    <td>${channelsText}</td>
                     <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                     <td>
                         <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
@@ -500,14 +499,13 @@ function initializeInventoryManagement() {
             `;
             document.querySelector('#all-inventory .inventory-table tbody').insertAdjacentHTML('beforeend', allInventoryRow);
 
-            // Physical Store Tab
             if (item.quantity_physical_store > 0) {
                 const physicalStoreRow = `
                     <tr data-product-id="${item.product_id}">
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
-                        <td>${item.quantity_physical_store}</td>  <!-- Physical Store quantity -->
+                        <td>${item.quantity_physical_store}</td>
                         <td>${item.size}</td>
                         <td>${item.color}</td>
                         <td>${item.price}</td>
@@ -522,14 +520,13 @@ function initializeInventoryManagement() {
                 document.querySelector('#physical-store .inventory-table tbody').insertAdjacentHTML('beforeend', physicalStoreRow);
             }
 
-            // Shopee Tab
             if (item.quantity_shopee > 0) {
                 const shopeeRow = `
                     <tr data-product-id="${item.product_id}">
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
-                        <td>${item.quantity_shopee}</td>  <!-- Shopee quantity -->
+                        <td>${item.quantity_shopee}</td>
                         <td>${item.size}</td>
                         <td>${item.color}</td>
                         <td>${item.price}</td>
@@ -544,14 +541,13 @@ function initializeInventoryManagement() {
                 document.querySelector('#shopee .inventory-table tbody').insertAdjacentHTML('beforeend', shopeeRow);
             }
 
-            // TikTok Tab
             if (item.quantity_tiktok > 0) {
                 const tiktokRow = `
                     <tr data-product-id="${item.product_id}">
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
-                        <td>${item.quantity_tiktok}</td>  <!-- TikTok quantity -->
+                        <td>${item.quantity_tiktok}</td>
                         <td>${item.size}</td>
                         <td>${item.color}</td>
                         <td>${item.price}</td>
@@ -588,13 +584,11 @@ function initializeInventoryManagement() {
         disableFormFields();  // Initially disable all fields except 'name'
     });
 
-    // Close the modal when the cancel button is clicked
     closeButton.addEventListener('click', function() {
         modal.style.display = "none"; // Hide modal
         document.getElementById('new-item-form').reset();  // Reset form when modal is closed
     });
 
-    // Close the modal if the cancel button is clicked
     document.querySelector('.cancel-button').addEventListener('click', function() {
         modal.style.display = "none"; // Hide modal
         document.getElementById('new-item-form').reset();  // Reset form when modal is closed
@@ -661,7 +655,6 @@ function initializeInventoryManagement() {
             row.style.display = showRow ? '' : 'none';
         });
 
-        // Hide the filter dropdown after applying
         document.getElementById('filter-dropdown').classList.remove('active');
     });
 
@@ -676,7 +669,6 @@ function initializeInventoryManagement() {
         // Restore the original data
         restoreOriginalData();
 
-        // Hide the filter dropdown after resetting
         document.getElementById('filter-dropdown').classList.remove('active');
     });
 
@@ -741,14 +733,12 @@ function initializeInventoryManagement() {
         // Gather the selected channels from checkboxes
         const selectedChannels = Array.from(document.querySelectorAll('.channel-checkbox:checked')).map(checkbox => checkbox.value);
 
-        // Add the channels as a JSON string to the form data
         formData.append('channels', JSON.stringify(selectedChannels));
 
         if (existingProductId) {
             formData.append('existing_product_id', existingProductId);  // Add the existing product ID if available
         }
 
-        // Continue with the form submission (AJAX call)
         fetch('../../backend/controllers/add_item.php', {
             method: 'POST',
             body: formData
@@ -759,7 +749,6 @@ function initializeInventoryManagement() {
                 const existingRow = document.querySelector(`#all-inventory .inventory-table tbody tr[data-product-id="${data.product_id}"]`);
                 
                 if (existingRow) {
-                    // Update existing row if it already exists
                     const updatedRow = `
                         <td>${data.product_id}</td>
                         <td>${data.name}</td>
@@ -810,7 +799,7 @@ function initializeInventoryManagement() {
 
     // Helper function to disable form fields except 'name'
     function disableFormFields() {
-        const fieldsToDisable = ['category', 'size', 'color', 'price'];
+        const fieldsToDisable = ['category', 'size', 'color', 'price', 'date_added', 'image'];
         fieldsToDisable.forEach(field => {
             document.getElementById(field).setAttribute('disabled', 'disabled');
         });
@@ -824,7 +813,6 @@ function initializeInventoryManagement() {
         const sizeOptions = document.querySelectorAll('#size option');
         const colorOptions = document.querySelectorAll('#color option');
 
-        // Disable the size and color options that are already used
         sizeOptions.forEach(option => {
             if (option.value === product.size) {
                 option.setAttribute('disabled', 'disabled');
@@ -837,9 +825,10 @@ function initializeInventoryManagement() {
             }
         });
 
-        // Enable fields once product data is filled
         document.getElementById('category').removeAttribute('disabled');
         document.getElementById('price').removeAttribute('disabled');
+        document.getElementById('date_added').removeAttribute('disabled');
+        document.getElementById('image').removeAttribute('disabled');
     }
 
     // Handle 'name' field input to check if product exists
@@ -858,7 +847,6 @@ function initializeInventoryManagement() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.exists) {
-                        // Show prompt if product already exists
                         Swal.fire({
                             title: 'Product Exists',
                             text: 'Are you adding a variant of this product?',
@@ -874,11 +862,12 @@ function initializeInventoryManagement() {
                             }
                         });
                     } else {
-                        // Enable form fields if product doesn't exist
                         document.getElementById('category').removeAttribute('disabled');
                         document.getElementById('size').removeAttribute('disabled');
                         document.getElementById('color').removeAttribute('disabled');
                         document.getElementById('price').removeAttribute('disabled');
+                        document.getElementById('date_added').removeAttribute('disabled');
+                        document.getElementById('image').removeAttribute('disabled');
                     }
                 })
                 .catch(error => console.error('Error checking product:', error));
@@ -897,6 +886,7 @@ function initializeInventoryManagement() {
 // Call the initialization function when the page loads
 initializeInventoryManagement();
 </script>
+
 
 
 
