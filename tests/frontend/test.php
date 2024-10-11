@@ -481,7 +481,7 @@ function initializeInventoryManagement() {
             const channelsText = item.channels.length === 3 ? 'All Channels' : item.channels.join(' and ');
 
             const allInventoryRow = `
-                <tr>
+                <tr data-product-id="${item.product_id}">
                     <td>${item.product_id}</td>
                     <td>${item.name}</td>
                     <td>${item.category}</td>
@@ -503,7 +503,7 @@ function initializeInventoryManagement() {
             // Physical Store Tab
             if (item.quantity_physical_store > 0) {
                 const physicalStoreRow = `
-                    <tr>
+                    <tr data-product-id="${item.product_id}">
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
@@ -525,7 +525,7 @@ function initializeInventoryManagement() {
             // Shopee Tab
             if (item.quantity_shopee > 0) {
                 const shopeeRow = `
-                    <tr>
+                    <tr data-product-id="${item.product_id}">
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
@@ -547,7 +547,7 @@ function initializeInventoryManagement() {
             // TikTok Tab
             if (item.quantity_tiktok > 0) {
                 const tiktokRow = `
-                    <tr>
+                    <tr data-product-id="${item.product_id}">
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
@@ -585,16 +585,19 @@ function initializeInventoryManagement() {
 
     newItemButton.addEventListener('click', function() {
         modal.style.display = "flex"; // Display modal
+        disableFormFields();  // Initially disable all fields except 'name'
     });
 
     // Close the modal when the cancel button is clicked
     closeButton.addEventListener('click', function() {
         modal.style.display = "none"; // Hide modal
+        document.getElementById('new-item-form').reset();  // Reset form when modal is closed
     });
 
     // Close the modal if the cancel button is clicked
     document.querySelector('.cancel-button').addEventListener('click', function() {
         modal.style.display = "none"; // Hide modal
+        document.getElementById('new-item-form').reset();  // Reset form when modal is closed
     });
 
     // Enable or disable quantity inputs based on channel checkbox
@@ -677,7 +680,7 @@ function initializeInventoryManagement() {
         document.getElementById('filter-dropdown').classList.remove('active');
     });
 
-    // Handle form submission to add a new inventory item
+    // Handle form submission to add or update an inventory item
     document.getElementById('new-item-form').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
 
@@ -704,10 +707,9 @@ function initializeInventoryManagement() {
                     cancelButtonText: 'No, cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // If confirmed, add the product as a variant
-                        submitForm(data.product_id);
+                        populateFormWithExistingProduct(data.product);  // Fill form with existing product details
+                        submitForm(data.product_id); // Pass existing product ID
                     } else {
-                        // If not confirmed, show an error message
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -754,14 +756,35 @@ function initializeInventoryManagement() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Show success message
+                const existingRow = document.querySelector(`#all-inventory .inventory-table tbody tr[data-product-id="${data.product_id}"]`);
+                
+                if (existingRow) {
+                    // Update existing row if it already exists
+                    const updatedRow = `
+                        <td>${data.product_id}</td>
+                        <td>${data.name}</td>
+                        <td>${data.category}</td>
+                        <td>${data.total_quantity}</td>
+                        <td>${data.size}</td>
+                        <td>${data.color}</td>
+                        <td>${data.price}</td>
+                        <td>${data.date_added}</td>
+                        <td>${data.channels.length === 3 ? 'All Channels' : data.channels.join(' and ')}</td>
+                        <td><img src="../../frontend/public/images/${data.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                        <td>
+                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                        </td>
+                    `;
+                    existingRow.innerHTML = updatedRow;
+                }
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
-                    text: 'Product added successfully!',
+                    text: 'Product updated successfully!',
                     confirmButtonText: 'OK'
                 });
-                // Refresh or add the item to the table
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -781,18 +804,102 @@ function initializeInventoryManagement() {
             });
         });
 
-        // Reset the form and close the modal
         document.getElementById('new-item-form').reset();
         modal.style.display = "none"; // Hide modal
     }
 
-    // Call this function to store the original state of the table when the page loads
+    // Helper function to disable form fields except 'name'
+    function disableFormFields() {
+        const fieldsToDisable = ['category', 'size', 'color', 'price'];
+        fieldsToDisable.forEach(field => {
+            document.getElementById(field).setAttribute('disabled', 'disabled');
+        });
+    }
+
+    // Helper function to populate the form with existing product data
+    function populateFormWithExistingProduct(product) {
+        document.getElementById('category').value = product.category;
+        document.getElementById('price').value = product.price;
+
+        const sizeOptions = document.querySelectorAll('#size option');
+        const colorOptions = document.querySelectorAll('#color option');
+
+        // Disable the size and color options that are already used
+        sizeOptions.forEach(option => {
+            if (option.value === product.size) {
+                option.setAttribute('disabled', 'disabled');
+            }
+        });
+
+        colorOptions.forEach(option => {
+            if (option.value === product.color) {
+                option.setAttribute('disabled', 'disabled');
+            }
+        });
+
+        // Enable fields once product data is filled
+        document.getElementById('category').removeAttribute('disabled');
+        document.getElementById('price').removeAttribute('disabled');
+    }
+
+    // Handle 'name' field input to check if product exists
+    function handleProductNameInput() {
+        document.getElementById('name').addEventListener('input', function() {
+            const productName = this.value;
+
+            if (productName.length > 0) {
+                fetch('../../backend/controllers/check_product_exists.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: productName })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        // Show prompt if product already exists
+                        Swal.fire({
+                            title: 'Product Exists',
+                            text: 'Are you adding a variant of this product?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                populateFormWithExistingProduct(data.product);
+                            } else {
+                                document.getElementById('new-item-form').reset();
+                            }
+                        });
+                    } else {
+                        // Enable form fields if product doesn't exist
+                        document.getElementById('category').removeAttribute('disabled');
+                        document.getElementById('size').removeAttribute('disabled');
+                        document.getElementById('color').removeAttribute('disabled');
+                        document.getElementById('price').removeAttribute('disabled');
+                    }
+                })
+                .catch(error => console.error('Error checking product:', error));
+            } else {
+                disableFormFields();  // Disable fields if name is cleared
+            }
+        });
+    }
+
+    // Initialize
     fetchOriginalData();
+    disableFormFields();  // Initially disable fields
+    handleProductNameInput();  // Handle product name input
 }
 
 // Call the initialization function when the page loads
 initializeInventoryManagement();
 </script>
+
+
+
 
 
 

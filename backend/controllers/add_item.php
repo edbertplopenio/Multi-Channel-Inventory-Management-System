@@ -43,9 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                      quantity_tiktok = quantity_tiktok + $quantity_tiktok,
                                      quantity = quantity + $total_quantity
                 WHERE product_id = '$existing_product_id'";
+        $product_id = $existing_product_id; // Use the existing product ID
     } else {
         // Create a new product entry
-        $product_id = 'INV' . time();
+        $product_id = 'INV' . time(); // Create a new product ID only if not an existing product
 
         // Handle the image upload
         if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
@@ -58,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
         } else {
-            $image_name = null;
+            $image_name = 'image-placeholder.png';  // Default image if none is provided
         }
 
         // SQL Insert Query (without prepared statement)
@@ -69,7 +70,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Execute the SQL Query
     if (mysqli_query($conn, $sql)) {
-        echo json_encode(['success' => true, 'message' => 'Item added successfully!']);
+        echo json_encode([
+            'success' => true,
+            'product_id' => $product_id,  // Ensure this is returned correctly
+            'name' => $name, 
+            'category' => $category, 
+            'size' => $size, 
+            'color' => $color, 
+            'price' => $price, 
+            'date_added' => $date_added, 
+            'channels' => $channels, 
+            'quantity_physical_store' => $quantity_physical_store,
+            'quantity_shopee' => $quantity_shopee,
+            'quantity_tiktok' => $quantity_tiktok,
+            'total_quantity' => $total_quantity,
+            'image' => $image_name  // Include image name
+        ]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Failed to add item: ' . mysqli_error($conn)]);
     }
