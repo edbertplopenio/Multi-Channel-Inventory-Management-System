@@ -1,3 +1,6 @@
+
+### `add_item.php`
+```php
 <?php
 session_start();
 require_once '../config/db_connection.php';  // Update the path if necessary

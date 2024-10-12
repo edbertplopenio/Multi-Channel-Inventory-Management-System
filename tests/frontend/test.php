@@ -587,11 +587,13 @@ function initializeInventoryManagement() {
     closeButton.addEventListener('click', function() {
         modal.style.display = "none"; // Hide modal
         document.getElementById('new-item-form').reset();  // Reset form when modal is closed
+        enableAllFields(); // Ensure fields are enabled when starting fresh
     });
 
     document.querySelector('.cancel-button').addEventListener('click', function() {
         modal.style.display = "none"; // Hide modal
         document.getElementById('new-item-form').reset();  // Reset form when modal is closed
+        enableAllFields(); // Ensure fields are enabled when starting fresh
     });
 
     // Enable or disable quantity inputs based on channel checkbox
@@ -699,7 +701,8 @@ function initializeInventoryManagement() {
                     cancelButtonText: 'No, cancel'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        populateFormWithExistingProduct(data.product);  // Fill form with existing product details
+                        populateFormWithExistingProduct(data);  // Fill form with existing product details
+                        disableSpecificOptions(data.existing_sizes, data.existing_colors); // Disable specific sizes and colors
                         submitForm(data.product_id); // Pass existing product ID
                     } else {
                         Swal.fire({
@@ -810,70 +813,92 @@ function initializeInventoryManagement() {
         document.getElementById('category').value = product.category;
         document.getElementById('price').value = product.price;
 
-        const sizeOptions = document.querySelectorAll('#size option');
-        const colorOptions = document.querySelectorAll('#color option');
-
-        sizeOptions.forEach(option => {
-            if (option.value === product.size) {
-                option.setAttribute('disabled', 'disabled');
-            }
-        });
-
-        colorOptions.forEach(option => {
-            if (option.value === product.color) {
-                option.setAttribute('disabled', 'disabled');
-            }
-        });
-
         document.getElementById('category').removeAttribute('disabled');
         document.getElementById('price').removeAttribute('disabled');
         document.getElementById('date_added').removeAttribute('disabled');
         document.getElementById('image').removeAttribute('disabled');
     }
 
-    // Handle 'name' field input to check if product exists
-    function handleProductNameInput() {
-        document.getElementById('name').addEventListener('input', function() {
-            const productName = this.value;
+    // Helper function to disable specific size and color options
+    function disableSpecificOptions(existingSizes, existingColors) {
+        const sizeOptions = document.querySelectorAll('#size option');
+        const colorOptions = document.querySelectorAll('#color option');
 
-            if (productName.length > 0) {
-                fetch('../../backend/controllers/check_product_exists.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ name: productName })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.exists) {
-                        Swal.fire({
-                            title: 'Product Exists',
-                            text: 'Are you adding a variant of this product?',
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                populateFormWithExistingProduct(data.product);
-                            } else {
-                                document.getElementById('new-item-form').reset();
-                            }
-                        });
-                    } else {
-                        document.getElementById('category').removeAttribute('disabled');
-                        document.getElementById('size').removeAttribute('disabled');
-                        document.getElementById('color').removeAttribute('disabled');
-                        document.getElementById('price').removeAttribute('disabled');
-                        document.getElementById('date_added').removeAttribute('disabled');
-                        document.getElementById('image').removeAttribute('disabled');
-                    }
-                })
-                .catch(error => console.error('Error checking product:', error));
+        // Disable size options that are already in the database
+        sizeOptions.forEach(option => {
+            if (existingSizes.includes(option.value)) {
+                option.setAttribute('disabled', 'disabled');
             } else {
-                disableFormFields();  // Disable fields if name is cleared
+                option.removeAttribute('disabled'); // Ensure other sizes are enabled
             }
+        });
+
+        // Disable color options that are already in the database
+        colorOptions.forEach(option => {
+            if (existingColors.includes(option.value)) {
+                option.setAttribute('disabled', 'disabled');
+            } else {
+                option.removeAttribute('disabled'); // Ensure other colors are enabled
+            }
+        });
+    }
+
+    // Function to handle 'Enter' key press for product name input
+    function handleProductNameInput() {
+        document.getElementById('name').addEventListener('keydown', function(event) {
+            // Detect 'Enter' key (key code 13)
+            if (event.keyCode === 13) {
+                event.preventDefault();  // Prevent form submission or default behavior
+                
+                const productName = this.value.trim(); // Get full product name input
+
+                if (productName.length > 0) {
+                    fetch('../../backend/controllers/check_product_exists.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ name: productName })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            // Product exists - treat it as a variant
+                            Swal.fire({
+                                title: 'Product Exists',
+                                text: 'Are you adding a variant of this product?',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Populate form with existing product data
+                                    populateFormWithExistingProduct(data);
+
+                                    // Disable already existing size and color options
+                                    disableSpecificOptions(data.existing_sizes, data.existing_colors);
+                                } else {
+                                    document.getElementById('new-item-form').reset();
+                                    enableAllFields(); // Allow all fields to be filled out
+                                }
+                            });
+                        } else {
+                            // Product does not exist - enable all fields
+                            enableAllFields(); 
+                        }
+                    })
+                    .catch(error => console.error('Error checking product:', error));
+                }
+            }
+        });
+    }
+
+    // Helper function to enable all form fields for a new product
+    function enableAllFields() {
+        const fieldsToEnable = ['category', 'size', 'color', 'price', 'date_added', 'image'];
+        fieldsToEnable.forEach(field => {
+            document.getElementById(field).removeAttribute('disabled');
         });
     }
 
@@ -886,6 +911,8 @@ function initializeInventoryManagement() {
 // Call the initialization function when the page loads
 initializeInventoryManagement();
 </script>
+
+
 
 
 
