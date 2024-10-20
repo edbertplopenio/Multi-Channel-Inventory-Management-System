@@ -5,8 +5,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $name = $data['name'];
 
-    // Query to check if product exists and fetch related data
-    $sql = "SELECT product_id, category, price FROM inventory WHERE name = ?";
+    // Query to check if product exists and fetch related data from products table
+    $sql = "SELECT product_id, category, base_price FROM products WHERE name = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('s', $name);
     $stmt->execute();
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->fetch();
 
         // Query to get the existing sizes and colors for variants
-        $sql_variants = "SELECT DISTINCT size, color FROM inventory WHERE product_id = ?";
+        $sql_variants = "SELECT DISTINCT size, color FROM product_variants WHERE product_id = ?";
         $stmt_variants = $conn->prepare($sql_variants);
         $stmt_variants->bind_param('s', $product_id);
         $stmt_variants->execute();

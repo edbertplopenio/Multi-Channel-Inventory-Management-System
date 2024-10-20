@@ -10,22 +10,57 @@ if (!isset($_SESSION['user_email'])) {
 // Include the database connection file
 require_once '../../backend/config/db_connection.php';
 
-// Fetch inventory data from the database
-$sql = "SELECT * FROM inventory";
+// Verify the database connection
+if (!$conn) {
+    die("Database connection failed: " . mysqli_connect_error());
+}
+
+// Fetch product variants with inventory data from the database
+$sql = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity 
+        FROM product_variants pv
+        JOIN products p ON pv.product_id = p.product_id
+        JOIN inventory i ON pv.variant_id = i.variant_id";
 $result = mysqli_query($conn, $sql);
 
-// Fetch data for Physical Store
-$sql_physical_store = "SELECT * FROM inventory WHERE quantity_physical_store > 0";
+if (!$result) {
+    die("Error executing query: " . mysqli_error($conn));
+}
+
+// Fetch data for Physical Store inventory
+$sql_physical_store = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
+                       FROM product_variants pv
+                       JOIN products p ON pv.product_id = p.product_id
+                       JOIN inventory i ON pv.variant_id = i.variant_id
+                       WHERE i.channel = 'physical_store'";
 $result_physical_store = mysqli_query($conn, $sql_physical_store);
 
-// Fetch data for Shopee
-$sql_shopee = "SELECT * FROM inventory WHERE quantity_shopee > 0";
+if (!$result_physical_store) {
+    die("Error executing query for Physical Store: " . mysqli_error($conn));
+}
+
+// Fetch data for Shopee inventory
+$sql_shopee = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
+               FROM product_variants pv
+               JOIN products p ON pv.product_id = p.product_id
+               JOIN inventory i ON pv.variant_id = i.variant_id
+               WHERE i.channel = 'shopee'";
 $result_shopee = mysqli_query($conn, $sql_shopee);
 
-// Fetch data for TikTok
-$sql_tiktok = "SELECT * FROM inventory WHERE quantity_tiktok > 0";
+if (!$result_shopee) {
+    die("Error executing query for Shopee: " . mysqli_error($conn));
+}
+
+// Fetch data for TikTok inventory
+$sql_tiktok = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
+               FROM product_variants pv
+               JOIN products p ON pv.product_id = p.product_id
+               JOIN inventory i ON pv.variant_id = i.variant_id
+               WHERE i.channel = 'tiktok'";
 $result_tiktok = mysqli_query($conn, $sql_tiktok);
 
+if (!$result_tiktok) {
+    die("Error executing query for TikTok: " . mysqli_error($conn));
+}
 ?>
 
 <!DOCTYPE html>
@@ -197,139 +232,140 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
             </table>
         </div>
 
+        <!-- Tab for Physical Store -->
         <div id="physical-store" class="tab-content">
-    <table class="inventory-table">
-        <thead>
-            <tr>
-                <th>Product ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Quantity</th>
-                <th>Size</th>
-                <th>Color</th>
-                <th>Price</th>
-                <th>Date Added</th>
-                <th>Image</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (mysqli_num_rows($result_physical_store) > 0): ?>
-                <?php while ($row = mysqli_fetch_assoc($result_physical_store)): ?>
+            <table class="inventory-table">
+                <thead>
                     <tr>
-                        <td><?php echo $row['product_id']; ?></td>
-                        <td><?php echo $row['name']; ?></td>
-                        <td><?php echo $row['category']; ?></td>
-                        <td><?php echo $row['quantity_physical_store']; ?></td>
-                        <td><?php echo $row['size']; ?></td>
-                        <td><?php echo $row['color']; ?></td>
-                        <td><?php echo $row['price']; ?></td>
-                        <td><?php echo $row['date_added']; ?></td>
-                        <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Date Added</th>
+                        <th>Image</th>
+                        <th>Action</th>
                     </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="10">No inventory items found in Physical Store.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result_physical_store) > 0): ?>
+                        <?php while ($row = mysqli_fetch_assoc($result_physical_store)): ?>
+                            <tr>
+                                <td><?php echo $row['product_id']; ?></td>
+                                <td><?php echo $row['name']; ?></td>
+                                <td><?php echo $row['category']; ?></td>
+                                <td><?php echo $row['quantity_physical_store']; ?></td>
+                                <td><?php echo $row['size']; ?></td>
+                                <td><?php echo $row['color']; ?></td>
+                                <td><?php echo $row['price']; ?></td>
+                                <td><?php echo $row['date_added']; ?></td>
+                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td>
+                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="10">No inventory items found in Physical Store.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
 
-<div id="shopee" class="tab-content">
-    <table class="inventory-table">
-        <thead>
-            <tr>
-                <th>Product ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Quantity</th>
-                <th>Size</th>
-                <th>Color</th>
-                <th>Price</th>
-                <th>Date Added</th>
-                <th>Image</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (mysqli_num_rows($result_shopee) > 0): ?>
-                <?php while ($row = mysqli_fetch_assoc($result_shopee)): ?>
+        <!-- Tab for Shopee -->
+        <div id="shopee" class="tab-content">
+            <table class="inventory-table">
+                <thead>
                     <tr>
-                        <td><?php echo $row['product_id']; ?></td>
-                        <td><?php echo $row['name']; ?></td>
-                        <td><?php echo $row['category']; ?></td>
-                        <td><?php echo $row['quantity_shopee']; ?></td>
-                        <td><?php echo $row['size']; ?></td>
-                        <td><?php echo $row['color']; ?></td>
-                        <td><?php echo $row['price']; ?></td>
-                        <td><?php echo $row['date_added']; ?></td>
-                        <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Date Added</th>
+                        <th>Image</th>
+                        <th>Action</th>
                     </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="10">No inventory items found in Shopee.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result_shopee) > 0): ?>
+                        <?php while ($row = mysqli_fetch_assoc($result_shopee)): ?>
+                            <tr>
+                                <td><?php echo $row['product_id']; ?></td>
+                                <td><?php echo $row['name']; ?></td>
+                                <td><?php echo $row['category']; ?></td>
+                                <td><?php echo $row['quantity_shopee']; ?></td>
+                                <td><?php echo $row['size']; ?></td>
+                                <td><?php echo $row['color']; ?></td>
+                                <td><?php echo $row['price']; ?></td>
+                                <td><?php echo $row['date_added']; ?></td>
+                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td>
+                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="10">No inventory items found in Shopee.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
 
-<div id="tiktok" class="tab-content">
-    <table class="inventory-table">
-        <thead>
-            <tr>
-                <th>Product ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Quantity</th>
-                <th>Size</th>
-                <th>Color</th>
-                <th>Price</th>
-                <th>Date Added</th>
-                <th>Image</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (mysqli_num_rows($result_tiktok) > 0): ?>
-                <?php while ($row = mysqli_fetch_assoc($result_tiktok)): ?>
+        <!-- Tab for TikTok -->
+        <div id="tiktok" class="tab-content">
+            <table class="inventory-table">
+                <thead>
                     <tr>
-                        <td><?php echo $row['product_id']; ?></td>
-                        <td><?php echo $row['name']; ?></td>
-                        <td><?php echo $row['category']; ?></td>
-                        <td><?php echo $row['quantity_tiktok']; ?></td>
-                        <td><?php echo $row['size']; ?></td>
-                        <td><?php echo $row['color']; ?></td>
-                        <td><?php echo $row['price']; ?></td>
-                        <td><?php echo $row['date_added']; ?></td>
-                        <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Date Added</th>
+                        <th>Image</th>
+                        <th>Action</th>
                     </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="10">No inventory items found in TikTok.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
-
-
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result_tiktok) > 0): ?>
+                        <?php while ($row = mysqli_fetch_assoc($result_tiktok)): ?>
+                            <tr>
+                                <td><?php echo $row['product_id']; ?></td>
+                                <td><?php echo $row['name']; ?></td>
+                                <td><?php echo $row['category']; ?></td>
+                                <td><?php echo $row['quantity_tiktok']; ?></td>
+                                <td><?php echo $row['size']; ?></td>
+                                <td><?php echo $row['color']; ?></td>
+                                <td><?php echo $row['price']; ?></td>
+                                <td><?php echo $row['date_added']; ?></td>
+                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td>
+                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="10">No inventory items found in TikTok.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- New Item Modal -->
@@ -431,10 +467,9 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
                     </div>
 
                     <div class="form-group">
-    <label for="date_added">Date Added:</label>
-    <input type="date" id="date_added" name="date_added" required>
-</div>
-
+                        <label for="date_added">Date Added:</label>
+                        <input type="date" id="date_added" name="date_added" required>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -452,6 +487,8 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
             </form>
         </div>
     </div>
+
+
 
     <script>
 function initializeInventoryManagement() {
@@ -800,6 +837,41 @@ function initializeInventoryManagement() {
         modal.style.display = "none"; // Hide modal
     }
 
+    // Helper function to enable size and color fields
+    function enableSizeAndColorFields() {
+        document.getElementById('size').removeAttribute('disabled');
+        document.getElementById('color').removeAttribute('disabled');
+        
+        // Enable all size and color options initially
+        const sizeOptions = document.querySelectorAll('#size option');
+        const colorOptions = document.querySelectorAll('#color option');
+        
+        sizeOptions.forEach(option => option.removeAttribute('disabled'));
+        colorOptions.forEach(option => option.removeAttribute('disabled'));
+    }
+
+    // Helper function to disable specific size and color options
+    function disableSpecificOptions(existingSizes, existingColors) {
+        enableSizeAndColorFields(); // Ensure all options are enabled first
+
+        const sizeOptions = document.querySelectorAll('#size option');
+        const colorOptions = document.querySelectorAll('#color option');
+
+        // Disable size options that are already in the database
+        sizeOptions.forEach(option => {
+            if (existingSizes.includes(option.value)) {
+                option.setAttribute('disabled', 'disabled');
+            }
+        });
+
+        // Disable color options that are already in the database
+        colorOptions.forEach(option => {
+            if (existingColors.includes(option.value)) {
+                option.setAttribute('disabled', 'disabled');
+            }
+        });
+    }
+
     // Helper function to disable form fields except 'name'
     function disableFormFields() {
         const fieldsToDisable = ['category', 'size', 'color', 'price', 'date_added', 'image'];
@@ -817,30 +889,6 @@ function initializeInventoryManagement() {
         document.getElementById('price').removeAttribute('disabled');
         document.getElementById('date_added').removeAttribute('disabled');
         document.getElementById('image').removeAttribute('disabled');
-    }
-
-    // Helper function to disable specific size and color options
-    function disableSpecificOptions(existingSizes, existingColors) {
-        const sizeOptions = document.querySelectorAll('#size option');
-        const colorOptions = document.querySelectorAll('#color option');
-
-        // Disable size options that are already in the database
-        sizeOptions.forEach(option => {
-            if (existingSizes.includes(option.value)) {
-                option.setAttribute('disabled', 'disabled');
-            } else {
-                option.removeAttribute('disabled'); // Ensure other sizes are enabled
-            }
-        });
-
-        // Disable color options that are already in the database
-        colorOptions.forEach(option => {
-            if (existingColors.includes(option.value)) {
-                option.setAttribute('disabled', 'disabled');
-            } else {
-                option.removeAttribute('disabled'); // Ensure other colors are enabled
-            }
-        });
     }
 
     // Function to handle 'Enter' key press for product name input
@@ -911,18 +959,6 @@ function initializeInventoryManagement() {
 // Call the initialization function when the page loads
 initializeInventoryManagement();
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
 
 </body>
 </html>
