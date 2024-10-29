@@ -10,22 +10,57 @@ if (!isset($_SESSION['user_email'])) {
 // Include the database connection file
 require_once '../../backend/config/db_connection.php';
 
-// Fetch inventory data from the database
-$sql = "SELECT * FROM inventory";
+// Verify the database connection
+if (!$conn) {
+    die("Database connection failed: " . mysqli_connect_error());
+}
+
+// Fetch product variants with inventory data from the database
+$sql = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity 
+        FROM product_variants pv
+        JOIN products p ON pv.product_id = p.product_id
+        JOIN inventory i ON pv.variant_id = i.variant_id";
 $result = mysqli_query($conn, $sql);
 
-// Fetch data for Physical Store
-$sql_physical_store = "SELECT * FROM inventory WHERE quantity_physical_store > 0";
+if (!$result) {
+    die("Error executing query: " . mysqli_error($conn));
+}
+
+// Fetch data for Physical Store inventory
+$sql_physical_store = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
+                       FROM product_variants pv
+                       JOIN products p ON pv.product_id = p.product_id
+                       JOIN inventory i ON pv.variant_id = i.variant_id
+                       WHERE i.channel = 'physical_store'";
 $result_physical_store = mysqli_query($conn, $sql_physical_store);
 
-// Fetch data for Shopee
-$sql_shopee = "SELECT * FROM inventory WHERE quantity_shopee > 0";
+if (!$result_physical_store) {
+    die("Error executing query for Physical Store: " . mysqli_error($conn));
+}
+
+// Fetch data for Shopee inventory
+$sql_shopee = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
+               FROM product_variants pv
+               JOIN products p ON pv.product_id = p.product_id
+               JOIN inventory i ON pv.variant_id = i.variant_id
+               WHERE i.channel = 'shopee'";
 $result_shopee = mysqli_query($conn, $sql_shopee);
 
-// Fetch data for TikTok
-$sql_tiktok = "SELECT * FROM inventory WHERE quantity_tiktok > 0";
+if (!$result_shopee) {
+    die("Error executing query for Shopee: " . mysqli_error($conn));
+}
+
+// Fetch data for TikTok inventory
+$sql_tiktok = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
+               FROM product_variants pv
+               JOIN products p ON pv.product_id = p.product_id
+               JOIN inventory i ON pv.variant_id = i.variant_id
+               WHERE i.channel = 'tiktok'";
 $result_tiktok = mysqli_query($conn, $sql_tiktok);
 
+if (!$result_tiktok) {
+    die("Error executing query for TikTok: " . mysqli_error($conn));
+}
 ?>
 
 <!DOCTYPE html>
@@ -197,139 +232,140 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
             </table>
         </div>
 
+        <!-- Tab for Physical Store -->
         <div id="physical-store" class="tab-content">
-    <table class="inventory-table">
-        <thead>
-            <tr>
-                <th>Product ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Quantity</th>
-                <th>Size</th>
-                <th>Color</th>
-                <th>Price</th>
-                <th>Date Added</th>
-                <th>Image</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (mysqli_num_rows($result_physical_store) > 0): ?>
-                <?php while ($row = mysqli_fetch_assoc($result_physical_store)): ?>
+            <table class="inventory-table">
+                <thead>
                     <tr>
-                        <td><?php echo $row['product_id']; ?></td>
-                        <td><?php echo $row['name']; ?></td>
-                        <td><?php echo $row['category']; ?></td>
-                        <td><?php echo $row['quantity_physical_store']; ?></td>
-                        <td><?php echo $row['size']; ?></td>
-                        <td><?php echo $row['color']; ?></td>
-                        <td><?php echo $row['price']; ?></td>
-                        <td><?php echo $row['date_added']; ?></td>
-                        <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Date Added</th>
+                        <th>Image</th>
+                        <th>Action</th>
                     </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="10">No inventory items found in Physical Store.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result_physical_store) > 0): ?>
+                        <?php while ($row = mysqli_fetch_assoc($result_physical_store)): ?>
+                            <tr>
+                                <td><?php echo $row['product_id']; ?></td>
+                                <td><?php echo $row['name']; ?></td>
+                                <td><?php echo $row['category']; ?></td>
+                                <td><?php echo $row['quantity_physical_store']; ?></td>
+                                <td><?php echo $row['size']; ?></td>
+                                <td><?php echo $row['color']; ?></td>
+                                <td><?php echo $row['price']; ?></td>
+                                <td><?php echo $row['date_added']; ?></td>
+                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td>
+                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="10">No inventory items found in Physical Store.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
 
-<div id="shopee" class="tab-content">
-    <table class="inventory-table">
-        <thead>
-            <tr>
-                <th>Product ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Quantity</th>
-                <th>Size</th>
-                <th>Color</th>
-                <th>Price</th>
-                <th>Date Added</th>
-                <th>Image</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (mysqli_num_rows($result_shopee) > 0): ?>
-                <?php while ($row = mysqli_fetch_assoc($result_shopee)): ?>
+        <!-- Tab for Shopee -->
+        <div id="shopee" class="tab-content">
+            <table class="inventory-table">
+                <thead>
                     <tr>
-                        <td><?php echo $row['product_id']; ?></td>
-                        <td><?php echo $row['name']; ?></td>
-                        <td><?php echo $row['category']; ?></td>
-                        <td><?php echo $row['quantity_shopee']; ?></td>
-                        <td><?php echo $row['size']; ?></td>
-                        <td><?php echo $row['color']; ?></td>
-                        <td><?php echo $row['price']; ?></td>
-                        <td><?php echo $row['date_added']; ?></td>
-                        <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Date Added</th>
+                        <th>Image</th>
+                        <th>Action</th>
                     </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="10">No inventory items found in Shopee.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result_shopee) > 0): ?>
+                        <?php while ($row = mysqli_fetch_assoc($result_shopee)): ?>
+                            <tr>
+                                <td><?php echo $row['product_id']; ?></td>
+                                <td><?php echo $row['name']; ?></td>
+                                <td><?php echo $row['category']; ?></td>
+                                <td><?php echo $row['quantity_shopee']; ?></td>
+                                <td><?php echo $row['size']; ?></td>
+                                <td><?php echo $row['color']; ?></td>
+                                <td><?php echo $row['price']; ?></td>
+                                <td><?php echo $row['date_added']; ?></td>
+                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td>
+                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="10">No inventory items found in Shopee.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
 
-<div id="tiktok" class="tab-content">
-    <table class="inventory-table">
-        <thead>
-            <tr>
-                <th>Product ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Quantity</th>
-                <th>Size</th>
-                <th>Color</th>
-                <th>Price</th>
-                <th>Date Added</th>
-                <th>Image</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (mysqli_num_rows($result_tiktok) > 0): ?>
-                <?php while ($row = mysqli_fetch_assoc($result_tiktok)): ?>
+        <!-- Tab for TikTok -->
+        <div id="tiktok" class="tab-content">
+            <table class="inventory-table">
+                <thead>
                     <tr>
-                        <td><?php echo $row['product_id']; ?></td>
-                        <td><?php echo $row['name']; ?></td>
-                        <td><?php echo $row['category']; ?></td>
-                        <td><?php echo $row['quantity_tiktok']; ?></td>
-                        <td><?php echo $row['size']; ?></td>
-                        <td><?php echo $row['color']; ?></td>
-                        <td><?php echo $row['price']; ?></td>
-                        <td><?php echo $row['date_added']; ?></td>
-                        <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Date Added</th>
+                        <th>Image</th>
+                        <th>Action</th>
                     </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="10">No inventory items found in TikTok.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
-
-
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result_tiktok) > 0): ?>
+                        <?php while ($row = mysqli_fetch_assoc($result_tiktok)): ?>
+                            <tr>
+                                <td><?php echo $row['product_id']; ?></td>
+                                <td><?php echo $row['name']; ?></td>
+                                <td><?php echo $row['category']; ?></td>
+                                <td><?php echo $row['quantity_tiktok']; ?></td>
+                                <td><?php echo $row['size']; ?></td>
+                                <td><?php echo $row['color']; ?></td>
+                                <td><?php echo $row['price']; ?></td>
+                                <td><?php echo $row['date_added']; ?></td>
+                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td>
+                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="10">No inventory items found in TikTok.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- New Item Modal -->
@@ -431,10 +467,9 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
                     </div>
 
                     <div class="form-group">
-    <label for="date_added">Date Added:</label>
-    <input type="date" id="date_added" name="date_added" required>
-</div>
-
+                        <label for="date_added">Date Added:</label>
+                        <input type="date" id="date_added" name="date_added" required>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -452,6 +487,8 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
             </form>
         </div>
     </div>
+
+
 
     <script>
 function initializeInventoryManagement() {
@@ -476,21 +513,20 @@ function initializeInventoryManagement() {
     // Populate inventory tables
     function populateInventoryTables(items) {
         items.forEach(item => {
-            // All Inventory Tab (Total quantity across all channels)
             const totalQuantity = item.quantity_physical_store + item.quantity_shopee + item.quantity_tiktok;
             const channelsText = item.channels.length === 3 ? 'All Channels' : item.channels.join(' and ');
 
             const allInventoryRow = `
-                <tr>
+                <tr data-product-id="${item.product_id}">
                     <td>${item.product_id}</td>
                     <td>${item.name}</td>
                     <td>${item.category}</td>
-                    <td>${totalQuantity}</td>  <!-- Total quantity -->
+                    <td>${totalQuantity}</td>
                     <td>${item.size}</td>
                     <td>${item.color}</td>
                     <td>${item.price}</td>
                     <td>${item.date_added}</td>
-                    <td>${channelsText}</td>  <!-- Channel Display -->
+                    <td>${channelsText}</td>
                     <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                     <td>
                         <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
@@ -500,14 +536,13 @@ function initializeInventoryManagement() {
             `;
             document.querySelector('#all-inventory .inventory-table tbody').insertAdjacentHTML('beforeend', allInventoryRow);
 
-            // Physical Store Tab
             if (item.quantity_physical_store > 0) {
                 const physicalStoreRow = `
-                    <tr>
+                    <tr data-product-id="${item.product_id}">
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
-                        <td>${item.quantity_physical_store}</td>  <!-- Physical Store quantity -->
+                        <td>${item.quantity_physical_store}</td>
                         <td>${item.size}</td>
                         <td>${item.color}</td>
                         <td>${item.price}</td>
@@ -522,14 +557,13 @@ function initializeInventoryManagement() {
                 document.querySelector('#physical-store .inventory-table tbody').insertAdjacentHTML('beforeend', physicalStoreRow);
             }
 
-            // Shopee Tab
             if (item.quantity_shopee > 0) {
                 const shopeeRow = `
-                    <tr>
+                    <tr data-product-id="${item.product_id}">
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
-                        <td>${item.quantity_shopee}</td>  <!-- Shopee quantity -->
+                        <td>${item.quantity_shopee}</td>
                         <td>${item.size}</td>
                         <td>${item.color}</td>
                         <td>${item.price}</td>
@@ -544,14 +578,13 @@ function initializeInventoryManagement() {
                 document.querySelector('#shopee .inventory-table tbody').insertAdjacentHTML('beforeend', shopeeRow);
             }
 
-            // TikTok Tab
             if (item.quantity_tiktok > 0) {
                 const tiktokRow = `
-                    <tr>
+                    <tr data-product-id="${item.product_id}">
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
-                        <td>${item.quantity_tiktok}</td>  <!-- TikTok quantity -->
+                        <td>${item.quantity_tiktok}</td>
                         <td>${item.size}</td>
                         <td>${item.color}</td>
                         <td>${item.price}</td>
@@ -585,16 +618,19 @@ function initializeInventoryManagement() {
 
     newItemButton.addEventListener('click', function() {
         modal.style.display = "flex"; // Display modal
+        disableFormFields();  // Initially disable all fields except 'name'
     });
 
-    // Close the modal when the cancel button is clicked
     closeButton.addEventListener('click', function() {
         modal.style.display = "none"; // Hide modal
+        document.getElementById('new-item-form').reset();  // Reset form when modal is closed
+        enableAllFields(); // Ensure fields are enabled when starting fresh
     });
 
-    // Close the modal if the cancel button is clicked
     document.querySelector('.cancel-button').addEventListener('click', function() {
         modal.style.display = "none"; // Hide modal
+        document.getElementById('new-item-form').reset();  // Reset form when modal is closed
+        enableAllFields(); // Ensure fields are enabled when starting fresh
     });
 
     // Enable or disable quantity inputs based on channel checkbox
@@ -658,7 +694,6 @@ function initializeInventoryManagement() {
             row.style.display = showRow ? '' : 'none';
         });
 
-        // Hide the filter dropdown after applying
         document.getElementById('filter-dropdown').classList.remove('active');
     });
 
@@ -673,155 +708,112 @@ function initializeInventoryManagement() {
         // Restore the original data
         restoreOriginalData();
 
-        // Hide the filter dropdown after resetting
         document.getElementById('filter-dropdown').classList.remove('active');
     });
 
-    // Handle form submission to add a new inventory item
+    // Handle form submission to add or update an inventory item
     document.getElementById('new-item-form').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
-        console.log(document.getElementById('date_added').value); // Log the date value
 
-        const formData = new FormData();  // Using FormData to send multipart data
+        const productName = document.getElementById('name').value;
 
-        formData.append('name', document.getElementById('name').value);
-        formData.append('category', document.getElementById('category').value);
-        formData.append('size', document.getElementById('size').value);
-        formData.append('color', document.getElementById('color').value);
-        formData.append('price', document.getElementById('price').value);
-        formData.append('date_added', document.getElementById('date_added').value);
-        formData.append('image', document.getElementById('image').files[0]);  // Handling image upload
+        // Check if the product already exists in the inventory
+        fetch('../../backend/controllers/check_product_exists.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: productName })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.exists) {
+                // If product exists, show a confirmation prompt to the user
+                Swal.fire({
+                    title: 'Product Already Exists',
+                    text: 'Are you adding a variant of this product?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, it\'s a variant',
+                    cancelButtonText: 'No, cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        populateFormWithExistingProduct(data);  // Fill form with existing product details
+                        disableSpecificOptions(data.existing_sizes, data.existing_colors); // Disable specific sizes and colors
+                        submitForm(data.product_id); // Pass existing product ID
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'The product name is already in use.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            } else {
+                // If the product doesn't exist, submit the form as a new product
+                submitForm(null);
+            }
+        })
+        .catch(error => {
+            console.error('Error checking product:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to check if product exists.',
+                confirmButtonText: 'OK'
+            });
+        });
+    });
 
-        // Get quantities for each channel
-        const channels = [];
-        const physicalStoreQty = parseInt(document.querySelector('input[name="quantity-physical-store"]').value) || 0;
-        const shopeeQty = parseInt(document.querySelector('input[name="quantity-shopee"]').value) || 0;
-        const tiktokQty = parseInt(document.querySelector('input[name="quantity-tiktok"]').value) || 0;
+    // Function to submit the form with the product ID if it exists
+    function submitForm(existingProductId) {
+        const formData = new FormData(document.getElementById('new-item-form'));
 
-        // Add selected channels to the channels array
-        if (physicalStoreQty > 0) {
-            channels.push('Physical Store');
+        // Gather the selected channels from checkboxes
+        const selectedChannels = Array.from(document.querySelectorAll('.channel-checkbox:checked')).map(checkbox => checkbox.value);
+
+        formData.append('channels', JSON.stringify(selectedChannels));
+
+        if (existingProductId) {
+            formData.append('existing_product_id', existingProductId);  // Add the existing product ID if available
         }
-        if (shopeeQty > 0) {
-            channels.push('Shopee');
-        }
-        if (tiktokQty > 0) {
-            channels.push('TikTok');
-        }
 
-        formData.append('quantity-physical-store', physicalStoreQty);  // Physical Store Quantity
-        formData.append('quantity-shopee', shopeeQty);  // Shopee Quantity
-        formData.append('quantity-tiktok', tiktokQty);  // TikTok Quantity
-        formData.append('quantity', physicalStoreQty + shopeeQty + tiktokQty); // Total quantity across all channels
-        formData.append('channels', JSON.stringify(channels)); // Pass the channels as a JSON string
-
-        // Send the form data to the backend using fetch
         fetch('../../backend/controllers/add_item.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())  // Parse the response as JSON
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Show success message using SweetAlert
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Product added successfully!',
-                    confirmButtonText: 'OK'
-                });
-
-                // Determine what to show in the Channels column
-                const channelsText = channels.length === 3 ? 'All Channels' : channels.join(' and ');
-
-                // Create a new row for the "All Inventory" tab
-                const totalQuantity = physicalStoreQty + shopeeQty + tiktokQty;
-                const newRow = `
-                    <tr>
+                const existingRow = document.querySelector(`#all-inventory .inventory-table tbody tr[data-product-id="${data.product_id}"]`);
+                
+                if (existingRow) {
+                    const updatedRow = `
                         <td>${data.product_id}</td>
                         <td>${data.name}</td>
                         <td>${data.category}</td>
-                        <td>${totalQuantity}</td>  <!-- Total quantity -->
+                        <td>${data.total_quantity}</td>
                         <td>${data.size}</td>
                         <td>${data.color}</td>
                         <td>${data.price}</td>
                         <td>${data.date_added}</td>
-                        <td>${channelsText}</td>  <!-- Channel Display -->
-                        <td><img src="../../frontend/public/images/${data.image_name || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                        <td>${data.channels.length === 3 ? 'All Channels' : data.channels.join(' and ')}</td>
+                        <td><img src="../../frontend/public/images/${data.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
                             <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
                             <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
                         </td>
-                    </tr>
-                `;
-
-                // Append the row to the "All Inventory" tab's table
-                document.querySelector('#all-inventory .inventory-table tbody').insertAdjacentHTML('beforeend', newRow);
-
-                // Append the row to the respective channel tab with the correct quantity for each tab
-                if (physicalStoreQty > 0) {
-                    const physicalRow = `
-                        <tr>
-                            <td>${data.product_id}</td>
-                            <td>${data.name}</td>
-                            <td>${data.category}</td>
-                            <td>${physicalStoreQty}</td>
-                            <td>${data.size}</td>
-                            <td>${data.color}</td>
-                            <td>${data.price}</td>
-                            <td>${data.date_added}</td>
-                            <td><img src="../../frontend/public/images/${data.image_name || 'image-placeholder.png'}" alt="Image" width="50"></td>
-                            <td>
-                                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                            </td>
-                        </tr>
                     `;
-                    document.querySelector('#physical-store .inventory-table tbody').insertAdjacentHTML('beforeend', physicalRow);
+                    existingRow.innerHTML = updatedRow;
                 }
 
-                if (shopeeQty > 0) {
-                    const shopeeRow = `
-                        <tr>
-                            <td>${data.product_id}</td>
-                            <td>${data.name}</td>
-                            <td>${data.category}</td>
-                            <td>${shopeeQty}</td>
-                            <td>${data.size}</td>
-                            <td>${data.color}</td>
-                            <td>${data.price}</td>
-                            <td>${data.date_added}</td>
-                            <td><img src="../../frontend/public/images/${data.image_name || 'image-placeholder.png'}" alt="Image" width="50"></td>
-                            <td>
-                                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                    document.querySelector('#shopee .inventory-table tbody').insertAdjacentHTML('beforeend', shopeeRow);
-                }
-
-                if (tiktokQty > 0) {
-                    const tiktokRow = `
-                        <tr>
-                            <td>${data.product_id}</td>
-                            <td>${data.name}</td>
-                            <td>${data.category}</td>
-                            <td>${tiktokQty}</td>
-                            <td>${data.size}</td>
-                            <td>${data.color}</td>
-                            <td>${data.price}</td>
-                            <td>${data.date_added}</td>
-                            <td><img src="../../frontend/public/images/${data.image_name || 'image-placeholder.png'}" alt="Image" width="50"></td>
-                            <td>
-                                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                    document.querySelector('#tiktok .inventory-table tbody').insertAdjacentHTML('beforeend', tiktokRow);
-                }
-
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Product updated successfully!',
+                    confirmButtonText: 'OK'
+                });
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -841,22 +833,132 @@ function initializeInventoryManagement() {
             });
         });
 
-        // Reset the form and close the modal
         document.getElementById('new-item-form').reset();
         modal.style.display = "none"; // Hide modal
-    });
+    }
 
-    // Call this function to store the original state of the table when the page loads
+    // Helper function to enable size and color fields
+    function enableSizeAndColorFields() {
+        document.getElementById('size').removeAttribute('disabled');
+        document.getElementById('color').removeAttribute('disabled');
+        
+        // Enable all size and color options initially
+        const sizeOptions = document.querySelectorAll('#size option');
+        const colorOptions = document.querySelectorAll('#color option');
+        
+        sizeOptions.forEach(option => option.removeAttribute('disabled'));
+        colorOptions.forEach(option => option.removeAttribute('disabled'));
+    }
+
+    // Helper function to disable specific size and color options
+    function disableSpecificOptions(existingSizes, existingColors) {
+        enableSizeAndColorFields(); // Ensure all options are enabled first
+
+        const sizeOptions = document.querySelectorAll('#size option');
+        const colorOptions = document.querySelectorAll('#color option');
+
+        // Disable size options that are already in the database
+        sizeOptions.forEach(option => {
+            if (existingSizes.includes(option.value)) {
+                option.setAttribute('disabled', 'disabled');
+            }
+        });
+
+        // Disable color options that are already in the database
+        colorOptions.forEach(option => {
+            if (existingColors.includes(option.value)) {
+                option.setAttribute('disabled', 'disabled');
+            }
+        });
+    }
+
+    // Helper function to disable form fields except 'name'
+    function disableFormFields() {
+        const fieldsToDisable = ['category', 'size', 'color', 'price', 'date_added', 'image'];
+        fieldsToDisable.forEach(field => {
+            document.getElementById(field).setAttribute('disabled', 'disabled');
+        });
+    }
+
+    // Helper function to populate the form with existing product data
+    function populateFormWithExistingProduct(product) {
+        document.getElementById('category').value = product.category;
+        document.getElementById('price').value = product.price;
+
+        document.getElementById('category').removeAttribute('disabled');
+        document.getElementById('price').removeAttribute('disabled');
+        document.getElementById('date_added').removeAttribute('disabled');
+        document.getElementById('image').removeAttribute('disabled');
+    }
+
+    // Function to handle 'Enter' key press for product name input
+    function handleProductNameInput() {
+        document.getElementById('name').addEventListener('keydown', function(event) {
+            // Detect 'Enter' key (key code 13)
+            if (event.keyCode === 13) {
+                event.preventDefault();  // Prevent form submission or default behavior
+                
+                const productName = this.value.trim(); // Get full product name input
+
+                if (productName.length > 0) {
+                    fetch('../../backend/controllers/check_product_exists.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ name: productName })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            // Product exists - treat it as a variant
+                            Swal.fire({
+                                title: 'Product Exists',
+                                text: 'Are you adding a variant of this product?',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Populate form with existing product data
+                                    populateFormWithExistingProduct(data);
+
+                                    // Disable already existing size and color options
+                                    disableSpecificOptions(data.existing_sizes, data.existing_colors);
+                                } else {
+                                    document.getElementById('new-item-form').reset();
+                                    enableAllFields(); // Allow all fields to be filled out
+                                }
+                            });
+                        } else {
+                            // Product does not exist - enable all fields
+                            enableAllFields(); 
+                        }
+                    })
+                    .catch(error => console.error('Error checking product:', error));
+                }
+            }
+        });
+    }
+
+    // Helper function to enable all form fields for a new product
+    function enableAllFields() {
+        const fieldsToEnable = ['category', 'size', 'color', 'price', 'date_added', 'image'];
+        fieldsToEnable.forEach(field => {
+            document.getElementById(field).removeAttribute('disabled');
+        });
+    }
+
+    // Initialize
     fetchOriginalData();
+    disableFormFields();  // Initially disable fields
+    handleProductNameInput();  // Handle product name input
 }
 
 // Call the initialization function when the page loads
 initializeInventoryManagement();
 </script>
-
-
-
-
 
 </body>
 </html>
