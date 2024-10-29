@@ -505,7 +505,7 @@ if (!$result_tiktok) {
 
 
 
-    <script>
+<script>
 function initializeInventoryManagement() {
     let originalData = [];
 
@@ -633,6 +633,7 @@ function initializeInventoryManagement() {
 
     newItemButton.addEventListener('click', function() {
         modal.style.display = "flex"; // Display modal
+        resetFormFields();  // Reset all fields
         disableFormFields();  // Initially disable all fields except 'name'
     });
 
@@ -721,7 +722,7 @@ function initializeInventoryManagement() {
         document.getElementById('filter-channel').value = "";
 
         // Restore the original data
-        restoreOriginalData();
+        fetchOriginalData();
 
         document.getElementById('filter-dropdown').classList.remove('active');
     });
@@ -852,6 +853,15 @@ function initializeInventoryManagement() {
         modal.style.display = "none"; // Hide modal
     }
 
+    // Helper function to reset all form fields for a new product entry except the name field
+    function resetFormFields() {
+        const productName = document.getElementById('name').value; // Retain the current name
+        document.getElementById('new-item-form').reset();
+        document.getElementById('name').value = productName; // Restore the name field value
+        document.getElementById('category').removeAttribute('disabled');
+        enableSizeAndColorFields(); // Enable all size and color options
+    }
+
     // Helper function to enable size and color fields
     function enableSizeAndColorFields() {
         document.getElementById('size').removeAttribute('disabled');
@@ -900,7 +910,7 @@ function initializeInventoryManagement() {
         document.getElementById('category').value = product.category;
         document.getElementById('price').value = product.price;
 
-        document.getElementById('category').removeAttribute('disabled');
+        document.getElementById('category').setAttribute('disabled', 'disabled'); // Disable category for variants
         document.getElementById('price').removeAttribute('disabled');
         document.getElementById('date_added').removeAttribute('disabled');
         document.getElementById('image').removeAttribute('disabled');
@@ -942,12 +952,12 @@ function initializeInventoryManagement() {
                                     // Disable already existing size and color options
                                     disableSpecificOptions(data.existing_sizes, data.existing_colors);
                                 } else {
-                                    document.getElementById('new-item-form').reset();
-                                    enableAllFields(); // Allow all fields to be filled out
+                                    resetFormFields(); // Clear the form and enable all fields
                                 }
                             });
                         } else {
-                            // Product does not exist - enable all fields
+                            // Product does not exist - reset fields and enable all options
+                            resetFormFields();
                             enableAllFields(); 
                         }
                     })
@@ -974,6 +984,10 @@ function initializeInventoryManagement() {
 // Call the initialization function when the page loads
 initializeInventoryManagement();
 </script>
+
+
+
+
 
 
 </body>
