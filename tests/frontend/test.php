@@ -490,7 +490,7 @@ if (!$result_tiktok) {
                 <div class="form-row">
                     <div class="form-group">
                         <label for="image">Image:</label>
-                        <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/jpg">
+                        <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/jpg" required>
                     </div>
                 </div>
 
@@ -505,9 +505,14 @@ if (!$result_tiktok) {
 
 
 
-<script>
+    <script>
 function initializeInventoryManagement() {
     let originalData = [];
+
+    // Function to capitalize the first letter of each word in a string
+    function capitalizeWords(str) {
+        return str.replace(/\b\w/g, char => char.toUpperCase());
+    }
 
     // Fetch original data (if using real data, fetch and store)
     function fetchOriginalData() {
@@ -637,17 +642,14 @@ function initializeInventoryManagement() {
         disableFormFields();  // Initially disable all fields except 'name'
     });
 
-    closeButton.addEventListener('click', function() {
-        modal.style.display = "none"; // Hide modal
-        document.getElementById('new-item-form').reset();  // Reset form when modal is closed
-        enableAllFields(); // Ensure fields are enabled when starting fresh
-    });
+    closeButton.addEventListener('click', closeModal);
+    document.querySelector('.cancel-button').addEventListener('click', closeModal);
 
-    document.querySelector('.cancel-button').addEventListener('click', function() {
+    function closeModal() {
         modal.style.display = "none"; // Hide modal
         document.getElementById('new-item-form').reset();  // Reset form when modal is closed
         enableAllFields(); // Ensure fields are enabled when starting fresh
-    });
+    }
 
     // Enable or disable quantity inputs based on channel checkbox
     document.querySelectorAll('.channel-checkbox').forEach(checkbox => {
@@ -660,12 +662,6 @@ function initializeInventoryManagement() {
                 quantityInput.value = ""; // Clear quantity input
             }
         });
-    });
-
-    // Filter dropdown toggle
-    document.querySelector('.icon-filter').addEventListener('click', function() {
-        const filterDropdown = document.getElementById('filter-dropdown');
-        filterDropdown.classList.toggle('active');  // Toggle the dropdown visibility
     });
 
     // Apply filters functionality
@@ -709,8 +705,6 @@ function initializeInventoryManagement() {
 
             row.style.display = showRow ? '' : 'none';
         });
-
-        document.getElementById('filter-dropdown').classList.remove('active');
     });
 
     // Reset filters functionality
@@ -721,17 +715,17 @@ function initializeInventoryManagement() {
         document.getElementById('filter-date').value = "";
         document.getElementById('filter-channel').value = "";
 
-        // Restore the original data
         fetchOriginalData();
-
-        document.getElementById('filter-dropdown').classList.remove('active');
     });
 
     // Handle form submission to add or update an inventory item
     document.getElementById('new-item-form').addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
 
-        const productName = document.getElementById('name').value;
+        const productName = capitalizeWords(document.getElementById('name').value);
+        const category = capitalizeWords(document.getElementById('category').value);
+        const size = capitalizeWords(document.getElementById('size').value);
+        const color = capitalizeWords(document.getElementById('color').value);
 
         // Check if the product already exists in the inventory
         fetch('../../backend/controllers/check_product_exists.php', {
@@ -756,7 +750,7 @@ function initializeInventoryManagement() {
                     if (result.isConfirmed) {
                         populateFormWithExistingProduct(data);  // Fill form with existing product details
                         disableSpecificOptions(data.existing_sizes, data.existing_colors); // Disable specific sizes and colors
-                        submitForm(data.product_id); // Pass existing product ID
+                        submitForm(data.product_id, productName, category, size, color); // Pass existing product ID
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -768,7 +762,7 @@ function initializeInventoryManagement() {
                 });
             } else {
                 // If the product doesn't exist, submit the form as a new product
-                submitForm(null);
+                submitForm(null, productName, category, size, color);
             }
         })
         .catch(error => {
@@ -783,17 +777,49 @@ function initializeInventoryManagement() {
     });
 
     // Function to submit the form with the product ID if it exists
-    function submitForm(existingProductId) {
+    function submitForm(existingProductId, productName, category, size, color) {
         const formData = new FormData(document.getElementById('new-item-form'));
 
-        // Gather the selected channels from checkboxes
-        const selectedChannels = Array.from(document.querySelectorAll('.channel-checkbox:checked')).map(checkbox => checkbox.value);
-
-        formData.append('channels', JSON.stringify(selectedChannels));
-
-        if (existingProductId) {
-            formData.append('existing_product_id', existingProductId);  // Add the existing product ID if available
+        // Gather the selected channels from checkboxes and check if quantities are entered
+        const selectedChannels = Array.from(document.querySelectorAll('.channel-checkbox:checked'));
+        
+        if (selectedChannels.length === 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Please select at least one channel and enter a quantity.',
+                confirmButtonText: 'OK'
+            });
+            return; // Prevent form from closing
         }
+
+        let quantityProvided = true;
+
+        // Check each selected channel to make sure there's a quantity
+        selectedChannels.forEach(channel => {
+            const quantityInput = document.querySelector(`input[name="quantity-${channel.value.toLowerCase().replace(' ', '-')}"]`);
+            if (!quantityInput || quantityInput.value.trim() === "" || parseInt(quantityInput.value) <= 0) {
+                quantityProvided = false;
+            }
+        });
+
+        if (!quantityProvided) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Each selected channel must have a valid quantity greater than zero.',
+                confirmButtonText: 'OK'
+            });
+            return; // Prevent form from closing
+        }
+
+        // Append selected channels and fields with capitalization applied
+        selectedChannels.forEach(channel => formData.append('channels[]', channel.value));
+        formData.append('name', productName);
+        formData.append('category', category);
+        formData.append('size', size);
+        formData.append('color', color);
+        if (existingProductId) formData.append('existing_product_id', existingProductId);
 
         fetch('../../backend/controllers/add_item.php', {
             method: 'POST',
@@ -801,36 +827,18 @@ function initializeInventoryManagement() {
         })
         .then(response => response.json())
         .then(data => {
+            console.log('Server response:', data);  // Log the complete server response for debugging
             if (data.success) {
-                const existingRow = document.querySelector(`#all-inventory .inventory-table tbody tr[data-product-id="${data.product_id}"]`);
-                
-                if (existingRow) {
-                    const updatedRow = `
-                        <td>${data.product_id}</td>
-                        <td>${data.name}</td>
-                        <td>${data.category}</td>
-                        <td>${data.total_quantity}</td>
-                        <td>${data.size}</td>
-                        <td>${data.color}</td>
-                        <td>${data.price}</td>
-                        <td>${data.date_added}</td>
-                        <td>${data.channels.length === 3 ? 'All Channels' : data.channels.join(' and ')}</td>
-                        <td><img src="../../frontend/public/images/${data.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
-                        <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                        </td>
-                    `;
-                    existingRow.innerHTML = updatedRow;
-                }
-
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
                     text: 'Product updated successfully!',
                     confirmButtonText: 'OK'
                 });
+                document.getElementById('new-item-form').reset();
+                modal.style.display = "none"; // Close modal only if submission succeeds
             } else {
+                console.error('Server returned error:', data.message);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -840,17 +848,14 @@ function initializeInventoryManagement() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Fetch error:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Something went wrong!',
+                text: 'Something went wrong! Please check the console for more details.',
                 confirmButtonText: 'OK'
             });
         });
-
-        document.getElementById('new-item-form').reset();
-        modal.style.display = "none"; // Hide modal
     }
 
     // Helper function to reset all form fields for a new product entry except the name field
@@ -984,7 +989,6 @@ function initializeInventoryManagement() {
 // Call the initialization function when the page loads
 initializeInventoryManagement();
 </script>
-
 
 
 
