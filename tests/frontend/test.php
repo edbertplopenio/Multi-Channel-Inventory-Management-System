@@ -530,9 +530,11 @@ function initializeInventoryManagement() {
     }
 
     function fetchOriginalData() {
+        console.log("Fetching original data..."); // Debugging
         fetch('../../backend/controllers/get_inventory.php')
         .then(response => response.json())
         .then(data => {
+            console.log("Fetched data:", data); // Debugging
             if (data.success) {
                 populateInventoryTables(data.items);
             } else {
@@ -540,7 +542,7 @@ function initializeInventoryManagement() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error during fetchOriginalData:', error); // Debugging
         });
     }
 
@@ -743,9 +745,11 @@ function initializeInventoryManagement() {
         })
         .then(response => response.json())
         .then(data => {
+            console.log("Product exists check response:", data); // Debugging
+
             if (data.exists) {
                 Swal.fire({
-                    title: 'Product Already Exists',
+                    title: 'Product Exists',
                     text: 'Are you adding a variant of this product?',
                     icon: 'warning',
                     showCancelButton: true,
@@ -757,11 +761,11 @@ function initializeInventoryManagement() {
                         disableSpecificOptions(data.existing_sizes, data.existing_colors);
                         existingProductId = data.product_id;
                         isVariantMode = true;
+                        console.log("Confirmed variant with existingProductId:", existingProductId); // Debugging
                     } else {
                         resetFormFields();
                         document.getElementById('name').value = "";
                         disableFormFields();
-                        lastCheckedProduct = null; // Reset last checked product to allow recheck
                     }
                 });
             } else {
@@ -784,6 +788,15 @@ function initializeInventoryManagement() {
 
         const selectedChannels = Array.from(document.querySelectorAll('.channel-checkbox:checked'));
         
+        console.log("Preparing to submit form data:", {
+            existingProductId,
+            productName,
+            category,
+            size,
+            color,
+            channels: selectedChannels.map(chk => chk.value)
+        }); // Debugging
+
         if (selectedChannels.length === 0) {
             Swal.fire({
                 icon: 'error',
@@ -798,6 +811,7 @@ function initializeInventoryManagement() {
 
         selectedChannels.forEach(channel => {
             const quantityInput = document.querySelector(`input[name="quantity-${channel.value.toLowerCase().replace(' ', '-')}"]`);
+            console.log(`Channel ${channel.value}, Quantity Provided: ${quantityInput.value}`); // Debugging
             if (!quantityInput || quantityInput.value.trim() === "" || parseInt(quantityInput.value) <= 0) {
                 quantityProvided = false;
             }
@@ -820,13 +834,15 @@ function initializeInventoryManagement() {
         formData.append('color', color);
         if (existingProductId) formData.append('existing_product_id', existingProductId);
 
+        console.log("Final formData to submit:", Array.from(formData.entries())); // Debugging
+
         fetch('../../backend/controllers/add_item.php', {
             method: 'POST',
             body: formData
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Server response:', data);
+            console.log('Server response after form submission:', data); // Debugging
             if (data.success) {
                 Swal.fire({
                     icon: 'success',
@@ -847,7 +863,7 @@ function initializeInventoryManagement() {
             }
         })
         .catch(error => {
-            console.error('Fetch error:', error);
+            console.error('Fetch error during form submission:', error); // Debugging
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
@@ -865,7 +881,7 @@ function initializeInventoryManagement() {
         enableSizeAndColorFields();
         document.getElementById('name').focus();
         isVariantMode = false;
-        existingProductId = null; // Reset ID after submission
+        existingProductId = null;
     }
 
     function enableSizeAndColorFields() {
@@ -924,16 +940,15 @@ function initializeInventoryManagement() {
                 
                 const productName = nameField.value.trim();
                 
-                if (productName === lastCheckedProduct) return; // Skip if the product name hasn't changed
+                if (productName === lastCheckedProduct) return;
                 
-                lastCheckedProduct = productName; // Update last checked product
+                lastCheckedProduct = productName;
                 
                 if (productName.length === 0) {
-                    resetFormFields(); // Clear all fields if input is empty
+                    resetFormFields();
                     return;
                 }
 
-                // Reset form if changing from variant to new product
                 if (isVariantMode) resetFormFields();
 
                 checkProductExists(productName);
@@ -942,6 +957,8 @@ function initializeInventoryManagement() {
     }
 
     function checkProductExists(productName) {
+        console.log("Checking if product exists:", productName); // Debugging
+
         fetch('../../backend/controllers/check_product_exists.php', {
             method: 'POST',
             headers: {
@@ -951,6 +968,8 @@ function initializeInventoryManagement() {
         })
         .then(response => response.json())
         .then(data => {
+            console.log("Product exists check response:", data); // Debugging
+
             if (data.exists) {
                 Swal.fire({
                     title: 'Product Exists',
@@ -964,12 +983,12 @@ function initializeInventoryManagement() {
                         populateFormWithExistingProduct(data);
                         disableSpecificOptions(data.existing_sizes, data.existing_colors);
                         isVariantMode = true;
-                        existingProductId = data.product_id; // Set product ID for variant
+                        existingProductId = data.product_id;
+                        console.log("Confirmed variant with existingProductId:", existingProductId); // Debugging
                     } else {
                         resetFormFields();
                         document.getElementById('name').value = "";
                         disableFormFields();
-                        lastCheckedProduct = null; // Reset last checked product to allow recheck
                     }
                 });
             } else {
@@ -995,6 +1014,9 @@ function initializeInventoryManagement() {
 
 initializeInventoryManagement();
 </script>
+
+
+
 
 
 
