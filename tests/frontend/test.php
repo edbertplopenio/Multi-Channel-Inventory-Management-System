@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 // Redirect to login if user is not authenticated
 if (!isset($_SESSION['user_email'])) {
     header("Location: ../../frontend/public/login.html");
@@ -26,7 +25,9 @@ $sql_all_inventory = "
         pv.price, 
         pv.date_added, 
         pv.image,
-        SUM(i.quantity) as total_quantity,
+        SUM(CASE WHEN i.channel = 'physical_store' THEN i.quantity ELSE 0 END) AS quantity_physical_store,
+        SUM(CASE WHEN i.channel = 'shopee' THEN i.quantity ELSE 0 END) AS quantity_shopee,
+        SUM(CASE WHEN i.channel = 'tiktok' THEN i.quantity ELSE 0 END) AS quantity_tiktok,
         GROUP_CONCAT(DISTINCT i.channel ORDER BY i.channel SEPARATOR ', ') as channels
     FROM product_variants pv
     JOIN products p ON pv.product_id = p.product_id
@@ -209,19 +210,29 @@ if (!$result_tiktok) {
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
                                 <td><?php echo $row['category']; ?></td>
-                                <td><?php echo $row['total_quantity']; ?></td>
+                                <td><?php echo $row['quantity_physical_store'] + $row['quantity_shopee'] + $row['quantity_tiktok']; ?></td>
                                 <td><?php echo $row['size']; ?></td>
                                 <td><?php echo $row['color']; ?></td>
                                 <td><?php echo $row['price']; ?></td>
                                 <td><?php echo $row['date_added']; ?></td>
                                 <td>
                                     <?php 
-                                    // Determine if it should display 'All Channels' or specific channels
-                                    $channelsArray = explode(', ', $row['channels']);
-                                    if (count($channelsArray) === 3) {
+                                    $displayChannels = [];
+                                    if ($row['quantity_physical_store'] > 0) {
+                                        $displayChannels[] = "Physical Store";
+                                    }
+                                    if ($row['quantity_shopee'] > 0) {
+                                        $displayChannels[] = "Shopee";
+                                    }
+                                    if ($row['quantity_tiktok'] > 0) {
+                                        $displayChannels[] = "TikTok";
+                                    }
+                                    
+                                    // Display 'All Channels' only if all three channels have quantities
+                                    if (count($displayChannels) === 3) {
                                         echo 'All Channels';
                                     } else {
-                                        echo implode(' and ', $channelsArray);
+                                        echo implode(' and ', $displayChannels);
                                     }
                                     ?>
                                 </td>
@@ -384,6 +395,7 @@ if (!$result_tiktok) {
 
 
 
+
     <!-- New Item Modal -->
     <div id="new-item-modal" class="modal">
         <div class="modal-content">
@@ -511,6 +523,7 @@ function initializeInventoryManagement() {
     let originalData = [];
     let lastCheckedProduct = null; // Track the last checked product name
     let isVariantMode = false;      // Track if form is in variant mode
+    let existingProductId = null;   // Track existing product ID for variant submissions
 
     function capitalizeWords(str) {
         return str.replace(/\b\w/g, char => char.toUpperCase());
@@ -732,7 +745,7 @@ function initializeInventoryManagement() {
         .then(data => {
             if (data.exists) {
                 Swal.fire({
-                    title: 'Product Exists',
+                    title: 'Product Already Exists',
                     text: 'Are you adding a variant of this product?',
                     icon: 'warning',
                     showCancelButton: true,
@@ -742,10 +755,13 @@ function initializeInventoryManagement() {
                     if (result.isConfirmed) {
                         populateFormWithExistingProduct(data);
                         disableSpecificOptions(data.existing_sizes, data.existing_colors);
-                        isVariantMode = true; // Set form to variant mode
+                        existingProductId = data.product_id;
+                        isVariantMode = true;
                     } else {
-                        resetFormFields(); // Reset the form and lock fields if user chooses "No"
+                        resetFormFields();
+                        document.getElementById('name').value = "";
                         disableFormFields();
+                        lastCheckedProduct = null; // Reset last checked product to allow recheck
                     }
                 });
             } else {
@@ -842,13 +858,14 @@ function initializeInventoryManagement() {
     }
 
     function resetFormFields() {
-        const nameValue = document.getElementById('name').value; // Preserve the name field value
+        const nameValue = document.getElementById('name').value;
         document.getElementById('new-item-form').reset();
-        document.getElementById('name').value = nameValue; // Restore the name field value
+        document.getElementById('name').value = nameValue;
         document.getElementById('category').removeAttribute('disabled');
         enableSizeAndColorFields();
-        document.getElementById('name').focus(); // Optional: focus back on name field
-        isVariantMode = false; // Reset variant mode
+        document.getElementById('name').focus();
+        isVariantMode = false;
+        existingProductId = null; // Reset ID after submission
     }
 
     function enableSizeAndColorFields() {
@@ -946,16 +963,19 @@ function initializeInventoryManagement() {
                     if (result.isConfirmed) {
                         populateFormWithExistingProduct(data);
                         disableSpecificOptions(data.existing_sizes, data.existing_colors);
-                        isVariantMode = true; // Set form to variant mode
+                        isVariantMode = true;
+                        existingProductId = data.product_id; // Set product ID for variant
                     } else {
-                        resetFormFields(); // Clear form for new product entry and lock fields
-                        document.getElementById('name').value = ""; // Clear the name field as well
+                        resetFormFields();
+                        document.getElementById('name').value = "";
                         disableFormFields();
+                        lastCheckedProduct = null; // Reset last checked product to allow recheck
                     }
                 });
             } else {
                 enableAllFields();
-                isVariantMode = false; // Reset variant mode if it's a new product
+                isVariantMode = false;
+                existingProductId = null;
             }
         })
         .catch(error => console.error('Error checking product:', error));
@@ -975,6 +995,8 @@ function initializeInventoryManagement() {
 
 initializeInventoryManagement();
 </script>
+
+
 
 
 
