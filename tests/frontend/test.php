@@ -187,12 +187,12 @@ if (!$result_tiktok) {
             </div>
         </div>
 
-<!-- All Inventory Tab -->
-<div id="all-inventory" class="tab-content active">
-    <table class="inventory-table inventory-table-all">
+        <!-- All Inventory Tab -->
+        <div id="all-inventory" class="tab-content active">
+            <table class="inventory-table inventory-table-all">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" id="select_all_all_inventory"></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -258,12 +258,12 @@ if (!$result_tiktok) {
 
         <!-- Repeat this structure for Physical Store, Shopee, and TikTok tabs with checkboxes beside the Variant ID column -->
 
-<!-- Physical Store Tab -->
-<div id="physical-store" class="tab-content">
-    <table class="inventory-table inventory-table-physical">
+        <!-- Physical Store Tab -->
+        <div id="physical-store" class="tab-content">
+            <table class="inventory-table inventory-table-physical">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" id="select_all_all_inventory"></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -305,12 +305,12 @@ if (!$result_tiktok) {
             </table>
         </div>
 
-<!-- Shopee Tab -->
-<div id="shopee" class="tab-content">
-    <table class="inventory-table inventory-table-shopee">
+        <!-- Shopee Tab -->
+        <div id="shopee" class="tab-content">
+            <table class="inventory-table inventory-table-shopee">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" id="select_all_all_inventory"></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -352,12 +352,12 @@ if (!$result_tiktok) {
             </table>
         </div>
 
-<!-- TikTok Tab -->
-<div id="tiktok" class="tab-content">
-    <table class="inventory-table inventory-table-tiktok">
+        <!-- TikTok Tab -->
+        <div id="tiktok" class="tab-content">
+            <table class="inventory-table inventory-table-tiktok">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" id="select_all_all_inventory"></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -398,6 +398,11 @@ if (!$result_tiktok) {
                 </tbody>
             </table>
         </div>
+        <div id="selection-bar" class="selection-bar hidden">
+            <span id="selected-count">0 items selected</span>
+            <button class="selection-action delete">Delete</button>
+        </div>
+
 
     </div>
 </body>
@@ -540,6 +545,122 @@ if (!$result_tiktok) {
         function capitalizeWords(str) {
             return str.replace(/\b\w/g, char => char.toUpperCase());
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+    function initializeSelectAllFeature() {
+        const selectAllCheckboxes = document.querySelectorAll('input[type="checkbox"][id^="select_all"]');
+        const selectionBar = document.getElementById("selection-bar");
+        const selectedCountDisplay = document.getElementById("selected-count");
+        const deleteButton = selectionBar.querySelector('.selection-action.delete');
+
+        function updateSelectionBar() {
+            const activeTabContent = document.querySelector('.tab-content.active');
+            const rowCheckboxes = activeTabContent.querySelectorAll('input[name="select_variant[]"]');
+            const selectedItems = activeTabContent.querySelectorAll('input[name="select_variant[]"]:checked');
+            const selectedCount = selectedItems.length;
+            selectedCountDisplay.textContent = `${selectedCount} items selected`;
+
+            // Show the selection bar only if more than 2 items are selected
+            if (selectedCount > 2) {
+                selectionBar.classList.remove('hidden');
+            } else {
+                selectionBar.classList.add('hidden');
+            }
+
+            // Update the "Select All" checkbox based on row selections
+            const selectAllCheckbox = activeTabContent.querySelector('input[type="checkbox"][id^="select_all"]');
+            selectAllCheckbox.checked = selectedItems.length === rowCheckboxes.length && rowCheckboxes.length > 0;
+        }
+
+        deleteButton.addEventListener('click', function() {
+            const activeTabContent = document.querySelector('.tab-content.active');
+            const selectedItems = activeTabContent.querySelectorAll('input[name="select_variant[]"]:checked');
+            const selectedIds = Array.from(selectedItems).map(item => item.value);
+
+            if (selectedIds.length === 0) return;
+
+            // Confirm delete action with SweetAlert
+            Swal.fire({
+                title: `Are you sure?`,
+                text: `You are about to delete ${selectedIds.length} items.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete them',
+                cancelButtonText: 'No, keep them'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Proceed with deletion for each selected item
+                    selectedIds.forEach(productId => {
+                        fetch('../../backend/controllers/delete_item.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ product_id: productId })
+})
+
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Remove the row from the table
+                                const row = activeTabContent.querySelector(`tr[data-product-id="${productId}"]`);
+                                if (row) row.remove();
+                            } else {
+                                console.error(`Failed to delete product with ID ${productId}: ${data.error}`);
+                            }
+                        })
+                        .catch(error => {
+                            console.error(`Error deleting product with ID ${productId}:`, error);
+                        });
+                    });
+
+                    // Hide the selection bar and reset "Select All" checkbox
+                    selectionBar.classList.add('hidden');
+                    const selectAllCheckbox = activeTabContent.querySelector('input[type="checkbox"][id^="select_all"]');
+                    if (selectAllCheckbox) selectAllCheckbox.checked = false;
+                }
+            });
+        });
+
+        // Event listener for "Select All" checkbox
+        selectAllCheckboxes.forEach(selectAllCheckbox => {
+            selectAllCheckbox.addEventListener('change', function() {
+                const table = selectAllCheckbox.closest('.inventory-table');
+                const rowCheckboxes = table.querySelectorAll('input[name="select_variant[]"]');
+                
+                rowCheckboxes.forEach(rowCheckbox => {
+                    rowCheckbox.checked = selectAllCheckbox.checked;
+                });
+
+                updateSelectionBar();
+            });
+        });
+
+        // Event listener for individual row checkboxes
+        document.querySelectorAll('.inventory-table input[name="select_variant[]"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectionBar);
+        });
+
+        // Event listener for tab switching
+        document.querySelector('.tabs-container').addEventListener('click', function(event) {
+            if (event.target.classList.contains('tab')) {
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+
+                // Activate the selected tab and corresponding content
+                event.target.classList.add('active');
+                const activeTabContent = document.getElementById(event.target.getAttribute('data-tab'));
+                activeTabContent.classList.add('active');
+
+                updateSelectionBar(); // Update selection bar visibility and "Select All" checkbox for the active tab
+            }
+        });
+    }
+
+    initializeSelectAllFeature();
+});
+
+
 
         function fetchOriginalData() {
             console.log("Fetching original data..."); // Debugging
@@ -1078,7 +1199,6 @@ if (!$result_tiktok) {
         height: 95vh;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
     }
 
     .header {
@@ -1190,7 +1310,32 @@ if (!$result_tiktok) {
         color: #aaa;
     }
 
-    /* Table styling */
+    /* Set a fixed height and make the table content scrollable for each tab */
+    /* Add a fixed height to the table container for each tab */
+    .tab-content {
+        display: none;
+        padding-top: 20px;
+        overflow-y: auto;
+        /* Enable vertical scrolling for the content */
+        height: calc(100vh - 280px);
+        /* Adjust height as needed */
+    }
+
+    /* Make the table header sticky */
+    .inventory-table thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f4f7fc;
+        /* Match background color */
+        z-index: 1;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .tab-content.active {
+        display: block;
+    }
+
     .inventory-table {
         width: 100%;
         border-collapse: collapse;
@@ -1198,7 +1343,8 @@ if (!$result_tiktok) {
         border-radius: 10px;
         overflow-y: auto;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        flex-grow: 1;
+        max-height: 100%;
+        /* Ensure table fits within tab content */
         table-layout: fixed;
         /* Keeps column widths fixed */
     }
@@ -1210,15 +1356,14 @@ if (!$result_tiktok) {
         border-bottom: 1px solid #eee;
         overflow: hidden;
         font-size: 12px;
-        /* Default font size */
     }
 
-    /* Apply ellipsis only to specific columns with potentially long text */
     .inventory-table td.truncate-text {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
 
     /* Checkbox Styling */
     input[type="checkbox"] {
@@ -1251,61 +1396,253 @@ if (!$result_tiktok) {
         transform: rotate(45deg);
     }
 
-/* Column width adjustments for All Inventory tab */
-.inventory-table-all th:nth-child(1), .inventory-table-all td:nth-child(1) { width: 50px; }
-    .inventory-table-all th:nth-child(2), .inventory-table-all td:nth-child(2) { width: 100px; }
-    .inventory-table-all th:nth-child(3), .inventory-table-all td:nth-child(3) { width: 120px; }
-    .inventory-table-all th:nth-child(4), .inventory-table-all td:nth-child(4) { width: 90px; }
-    .inventory-table-all th:nth-child(5), .inventory-table-all td:nth-child(5) { width: 80px; }
-    .inventory-table-all th:nth-child(6), .inventory-table-all td:nth-child(6) { width: 100px; }
-    .inventory-table-all th:nth-child(7), .inventory-table-all td:nth-child(7) { width: 80px; }
-    .inventory-table-all th:nth-child(8), .inventory-table-all td:nth-child(8) { width: 90px; }
-    .inventory-table-all th:nth-child(9), .inventory-table-all td:nth-child(9) { width: 100px; }
-    .inventory-table-all th:nth-child(10), .inventory-table-all td:nth-child(10) { width: 90px; }
-    .inventory-table-all th:nth-child(11), .inventory-table-all td:nth-child(11) { width: 90px; }
-    .inventory-table-all th:nth-child(12), .inventory-table-all td:nth-child(12) { width: 150px; white-space: nowrap; }
+    /* Column width adjustments for All Inventory tab */
+    .inventory-table-all th:nth-child(1),
+    .inventory-table-all td:nth-child(1) {
+        width: 50px;
+    }
+
+    .inventory-table-all th:nth-child(2),
+    .inventory-table-all td:nth-child(2) {
+        width: 100px;
+    }
+
+    .inventory-table-all th:nth-child(3),
+    .inventory-table-all td:nth-child(3) {
+        width: 120px;
+    }
+
+    .inventory-table-all th:nth-child(4),
+    .inventory-table-all td:nth-child(4) {
+        width: 90px;
+    }
+
+    .inventory-table-all th:nth-child(5),
+    .inventory-table-all td:nth-child(5) {
+        width: 80px;
+    }
+
+    .inventory-table-all th:nth-child(6),
+    .inventory-table-all td:nth-child(6) {
+        width: 100px;
+    }
+
+    .inventory-table-all th:nth-child(7),
+    .inventory-table-all td:nth-child(7) {
+        width: 80px;
+    }
+
+    .inventory-table-all th:nth-child(8),
+    .inventory-table-all td:nth-child(8) {
+        width: 90px;
+    }
+
+    .inventory-table-all th:nth-child(9),
+    .inventory-table-all td:nth-child(9) {
+        width: 100px;
+    }
+
+    .inventory-table-all th:nth-child(10),
+    .inventory-table-all td:nth-child(10) {
+        width: 90px;
+    }
+
+    .inventory-table-all th:nth-child(11),
+    .inventory-table-all td:nth-child(11) {
+        width: 90px;
+    }
+
+    .inventory-table-all th:nth-child(12),
+    .inventory-table-all td:nth-child(12) {
+        width: 150px;
+        white-space: nowrap;
+    }
 
     /* Column width adjustments for Physical Store tab */
-    .inventory-table-physical th:nth-child(1), .inventory-table-physical td:nth-child(1) { width: 40px; }
-    .inventory-table-physical th:nth-child(2), .inventory-table-physical td:nth-child(2) { width: 80px; }
-    .inventory-table-physical th:nth-child(3), .inventory-table-physical td:nth-child(3) { width: 90px; }
-    .inventory-table-physical th:nth-child(4), .inventory-table-physical td:nth-child(4) { width: 90px; }
-    .inventory-table-physical th:nth-child(5), .inventory-table-physical td:nth-child(5) { width: 50px; }
-    .inventory-table-physical th:nth-child(6), .inventory-table-physical td:nth-child(6) { width: 60px; }
-    .inventory-table-physical th:nth-child(7), .inventory-table-physical td:nth-child(7) { width: 70px; }
-    .inventory-table-physical th:nth-child(8), .inventory-table-physical td:nth-child(8) { width: 80px; }
-    .inventory-table-physical th:nth-child(9), .inventory-table-physical td:nth-child(9) { width: 90px; }
-    .inventory-table-physical th:nth-child(10), .inventory-table-physical td:nth-child(10) { width: 80px; }
-    .inventory-table-physical th:nth-child(11), .inventory-table-physical td:nth-child(11) { width: 150px; }
-    .inventory-table-physical th:nth-child(12), .inventory-table-physical td:nth-child(12) { width: 120px; white-space: nowrap; }
+    .inventory-table-physical th:nth-child(1),
+    .inventory-table-physical td:nth-child(1) {
+        width: 40px;
+    }
 
-/* Column width adjustments for Shopee tab */
-.inventory-table-shopee th:nth-child(1), .inventory-table-shopee td:nth-child(1) { width: 40px; }
-.inventory-table-shopee th:nth-child(2), .inventory-table-shopee td:nth-child(2) { width: 80px; }
-.inventory-table-shopee th:nth-child(3), .inventory-table-shopee td:nth-child(3) { width: 90px; }
-.inventory-table-shopee th:nth-child(4), .inventory-table-shopee td:nth-child(4) { width: 90px; }
-.inventory-table-shopee th:nth-child(5), .inventory-table-shopee td:nth-child(5) { width: 50px; }
-.inventory-table-shopee th:nth-child(6), .inventory-table-shopee td:nth-child(6) { width: 60px; }
-.inventory-table-shopee th:nth-child(7), .inventory-table-shopee td:nth-child(7) { width: 70px; }
-.inventory-table-shopee th:nth-child(8), .inventory-table-shopee td:nth-child(8) { width: 80px; }
-.inventory-table-shopee th:nth-child(9), .inventory-table-shopee td:nth-child(9) { width: 90px; }
-.inventory-table-shopee th:nth-child(10), .inventory-table-shopee td:nth-child(10) { width: 80px; }
-.inventory-table-shopee th:nth-child(11), .inventory-table-shopee td:nth-child(11) { width: 150px; }
-.inventory-table-shopee th:nth-child(12), .inventory-table-shopee td:nth-child(12) { width: 120px; white-space: nowrap; }
+    .inventory-table-physical th:nth-child(2),
+    .inventory-table-physical td:nth-child(2) {
+        width: 80px;
+    }
 
-/* Column width adjustments for TikTok tab */
-.inventory-table-tiktok th:nth-child(1), .inventory-table-tiktok td:nth-child(1) { width: 40px; }
-.inventory-table-tiktok th:nth-child(2), .inventory-table-tiktok td:nth-child(2) { width: 80px; }
-.inventory-table-tiktok th:nth-child(3), .inventory-table-tiktok td:nth-child(3) { width: 90px; }
-.inventory-table-tiktok th:nth-child(4), .inventory-table-tiktok td:nth-child(4) { width: 90px; }
-.inventory-table-tiktok th:nth-child(5), .inventory-table-tiktok td:nth-child(5) { width: 50px; }
-.inventory-table-tiktok th:nth-child(6), .inventory-table-tiktok td:nth-child(6) { width: 60px; }
-.inventory-table-tiktok th:nth-child(7), .inventory-table-tiktok td:nth-child(7) { width: 70px; }
-.inventory-table-tiktok th:nth-child(8), .inventory-table-tiktok td:nth-child(8) { width: 80px; }
-.inventory-table-tiktok th:nth-child(9), .inventory-table-tiktok td:nth-child(9) { width: 90px; }
-.inventory-table-tiktok th:nth-child(10), .inventory-table-tiktok td:nth-child(10) { width: 80px; }
-.inventory-table-tiktok th:nth-child(11), .inventory-table-tiktok td:nth-child(11) { width: 150px; }
-.inventory-table-tiktok th:nth-child(12), .inventory-table-tiktok td:nth-child(12) { width: 120px; white-space: nowrap; }
+    .inventory-table-physical th:nth-child(3),
+    .inventory-table-physical td:nth-child(3) {
+        width: 90px;
+    }
+
+    .inventory-table-physical th:nth-child(4),
+    .inventory-table-physical td:nth-child(4) {
+        width: 90px;
+    }
+
+    .inventory-table-physical th:nth-child(5),
+    .inventory-table-physical td:nth-child(5) {
+        width: 50px;
+    }
+
+    .inventory-table-physical th:nth-child(6),
+    .inventory-table-physical td:nth-child(6) {
+        width: 60px;
+    }
+
+    .inventory-table-physical th:nth-child(7),
+    .inventory-table-physical td:nth-child(7) {
+        width: 70px;
+    }
+
+    .inventory-table-physical th:nth-child(8),
+    .inventory-table-physical td:nth-child(8) {
+        width: 80px;
+    }
+
+    .inventory-table-physical th:nth-child(9),
+    .inventory-table-physical td:nth-child(9) {
+        width: 90px;
+    }
+
+    .inventory-table-physical th:nth-child(10),
+    .inventory-table-physical td:nth-child(10) {
+        width: 80px;
+    }
+
+    .inventory-table-physical th:nth-child(11),
+    .inventory-table-physical td:nth-child(11) {
+        width: 150px;
+    }
+
+    .inventory-table-physical th:nth-child(12),
+    .inventory-table-physical td:nth-child(12) {
+        width: 120px;
+        white-space: nowrap;
+    }
+
+    /* Column width adjustments for Shopee tab */
+    .inventory-table-shopee th:nth-child(1),
+    .inventory-table-shopee td:nth-child(1) {
+        width: 40px;
+    }
+
+    .inventory-table-shopee th:nth-child(2),
+    .inventory-table-shopee td:nth-child(2) {
+        width: 80px;
+    }
+
+    .inventory-table-shopee th:nth-child(3),
+    .inventory-table-shopee td:nth-child(3) {
+        width: 90px;
+    }
+
+    .inventory-table-shopee th:nth-child(4),
+    .inventory-table-shopee td:nth-child(4) {
+        width: 90px;
+    }
+
+    .inventory-table-shopee th:nth-child(5),
+    .inventory-table-shopee td:nth-child(5) {
+        width: 50px;
+    }
+
+    .inventory-table-shopee th:nth-child(6),
+    .inventory-table-shopee td:nth-child(6) {
+        width: 60px;
+    }
+
+    .inventory-table-shopee th:nth-child(7),
+    .inventory-table-shopee td:nth-child(7) {
+        width: 70px;
+    }
+
+    .inventory-table-shopee th:nth-child(8),
+    .inventory-table-shopee td:nth-child(8) {
+        width: 80px;
+    }
+
+    .inventory-table-shopee th:nth-child(9),
+    .inventory-table-shopee td:nth-child(9) {
+        width: 90px;
+    }
+
+    .inventory-table-shopee th:nth-child(10),
+    .inventory-table-shopee td:nth-child(10) {
+        width: 80px;
+    }
+
+    .inventory-table-shopee th:nth-child(11),
+    .inventory-table-shopee td:nth-child(11) {
+        width: 150px;
+    }
+
+    .inventory-table-shopee th:nth-child(12),
+    .inventory-table-shopee td:nth-child(12) {
+        width: 120px;
+        white-space: nowrap;
+    }
+
+    /* Column width adjustments for TikTok tab */
+    .inventory-table-tiktok th:nth-child(1),
+    .inventory-table-tiktok td:nth-child(1) {
+        width: 40px;
+    }
+
+    .inventory-table-tiktok th:nth-child(2),
+    .inventory-table-tiktok td:nth-child(2) {
+        width: 80px;
+    }
+
+    .inventory-table-tiktok th:nth-child(3),
+    .inventory-table-tiktok td:nth-child(3) {
+        width: 90px;
+    }
+
+    .inventory-table-tiktok th:nth-child(4),
+    .inventory-table-tiktok td:nth-child(4) {
+        width: 90px;
+    }
+
+    .inventory-table-tiktok th:nth-child(5),
+    .inventory-table-tiktok td:nth-child(5) {
+        width: 50px;
+    }
+
+    .inventory-table-tiktok th:nth-child(6),
+    .inventory-table-tiktok td:nth-child(6) {
+        width: 60px;
+    }
+
+    .inventory-table-tiktok th:nth-child(7),
+    .inventory-table-tiktok td:nth-child(7) {
+        width: 70px;
+    }
+
+    .inventory-table-tiktok th:nth-child(8),
+    .inventory-table-tiktok td:nth-child(8) {
+        width: 80px;
+    }
+
+    .inventory-table-tiktok th:nth-child(9),
+    .inventory-table-tiktok td:nth-child(9) {
+        width: 90px;
+    }
+
+    .inventory-table-tiktok th:nth-child(10),
+    .inventory-table-tiktok td:nth-child(10) {
+        width: 80px;
+    }
+
+    .inventory-table-tiktok th:nth-child(11),
+    .inventory-table-tiktok td:nth-child(11) {
+        width: 150px;
+    }
+
+    .inventory-table-tiktok th:nth-child(12),
+    .inventory-table-tiktok td:nth-child(12) {
+        width: 120px;
+        white-space: nowrap;
+    }
 
 
     /* Ensure buttons do not get truncated */
@@ -1643,5 +1980,44 @@ if (!$result_tiktok) {
     #reset-filters:hover {
         background-color: #004085;
     }
-</style>
 
+
+.selection-bar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    background-color: #007bff; /* Main accent color */
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.selection-bar.hidden {
+    display: none;
+}
+
+.selection-bar .selection-action {
+    background-color: white;
+    color: #007bff; /* Accent color for action text */
+    border: none;
+    padding: 5px 10px;
+    border-radius: 50px; /* Makes the button rounded */
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.selection-bar .selection-action:hover {
+    background-color: #0056b3; /* Hover color */
+    color: white;
+}
+
+</style>
