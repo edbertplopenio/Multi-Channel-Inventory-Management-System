@@ -205,52 +205,51 @@ if (!$result_tiktok) {
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Populate table with aggregated data from the database -->
-                    <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
-                        <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
-                            <tr>
-                                <td><?php echo $row['variant_id']; ?></td>
-                                <td><?php echo $row['name']; ?></td>
-                                <td><?php echo $row['category']; ?></td>
-                                <td><?php echo $row['quantity_physical_store'] + $row['quantity_shopee'] + $row['quantity_tiktok']; ?></td>
-                                <td><?php echo $row['size']; ?></td>
-                                <td><?php echo $row['color']; ?></td>
-                                <td><?php echo $row['price']; ?></td>
-                                <td><?php echo $row['date_added']; ?></td>
-                                <td>
-                                    <?php
-                                    $displayChannels = [];
-                                    if ($row['quantity_physical_store'] > 0) {
-                                        $displayChannels[] = "Physical Store";
-                                    }
-                                    if ($row['quantity_shopee'] > 0) {
-                                        $displayChannels[] = "Shopee";
-                                    }
-                                    if ($row['quantity_tiktok'] > 0) {
-                                        $displayChannels[] = "TikTok";
-                                    }
+    <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
+        <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
+            <tr>
+                <td><?php echo $row['variant_id']; ?></td>
+                <td class="wrap-text"><?php echo $row['name']; ?></td> <!-- Enable wrapping for long names -->
+                <td class="wrap-text"><?php echo $row['category']; ?></td> <!-- Enable wrapping for long categories -->
+                <td><?php echo $row['quantity_physical_store'] + $row['quantity_shopee'] + $row['quantity_tiktok']; ?></td>
+                <td><?php echo $row['size']; ?></td>
+                <td><?php echo $row['color']; ?></td>
+                <td><?php echo $row['price']; ?></td>
+                <td><?php echo $row['date_added']; ?></td>
+                <td class="wrap-text">
+                    <?php
+                    $displayChannels = [];
+                    if ($row['quantity_physical_store'] > 0) {
+                        $displayChannels[] = "Physical Store";
+                    }
+                    if ($row['quantity_shopee'] > 0) {
+                        $displayChannels[] = "Shopee";
+                    }
+                    if ($row['quantity_tiktok'] > 0) {
+                        $displayChannels[] = "TikTok";
+                    }
 
-                                    // Display 'All Channels' only if all three channels have quantities
-                                    if (count($displayChannels) === 3) {
-                                        echo 'All Channels';
-                                    } else {
-                                        echo implode(' and ', $displayChannels);
-                                    }
-                                    ?>
-                                </td>
-                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                                <td>
-                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="11">No inventory items found.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
+                    if (count($displayChannels) === 3) {
+                        echo 'All Channels';
+                    } else {
+                        echo implode(' and ', $displayChannels);
+                    }
+                    ?>
+                </td>
+                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                <td>
+                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                </td>
+            </tr>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <tr>
+            <td colspan="11">No inventory items found.</td>
+        </tr>
+    <?php endif; ?>
+</tbody>
+
             </table>
         </div>
 
@@ -1023,14 +1022,6 @@ if (!$result_tiktok) {
     initializeInventoryManagement();
 </script>
 
-
-
-
-
-
-
-
-
 </body>
 
 </html>
@@ -1189,6 +1180,7 @@ if (!$result_tiktok) {
         color: #aaa;
     }
 
+    /* Table styling */
     .inventory-table {
         width: 100%;
         border-collapse: collapse;
@@ -1197,6 +1189,7 @@ if (!$result_tiktok) {
         overflow-y: auto;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         flex-grow: 1;
+        table-layout: fixed; /* Keeps column widths fixed */
     }
 
     .inventory-table th,
@@ -1204,6 +1197,37 @@ if (!$result_tiktok) {
         padding: 10px;
         text-align: left;
         border-bottom: 1px solid #eee;
+        overflow: hidden;
+        font-size: 12px; /* Default font size */
+    }
+
+    /* Apply ellipsis only to specific columns with potentially long text */
+    .inventory-table td.truncate-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+/* Specific width adjustments */
+.inventory-table th:nth-child(1), .inventory-table td:nth-child(1) { width: 90px; } /* Variant ID */
+.inventory-table th:nth-child(2), .inventory-table td:nth-child(2) { width: 100px; } /* Name */
+.inventory-table th:nth-child(3), .inventory-table td:nth-child(3) { width: 100px; } /* Category */
+.inventory-table th:nth-child(4), .inventory-table td:nth-child(4) { width: 80px; } /* Quantity */
+.inventory-table th:nth-child(5), .inventory-table td:nth-child(5) { width: 80px; } /* Size */
+.inventory-table th:nth-child(6), .inventory-table td:nth-child(6) { width: 80px; } /* Color */
+.inventory-table th:nth-child(7), .inventory-table td:nth-child(7) { width: 90px; } /* Price */
+.inventory-table th:nth-child(8), .inventory-table td:nth-child(8) { width: 120px; } /* Date Added */
+.inventory-table th:nth-child(9), .inventory-table td:nth-child(9) { width: 100px; } /* Channel */
+.inventory-table th:nth-child(10), .inventory-table td:nth-child(10) { width: 120px; } /* Image */
+.inventory-table th:nth-child(11), .inventory-table td:nth-child(11) { width: 150px; } /* Action */
+
+
+    /* Ensure buttons do not get truncated */
+    .inventory-table td .action-button {
+        white-space: normal; /* Allow buttons to display fully */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .inventory-table th {
@@ -1215,7 +1239,6 @@ if (!$result_tiktok) {
 
     .inventory-table td {
         color: #555;
-        font-size: 12px;
     }
 
     .inventory-table img {
@@ -1245,8 +1268,11 @@ if (!$result_tiktok) {
         cursor: pointer;
         font-size: 12px;
         font-weight: 500;
-        margin-right: 5px;
+        margin-right: 5px; /* Space between buttons */
         transition: background-color 0.3s ease;
+        display: inline-flex; /* Ensure buttons appear side-by-side */
+        align-items: center;
+        justify-content: center;
     }
 
     .action-button.edit {
@@ -1285,7 +1311,6 @@ if (!$result_tiktok) {
 
     .new-item-container .header h1 {
         font-size: 18px;
-        /* Decreased for a smaller, more compact look */
         color: #333;
         font-weight: 600;
         margin-bottom: 20px;
@@ -1302,17 +1327,14 @@ if (!$result_tiktok) {
         font-weight: 600;
         color: #333;
         font-size: 12px;
-        /* Decreased label font size */
     }
 
     .form-group input,
     .form-group select {
         padding: 8px;
-        /* Decreased input padding */
         border: 1px solid #ccc;
         border-radius: 5px;
         font-size: 12px;
-        /* Decreased input font size */
         background-color: #f9f9f9;
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
@@ -1338,9 +1360,7 @@ if (!$result_tiktok) {
     .cancel-button,
     .save-item-button {
         padding: 10px 15px;
-        /* Decreased button padding */
         font-size: 12px;
-        /* Decreased button font size */
         font-weight: 600;
         border-radius: 5px;
         cursor: pointer;
@@ -1352,7 +1372,6 @@ if (!$result_tiktok) {
         color: #007bff;
         border: 2px solid #007bff;
         width: 200px;
-        /* Reduced button width */
     }
 
     .cancel-button:hover {
@@ -1363,7 +1382,6 @@ if (!$result_tiktok) {
         background-color: #007bff;
         color: white;
         width: 200px;
-        /* Reduced button width */
     }
 
     .save-item-button:hover {
@@ -1373,7 +1391,6 @@ if (!$result_tiktok) {
     /* Modal styles */
     .modal {
         display: none;
-        /* Hidden by default */
         position: fixed;
         z-index: 1000;
         left: 0;
@@ -1388,11 +1405,9 @@ if (!$result_tiktok) {
     .modal-content {
         background-color: #ffffff;
         padding: 15px;
-        /* Reduced modal padding */
         border-radius: 10px;
         box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
         width: 40%;
-        /* Reduced modal width */
     }
 
     .close-button {
@@ -1400,7 +1415,6 @@ if (!$result_tiktok) {
         top: 10px;
         right: 15px;
         font-size: 18px;
-        /* Reduced close button size */
         font-weight: bold;
         cursor: pointer;
     }
@@ -1434,27 +1448,19 @@ if (!$result_tiktok) {
         font-size: 12px;
     }
 
-
-
-
-
     /* Filter input styling */
     .filter-input-container {
         position: relative;
         display: inline-block;
         margin-bottom: 10px;
-        /* Smaller spacing */
     }
 
     .filter-input {
         padding: 6px 10px;
-        /* Reduced padding */
         font-size: 12px;
-        /* Smaller font size */
         border: 1px solid #ccc;
         border-radius: 18px;
         width: 220px;
-        /* Smaller width */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
     }
@@ -1470,7 +1476,6 @@ if (!$result_tiktok) {
         top: 50%;
         transform: translateY(-50%);
         font-size: 14px;
-        /* Smaller icon */
         color: #888;
         cursor: pointer;
         transition: color 0.3s ease;
@@ -1478,7 +1483,6 @@ if (!$result_tiktok) {
 
     .icon-filter:hover {
         color: #0056b3;
-        /* Blue */
     }
 
     /* Dropdown styling for filters */
@@ -1489,9 +1493,7 @@ if (!$result_tiktok) {
         top: 40px;
         right: 0;
         padding: 8px;
-        /* Reduced padding */
         width: 220px;
-        /* Smaller width */
         border-radius: 4px;
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
         display: none;
@@ -1506,12 +1508,10 @@ if (!$result_tiktok) {
 
     .filter-section {
         margin-bottom: 10px;
-        /* Smaller spacing */
     }
 
     .filter-section label {
         font-size: 11px;
-        /* Smaller font size */
         font-weight: 600;
         color: #004085;
         margin-bottom: 5px;
@@ -1521,9 +1521,7 @@ if (!$result_tiktok) {
     .filter-section input {
         width: 100%;
         padding: 5px;
-        /* Smaller padding */
         font-size: 11px;
-        /* Smaller font size */
         border: 1px solid #ccc;
         border-radius: 3px;
         background-color: #f8f9fa;
@@ -1541,13 +1539,11 @@ if (!$result_tiktok) {
         color: white;
         border: none;
         padding: 6px;
-        /* Smaller padding */
         border-radius: 4px;
         cursor: pointer;
         width: 100%;
         margin-top: 5px;
         font-size: 12px;
-        /* Smaller font size */
         transition: background-color 0.3s ease;
     }
 
@@ -1556,3 +1552,4 @@ if (!$result_tiktok) {
         background-color: #004085;
     }
 </style>
+
