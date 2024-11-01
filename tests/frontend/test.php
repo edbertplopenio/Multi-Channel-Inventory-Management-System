@@ -767,6 +767,7 @@ if (!$result_tiktok) {
                                 existingProductId = data.product_id;
                                 isVariantMode = true;
                                 console.log("Confirmed variant with existingProductId:", existingProductId); // Debugging
+                                submitForm(existingProductId, productName, category, size, color); // Call with existingProductId for variant
                             } else {
                                 resetFormFields();
                                 document.getElementById('name').value = "";
@@ -774,7 +775,7 @@ if (!$result_tiktok) {
                             }
                         });
                     } else {
-                        submitForm(null, productName, category, size, color);
+                        submitForm(null, productName, category, size, color); // Call with null if it's a new product
                     }
                 })
                 .catch(error => {
@@ -1021,6 +1022,7 @@ if (!$result_tiktok) {
 
     initializeInventoryManagement();
 </script>
+
 
 
 
