@@ -188,7 +188,7 @@ if (!$result_tiktok) {
         </div>
 
         <!-- All Inventory Tab -->
-        <div id="all-inventory" class="tab-content active">
+        <div id="all-inventory" class="tab-content active" data-type="variant">
             <table class="inventory-table inventory-table-all">
                 <thead>
                     <tr>
@@ -209,7 +209,7 @@ if (!$result_tiktok) {
                 <tbody>
                     <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
-                            <tr>
+                            <tr data-item-id="<?php echo $row['variant_id']; ?>">
                                 <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td class="wrap-text"><?php echo $row['name']; ?></td> <!-- Enable wrapping for long names -->
@@ -252,18 +252,17 @@ if (!$result_tiktok) {
                         </tr>
                     <?php endif; ?>
                 </tbody>
-
             </table>
         </div>
 
-        <!-- Repeat this structure for Physical Store, Shopee, and TikTok tabs with checkboxes beside the Variant ID column -->
+        <!-- Repeat this structure for Physical Store, Shopee, and TikTok tabs, updating the select_all checkbox ID -->
 
         <!-- Physical Store Tab -->
-        <div id="physical-store" class="tab-content">
+        <div id="physical-store" class="tab-content" data-type="inventory">
             <table class="inventory-table inventory-table-physical">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="select_all_all_inventory"></th>
+                        <th><input type="checkbox" id="select_all_physical_store"></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -279,7 +278,7 @@ if (!$result_tiktok) {
                 <tbody>
                     <?php if (mysqli_num_rows($result_physical_store) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_physical_store)): ?>
-                            <tr>
+                            <tr data-item-id="<?php echo $row['variant_id']; ?>">
                                 <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
@@ -306,11 +305,11 @@ if (!$result_tiktok) {
         </div>
 
         <!-- Shopee Tab -->
-        <div id="shopee" class="tab-content">
+        <div id="shopee" class="tab-content" data-type="inventory">
             <table class="inventory-table inventory-table-shopee">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="select_all_all_inventory"></th>
+                        <th><input type="checkbox" id="select_all_shopee"></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -326,7 +325,7 @@ if (!$result_tiktok) {
                 <tbody>
                     <?php if (mysqli_num_rows($result_shopee) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_shopee)): ?>
-                            <tr>
+                            <tr data-item-id="<?php echo $row['variant_id']; ?>">
                                 <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
@@ -353,11 +352,11 @@ if (!$result_tiktok) {
         </div>
 
         <!-- TikTok Tab -->
-        <div id="tiktok" class="tab-content">
+        <div id="tiktok" class="tab-content" data-type="inventory">
             <table class="inventory-table inventory-table-tiktok">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="select_all_all_inventory"></th>
+                        <th><input type="checkbox" id="select_all_tiktok"></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -373,7 +372,7 @@ if (!$result_tiktok) {
                 <tbody>
                     <?php if (mysqli_num_rows($result_tiktok) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_tiktok)): ?>
-                            <tr>
+                            <tr data-item-id="<?php echo $row['variant_id']; ?>">
                                 <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
@@ -408,6 +407,7 @@ if (!$result_tiktok) {
 </body>
 
 </html>
+
 
 
 
@@ -571,56 +571,57 @@ if (!$result_tiktok) {
                 }
 
                 deleteButton.addEventListener('click', function() {
-    const activeTabContent = document.querySelector('.tab-content.active');
-    const selectedItems = activeTabContent.querySelectorAll('input[name="select_variant[]"]:checked');
-    
-    // Determine the data-type based on the active tab
-    const dataType = activeTabContent.getAttribute('data-type'); // e.g., 'product', 'variant', 'inventory'
-    const selectedIds = Array.from(selectedItems).map(item => item.value);
+                    const activeTabContent = document.querySelector('.tab-content.active');
+                    const selectedItems = activeTabContent.querySelectorAll('input[name="select_variant[]"]:checked');
 
-    if (selectedIds.length === 0) return;
+                    // Determine the data-type based on the active tab
+                    const dataType = activeTabContent.getAttribute('data-type'); // "variant" or "inventory"
+                    const selectedIds = Array.from(selectedItems).map(item => item.value);
 
-    Swal.fire({
-        title: `Are you sure?`,
-        text: `You are about to delete ${selectedIds.length} items.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, delete them',
-        cancelButtonText: 'No, keep them'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            selectedIds.forEach(itemId => {
-                fetch('../../backend/controllers/delete_item.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        item_id: itemId,
-                        type: dataType // Pass the type based on the tab
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data); // Debugging: Log the response data
-                    if (data.status === 'success') {
-                        const row = activeTabContent.querySelector(`tr[data-item-id="${itemId}"]`);
-                        if (row) row.remove();
-                    } else {
-                        console.error(`Failed to delete item with ID ${itemId}: ${data.message}`);
-                    }
-                })
-                .catch(error => {
-                    console.error(`Error deleting item with ID ${itemId}:`, error);
+                    if (selectedIds.length === 0) return;
+
+                    Swal.fire({
+                        title: `Are you sure?`,
+                        text: `You are about to delete ${selectedIds.length} items.`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, delete them',
+                        cancelButtonText: 'No, keep them'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            selectedIds.forEach(itemId => {
+                                fetch('../../backend/controllers/delete_item.php', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            item_id: itemId,
+                                            type: dataType // "variant" or "inventory"
+                                        })
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(data); // Debugging: Log the response data
+                                        if (data.status === 'success') {
+                                            const row = activeTabContent.querySelector(`tr[data-item-id="${itemId}"]`);
+                                            if (row) row.remove();
+                                        } else {
+                                            console.error(`Failed to delete item with ID ${itemId}: ${data.message}`);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error(`Error deleting item with ID ${itemId}:`, error);
+                                    });
+                            });
+
+                            selectionBar.classList.add('hidden');
+                            const selectAllCheckbox = activeTabContent.querySelector('input[type="checkbox"][id^="select_all"]');
+                            if (selectAllCheckbox) selectAllCheckbox.checked = false;
+                        }
+                    });
                 });
-            });
 
-            selectionBar.classList.add('hidden');
-            const selectAllCheckbox = activeTabContent.querySelector('input[type="checkbox"][id^="select_all"]');
-            if (selectAllCheckbox) selectAllCheckbox.checked = false;
-        }
-    });
-});
 
 
                 selectAllCheckboxes.forEach(selectAllCheckbox => {
@@ -657,12 +658,6 @@ if (!$result_tiktok) {
             initializeSelectAllFeature();
         });
 
-
-
-
-
-
-
         function fetchOriginalData() {
             console.log("Fetching original data..."); // Debugging
             fetch('../../backend/controllers/get_inventory.php')
@@ -686,7 +681,8 @@ if (!$result_tiktok) {
                 const channelsText = item.channels.length === 3 ? 'All Channels' : item.channels.join(' and ');
 
                 const allInventoryRow = `
-                <tr data-product-id="${item.product_id}">
+                <tr data-item-id="${item.product_id}">
+                    <td><input type="checkbox" name="select_variant[]" value="${item.product_id}"></td>
                     <td>${item.product_id}</td>
                     <td>${item.name}</td>
                     <td>${item.category}</td>
@@ -707,7 +703,8 @@ if (!$result_tiktok) {
 
                 if (item.quantity_physical_store > 0) {
                     const physicalStoreRow = `
-                    <tr data-product-id="${item.product_id}">
+                    <tr data-item-id="${item.product_id}">
+                        <td><input type="checkbox" name="select_variant[]" value="${item.product_id}"></td>
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
@@ -728,7 +725,8 @@ if (!$result_tiktok) {
 
                 if (item.quantity_shopee > 0) {
                     const shopeeRow = `
-                    <tr data-product-id="${item.product_id}">
+                    <tr data-item-id="${item.product_id}">
+                        <td><input type="checkbox" name="select_variant[]" value="${item.product_id}"></td>
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
@@ -749,7 +747,8 @@ if (!$result_tiktok) {
 
                 if (item.quantity_tiktok > 0) {
                     const tiktokRow = `
-                    <tr data-product-id="${item.product_id}">
+                    <tr data-item-id="${item.product_id}">
+                        <td><input type="checkbox" name="select_variant[]" value="${item.product_id}"></td>
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
@@ -1153,6 +1152,7 @@ if (!$result_tiktok) {
 
     initializeInventoryManagement();
 </script>
+
 
 </body>
 
