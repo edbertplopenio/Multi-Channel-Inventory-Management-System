@@ -546,6 +546,67 @@ if (!$result_tiktok) {
             return str.replace(/\b\w/g, char => char.toUpperCase());
         }
 
+        function refreshInventory() {
+            fetch('../../backend/controllers/get_inventory.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        populateInventoryTables(data.items);
+                    } else {
+                        console.error('Error fetching inventory:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function attachDeleteButtonListeners() {
+            document.querySelectorAll('.action-button.delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = button.closest('tr');
+                    const itemId = row.getAttribute('data-item-id');
+                    const dataType = row.closest('.tab-content').getAttribute('data-type'); // Get whether it's "variant" or "inventory"
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'This will permanently delete the item.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'No, keep it'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            fetch('../../backend/controllers/delete_item.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        item_id: itemId,
+                                        type: dataType
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        Swal.fire('Deleted!', data.message, 'success');
+                                        refreshInventory(); // Refresh inventory after deletion
+                                    } else {
+                                        Swal.fire('Error!', data.message, 'error');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire('Error!', 'Something went wrong while deleting the item.', 'error');
+                                });
+                        }
+                    });
+                });
+            });
+        }
+
+
+
+
         document.addEventListener('DOMContentLoaded', () => {
             function initializeSelectAllFeature() {
                 const selectAllCheckboxes = document.querySelectorAll('input[type="checkbox"][id^="select_all"]');
@@ -658,6 +719,63 @@ if (!$result_tiktok) {
             initializeSelectAllFeature();
         });
 
+
+
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listeners to all delete buttons
+            document.querySelectorAll('.action-button.delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = button.closest('tr');
+                    const itemId = row.getAttribute('data-item-id');
+                    const dataType = row.closest('.tab-content').getAttribute('data-type'); // Get whether it's "variant" or "inventory"
+
+                    // Confirm deletion with the user
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'This will permanently delete the item.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'No, keep it'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            // Send delete request to the server
+                            fetch('../../backend/controllers/delete_item.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        item_id: itemId,
+                                        type: dataType
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        // Remove the row from the table on successful deletion
+                                        row.remove();
+                                        Swal.fire('Deleted!', data.message, 'success');
+                                    } else {
+                                        Swal.fire('Error!', data.message, 'error');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire('Error!', 'Something went wrong while deleting the item.', 'error');
+                                });
+                        }
+                    });
+                });
+            });
+        });
+
+
+
+
+
         function fetchOriginalData() {
             console.log("Fetching original data..."); // Debugging
             fetch('../../backend/controllers/get_inventory.php')
@@ -767,6 +885,9 @@ if (!$result_tiktok) {
                     document.querySelector('#tiktok .inventory-table tbody').insertAdjacentHTML('beforeend', tiktokRow);
                 }
             });
+
+            attachDeleteButtonListeners(); // Reattach delete listeners after repopulating
+
         }
 
         document.querySelector('.tabs-container').addEventListener('click', function(event) {
@@ -988,6 +1109,8 @@ if (!$result_tiktok) {
                         });
                         document.getElementById('new-item-form').reset();
                         modal.style.display = "none";
+                        // Add the line below to refresh inventory dynamically
+                        refreshInventory(); // Refresh inventory after adding a new item
                     } else {
                         console.error('Server returned error:', data.message);
                         Swal.fire({
