@@ -187,10 +187,12 @@ if (!$result_tiktok) {
             </div>
         </div>
 
-        <div id="all-inventory" class="tab-content active">
-            <table class="inventory-table">
+<!-- All Inventory Tab -->
+<div id="all-inventory" class="tab-content active">
+    <table class="inventory-table inventory-table-all">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -205,59 +207,63 @@ if (!$result_tiktok) {
                     </tr>
                 </thead>
                 <tbody>
-    <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
-        <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
-            <tr>
-                <td><?php echo $row['variant_id']; ?></td>
-                <td class="wrap-text"><?php echo $row['name']; ?></td> <!-- Enable wrapping for long names -->
-                <td class="wrap-text"><?php echo $row['category']; ?></td> <!-- Enable wrapping for long categories -->
-                <td><?php echo $row['quantity_physical_store'] + $row['quantity_shopee'] + $row['quantity_tiktok']; ?></td>
-                <td><?php echo $row['size']; ?></td>
-                <td><?php echo $row['color']; ?></td>
-                <td><?php echo $row['price']; ?></td>
-                <td><?php echo $row['date_added']; ?></td>
-                <td class="wrap-text">
-                    <?php
-                    $displayChannels = [];
-                    if ($row['quantity_physical_store'] > 0) {
-                        $displayChannels[] = "Physical Store";
-                    }
-                    if ($row['quantity_shopee'] > 0) {
-                        $displayChannels[] = "Shopee";
-                    }
-                    if ($row['quantity_tiktok'] > 0) {
-                        $displayChannels[] = "TikTok";
-                    }
+                    <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
+                        <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
+                            <tr>
+                                <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
+                                <td><?php echo $row['variant_id']; ?></td>
+                                <td class="wrap-text"><?php echo $row['name']; ?></td> <!-- Enable wrapping for long names -->
+                                <td class="wrap-text"><?php echo $row['category']; ?></td> <!-- Enable wrapping for long categories -->
+                                <td><?php echo $row['quantity_physical_store'] + $row['quantity_shopee'] + $row['quantity_tiktok']; ?></td>
+                                <td><?php echo $row['size']; ?></td>
+                                <td><?php echo $row['color']; ?></td>
+                                <td><?php echo $row['price']; ?></td>
+                                <td><?php echo $row['date_added']; ?></td>
+                                <td class="wrap-text">
+                                    <?php
+                                    $displayChannels = [];
+                                    if ($row['quantity_physical_store'] > 0) {
+                                        $displayChannels[] = "Physical Store";
+                                    }
+                                    if ($row['quantity_shopee'] > 0) {
+                                        $displayChannels[] = "Shopee";
+                                    }
+                                    if ($row['quantity_tiktok'] > 0) {
+                                        $displayChannels[] = "TikTok";
+                                    }
 
-                    if (count($displayChannels) === 3) {
-                        echo 'All Channels';
-                    } else {
-                        echo implode(' and ', $displayChannels);
-                    }
-                    ?>
-                </td>
-                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                <td>
-                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
-                </td>
-            </tr>
-        <?php endwhile; ?>
-    <?php else: ?>
-        <tr>
-            <td colspan="11">No inventory items found.</td>
-        </tr>
-    <?php endif; ?>
-</tbody>
+                                    if (count($displayChannels) === 3) {
+                                        echo 'All Channels';
+                                    } else {
+                                        echo implode(' and ', $displayChannels);
+                                    }
+                                    ?>
+                                </td>
+                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td>
+                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="12">No inventory items found.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
 
             </table>
         </div>
 
-        <!-- Tab for Physical Store -->
-        <div id="physical-store" class="tab-content">
-            <table class="inventory-table">
+        <!-- Repeat this structure for Physical Store, Shopee, and TikTok tabs with checkboxes beside the Variant ID column -->
+
+<!-- Physical Store Tab -->
+<div id="physical-store" class="tab-content">
+    <table class="inventory-table inventory-table-physical">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -274,10 +280,11 @@ if (!$result_tiktok) {
                     <?php if (mysqli_num_rows($result_physical_store) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_physical_store)): ?>
                             <tr>
+                                <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
                                 <td><?php echo $row['category']; ?></td>
-                                <td><?php echo $row['quantity']; ?></td> <!-- Displaying quantity directly -->
+                                <td><?php echo $row['quantity']; ?></td>
                                 <td><?php echo $row['size']; ?></td>
                                 <td><?php echo $row['color']; ?></td>
                                 <td><?php echo $row['price']; ?></td>
@@ -291,19 +298,19 @@ if (!$result_tiktok) {
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="10">No inventory items found in Physical Store.</td>
+                            <td colspan="11">No inventory items found in Physical Store.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
-
-        <!-- Tab for Shopee -->
-        <div id="shopee" class="tab-content">
-            <table class="inventory-table">
+<!-- Shopee Tab -->
+<div id="shopee" class="tab-content">
+    <table class="inventory-table inventory-table-shopee">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -320,10 +327,11 @@ if (!$result_tiktok) {
                     <?php if (mysqli_num_rows($result_shopee) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_shopee)): ?>
                             <tr>
+                                <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
                                 <td><?php echo $row['category']; ?></td>
-                                <td><?php echo $row['quantity']; ?></td> <!-- Displaying quantity directly -->
+                                <td><?php echo $row['quantity']; ?></td>
                                 <td><?php echo $row['size']; ?></td>
                                 <td><?php echo $row['color']; ?></td>
                                 <td><?php echo $row['price']; ?></td>
@@ -337,19 +345,19 @@ if (!$result_tiktok) {
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="10">No inventory items found in Shopee.</td>
+                            <td colspan="11">No inventory items found in Shopee.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
-
-        <!-- Tab for TikTok -->
-        <div id="tiktok" class="tab-content">
-            <table class="inventory-table">
+<!-- TikTok Tab -->
+<div id="tiktok" class="tab-content">
+    <table class="inventory-table inventory-table-tiktok">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -366,10 +374,11 @@ if (!$result_tiktok) {
                     <?php if (mysqli_num_rows($result_tiktok) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_tiktok)): ?>
                             <tr>
+                                <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
                                 <td><?php echo $row['category']; ?></td>
-                                <td><?php echo $row['quantity']; ?></td> <!-- Displaying quantity directly -->
+                                <td><?php echo $row['quantity']; ?></td>
                                 <td><?php echo $row['size']; ?></td>
                                 <td><?php echo $row['color']; ?></td>
                                 <td><?php echo $row['price']; ?></td>
@@ -383,7 +392,7 @@ if (!$result_tiktok) {
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="10">No inventory items found in TikTok.</td>
+                            <td colspan="11">No inventory items found in TikTok.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
@@ -394,6 +403,7 @@ if (!$result_tiktok) {
 </body>
 
 </html>
+
 
 
 
@@ -1189,7 +1199,8 @@ if (!$result_tiktok) {
         overflow-y: auto;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         flex-grow: 1;
-        table-layout: fixed; /* Keeps column widths fixed */
+        table-layout: fixed;
+        /* Keeps column widths fixed */
     }
 
     .inventory-table th,
@@ -1198,7 +1209,8 @@ if (!$result_tiktok) {
         text-align: left;
         border-bottom: 1px solid #eee;
         overflow: hidden;
-        font-size: 12px; /* Default font size */
+        font-size: 12px;
+        /* Default font size */
     }
 
     /* Apply ellipsis only to specific columns with potentially long text */
@@ -1208,23 +1220,97 @@ if (!$result_tiktok) {
         text-overflow: ellipsis;
     }
 
-/* Specific width adjustments */
-.inventory-table th:nth-child(1), .inventory-table td:nth-child(1) { width: 90px; } /* Variant ID */
-.inventory-table th:nth-child(2), .inventory-table td:nth-child(2) { width: 100px; } /* Name */
-.inventory-table th:nth-child(3), .inventory-table td:nth-child(3) { width: 100px; } /* Category */
-.inventory-table th:nth-child(4), .inventory-table td:nth-child(4) { width: 80px; } /* Quantity */
-.inventory-table th:nth-child(5), .inventory-table td:nth-child(5) { width: 80px; } /* Size */
-.inventory-table th:nth-child(6), .inventory-table td:nth-child(6) { width: 80px; } /* Color */
-.inventory-table th:nth-child(7), .inventory-table td:nth-child(7) { width: 90px; } /* Price */
-.inventory-table th:nth-child(8), .inventory-table td:nth-child(8) { width: 120px; } /* Date Added */
-.inventory-table th:nth-child(9), .inventory-table td:nth-child(9) { width: 100px; } /* Channel */
-.inventory-table th:nth-child(10), .inventory-table td:nth-child(10) { width: 120px; } /* Image */
-.inventory-table th:nth-child(11), .inventory-table td:nth-child(11) { width: 150px; } /* Action */
+    /* Checkbox Styling */
+    input[type="checkbox"] {
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background-color: #ffffff;
+        border: 1px solid #007bff;
+        border-radius: 3px;
+        position: relative;
+        cursor: pointer;
+        outline: none;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    input[type="checkbox"]:checked {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 2px;
+        width: 4px;
+        height: 8px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+
+/* Column width adjustments for All Inventory tab */
+.inventory-table-all th:nth-child(1), .inventory-table-all td:nth-child(1) { width: 50px; }
+    .inventory-table-all th:nth-child(2), .inventory-table-all td:nth-child(2) { width: 100px; }
+    .inventory-table-all th:nth-child(3), .inventory-table-all td:nth-child(3) { width: 120px; }
+    .inventory-table-all th:nth-child(4), .inventory-table-all td:nth-child(4) { width: 90px; }
+    .inventory-table-all th:nth-child(5), .inventory-table-all td:nth-child(5) { width: 80px; }
+    .inventory-table-all th:nth-child(6), .inventory-table-all td:nth-child(6) { width: 100px; }
+    .inventory-table-all th:nth-child(7), .inventory-table-all td:nth-child(7) { width: 80px; }
+    .inventory-table-all th:nth-child(8), .inventory-table-all td:nth-child(8) { width: 90px; }
+    .inventory-table-all th:nth-child(9), .inventory-table-all td:nth-child(9) { width: 100px; }
+    .inventory-table-all th:nth-child(10), .inventory-table-all td:nth-child(10) { width: 90px; }
+    .inventory-table-all th:nth-child(11), .inventory-table-all td:nth-child(11) { width: 90px; }
+    .inventory-table-all th:nth-child(12), .inventory-table-all td:nth-child(12) { width: 150px; white-space: nowrap; }
+
+    /* Column width adjustments for Physical Store tab */
+    .inventory-table-physical th:nth-child(1), .inventory-table-physical td:nth-child(1) { width: 40px; }
+    .inventory-table-physical th:nth-child(2), .inventory-table-physical td:nth-child(2) { width: 80px; }
+    .inventory-table-physical th:nth-child(3), .inventory-table-physical td:nth-child(3) { width: 90px; }
+    .inventory-table-physical th:nth-child(4), .inventory-table-physical td:nth-child(4) { width: 90px; }
+    .inventory-table-physical th:nth-child(5), .inventory-table-physical td:nth-child(5) { width: 50px; }
+    .inventory-table-physical th:nth-child(6), .inventory-table-physical td:nth-child(6) { width: 60px; }
+    .inventory-table-physical th:nth-child(7), .inventory-table-physical td:nth-child(7) { width: 70px; }
+    .inventory-table-physical th:nth-child(8), .inventory-table-physical td:nth-child(8) { width: 80px; }
+    .inventory-table-physical th:nth-child(9), .inventory-table-physical td:nth-child(9) { width: 90px; }
+    .inventory-table-physical th:nth-child(10), .inventory-table-physical td:nth-child(10) { width: 80px; }
+    .inventory-table-physical th:nth-child(11), .inventory-table-physical td:nth-child(11) { width: 150px; }
+    .inventory-table-physical th:nth-child(12), .inventory-table-physical td:nth-child(12) { width: 120px; white-space: nowrap; }
+
+/* Column width adjustments for Shopee tab */
+.inventory-table-shopee th:nth-child(1), .inventory-table-shopee td:nth-child(1) { width: 40px; }
+.inventory-table-shopee th:nth-child(2), .inventory-table-shopee td:nth-child(2) { width: 80px; }
+.inventory-table-shopee th:nth-child(3), .inventory-table-shopee td:nth-child(3) { width: 90px; }
+.inventory-table-shopee th:nth-child(4), .inventory-table-shopee td:nth-child(4) { width: 90px; }
+.inventory-table-shopee th:nth-child(5), .inventory-table-shopee td:nth-child(5) { width: 50px; }
+.inventory-table-shopee th:nth-child(6), .inventory-table-shopee td:nth-child(6) { width: 60px; }
+.inventory-table-shopee th:nth-child(7), .inventory-table-shopee td:nth-child(7) { width: 70px; }
+.inventory-table-shopee th:nth-child(8), .inventory-table-shopee td:nth-child(8) { width: 80px; }
+.inventory-table-shopee th:nth-child(9), .inventory-table-shopee td:nth-child(9) { width: 90px; }
+.inventory-table-shopee th:nth-child(10), .inventory-table-shopee td:nth-child(10) { width: 80px; }
+.inventory-table-shopee th:nth-child(11), .inventory-table-shopee td:nth-child(11) { width: 150px; }
+.inventory-table-shopee th:nth-child(12), .inventory-table-shopee td:nth-child(12) { width: 120px; white-space: nowrap; }
+
+/* Column width adjustments for TikTok tab */
+.inventory-table-tiktok th:nth-child(1), .inventory-table-tiktok td:nth-child(1) { width: 40px; }
+.inventory-table-tiktok th:nth-child(2), .inventory-table-tiktok td:nth-child(2) { width: 80px; }
+.inventory-table-tiktok th:nth-child(3), .inventory-table-tiktok td:nth-child(3) { width: 90px; }
+.inventory-table-tiktok th:nth-child(4), .inventory-table-tiktok td:nth-child(4) { width: 90px; }
+.inventory-table-tiktok th:nth-child(5), .inventory-table-tiktok td:nth-child(5) { width: 50px; }
+.inventory-table-tiktok th:nth-child(6), .inventory-table-tiktok td:nth-child(6) { width: 60px; }
+.inventory-table-tiktok th:nth-child(7), .inventory-table-tiktok td:nth-child(7) { width: 70px; }
+.inventory-table-tiktok th:nth-child(8), .inventory-table-tiktok td:nth-child(8) { width: 80px; }
+.inventory-table-tiktok th:nth-child(9), .inventory-table-tiktok td:nth-child(9) { width: 90px; }
+.inventory-table-tiktok th:nth-child(10), .inventory-table-tiktok td:nth-child(10) { width: 80px; }
+.inventory-table-tiktok th:nth-child(11), .inventory-table-tiktok td:nth-child(11) { width: 150px; }
+.inventory-table-tiktok th:nth-child(12), .inventory-table-tiktok td:nth-child(12) { width: 120px; white-space: nowrap; }
 
 
     /* Ensure buttons do not get truncated */
     .inventory-table td .action-button {
-        white-space: normal; /* Allow buttons to display fully */
+        white-space: normal;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -1268,11 +1354,18 @@ if (!$result_tiktok) {
         cursor: pointer;
         font-size: 12px;
         font-weight: 500;
-        margin-right: 5px; /* Space between buttons */
+        margin-right: 5px;
         transition: background-color 0.3s ease;
-        display: inline-flex; /* Ensure buttons appear side-by-side */
+        display: inline-flex;
         align-items: center;
         justify-content: center;
+        white-space: nowrap;
+    }
+
+    .action-column {
+        display: flex;
+        gap: 5px;
+        flex-wrap: nowrap;
     }
 
     .action-button.edit {
@@ -1293,7 +1386,6 @@ if (!$result_tiktok) {
         margin: 0 auto;
         background-color: #ffffff;
         box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
-        /* Same as inventory-container */
         border-radius: 10px;
         height: 95vh;
         display: flex;
