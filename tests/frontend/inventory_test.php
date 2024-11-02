@@ -1099,12 +1099,21 @@ if (!$result_tiktok) {
                 // Use variant_id if available; otherwise, fallback to product_id
                 const variantId = data.variant_id || data.product_id;
 
-                // Combine channels with non-zero quantities into a string for display in the All Inventory table
-                const channelsText = [
-                    data.quantity_physical_store > 0 ? "Physical Store" : null,
-                    data.quantity_shopee > 0 ? "Shopee" : null,
-                    data.quantity_tiktok > 0 ? "TikTok" : null
-                ].filter(Boolean).join(", ") || "N/A";
+                // Determine `channelsText` for the All Inventory table
+                const hasPhysicalStore = data.quantity_physical_store > 0;
+                const hasShopee = data.quantity_shopee > 0;
+                const hasTiktok = data.quantity_tiktok > 0;
+
+                let channelsText;
+                if (hasPhysicalStore && hasShopee && hasTiktok) {
+                    channelsText = "All Channels";
+                } else {
+                    channelsText = [
+                        hasPhysicalStore ? "Physical Store" : null,
+                        hasShopee ? "Shopee" : null,
+                        hasTiktok ? "TikTok" : null
+                    ].filter(Boolean).join(", ") || "N/A";
+                }
 
                 // Define a template for the All Inventory table with the "Channel" column
                 const allInventoryRowTemplate = (id, name, category, quantity, size, color, price, dateAdded, image, channels) => `
