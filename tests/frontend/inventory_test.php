@@ -560,7 +560,6 @@ if (!$result_tiktok) {
                 .catch(error => console.error('Error:', error));
         }
 
-
         function attachArchiveButtonListeners() {
             document.querySelectorAll('.action-button.archive').forEach(button => {
                 button.addEventListener('click', function() {
@@ -621,8 +620,6 @@ if (!$result_tiktok) {
                 });
             });
         }
-
-
 
         document.addEventListener('DOMContentLoaded', () => {
             function initializeSelectAllFeature() {
@@ -1274,6 +1271,7 @@ if (!$result_tiktok) {
 
     initializeInventoryManagement();
 </script>
+
 
 
 

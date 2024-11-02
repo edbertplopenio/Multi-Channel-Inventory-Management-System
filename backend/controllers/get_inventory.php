@@ -46,10 +46,14 @@ if ($result && mysqli_num_rows($result) > 0) {
             'quantity_tiktok' => $row['quantity_tiktok']
         ];
     }
-    echo json_encode(['success' => true, 'items' => $items]);
-} else {
-    echo json_encode(['success' => false, 'message' => 'No inventory items found.']);
 }
+
+// Always return success, even if items are empty
+echo json_encode(['success' => true, 'items' => $items]);
+
+// Close the database connection
+mysqli_close($conn);
+?>
 
 // Close the database connection
 mysqli_close($conn);
