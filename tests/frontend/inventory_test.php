@@ -560,14 +560,20 @@ if (!$result_tiktok) {
                 .catch(error => console.error('Error:', error));
         }
 
+
         function attachArchiveButtonListeners() {
             document.querySelectorAll('.action-button.archive').forEach(button => {
                 button.addEventListener('click', function() {
                     const row = button.closest('tr');
                     const itemId = row.getAttribute('data-item-id');
-                    const quantity = parseInt(row.querySelector('td:nth-child(5)').textContent); // assuming the quantity is in the 5th column
+                    const physicalQuantity = parseInt(row.querySelector('td:nth-child(5)').textContent) || 0;
+                    const shopeeQuantity = parseInt(row.querySelector('td:nth-child(6)').textContent) || 0;
+                    const tiktokQuantity = parseInt(row.querySelector('td:nth-child(7)').textContent) || 0;
 
-                    if (quantity > 0) {
+                    // Check if all quantities are 0
+                    const totalQuantity = physicalQuantity + shopeeQuantity + tiktokQuantity;
+
+                    if (totalQuantity > 0) {
                         Swal.fire({
                             icon: 'warning',
                             title: 'Cannot Archive',
@@ -577,7 +583,7 @@ if (!$result_tiktok) {
                         return;
                     }
 
-                    // Proceed with the archive confirmation if quantity is 0
+                    // Proceed with the archive confirmation if total quantity is 0
                     Swal.fire({
                         title: 'Are you sure?',
                         text: 'This item will be archived.',
@@ -601,7 +607,7 @@ if (!$result_tiktok) {
                                 .then(data => {
                                     if (data.status === 'success') {
                                         Swal.fire('Archived!', data.message, 'success');
-                                        row.remove(); // Optionally remove the row from the table
+                                        refreshInventory(); // Refresh all tabs after archiving
                                     } else {
                                         Swal.fire('Error!', data.message, 'error');
                                     }
@@ -615,6 +621,7 @@ if (!$result_tiktok) {
                 });
             });
         }
+
 
 
         document.addEventListener('DOMContentLoaded', () => {
