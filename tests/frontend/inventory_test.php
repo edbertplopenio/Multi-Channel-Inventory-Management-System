@@ -14,7 +14,7 @@ if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
 }
 
-// Fetch aggregated data for All Inventory tab
+// Fetch aggregated data for All Inventory tab, excluding archived items
 $sql_all_inventory = "
     SELECT 
         pv.variant_id, 
@@ -32,6 +32,7 @@ $sql_all_inventory = "
     FROM product_variants pv
     JOIN products p ON pv.product_id = p.product_id
     JOIN inventory i ON pv.variant_id = i.variant_id
+    WHERE pv.is_archived = 0
     GROUP BY pv.variant_id, pv.size, pv.color, pv.price, pv.date_added, pv.image";
 $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
 
@@ -39,36 +40,36 @@ if (!$result_all_inventory) {
     die("Error executing query for All Inventory: " . mysqli_error($conn));
 }
 
-// Fetch data for Physical Store inventory
+// Fetch data for Physical Store inventory, excluding archived items
 $sql_physical_store = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
                        FROM product_variants pv
                        JOIN products p ON pv.product_id = p.product_id
                        JOIN inventory i ON pv.variant_id = i.variant_id
-                       WHERE i.channel = 'physical_store'";
+                       WHERE i.channel = 'physical_store' AND pv.is_archived = 0";
 $result_physical_store = mysqli_query($conn, $sql_physical_store);
 
 if (!$result_physical_store) {
     die("Error executing query for Physical Store: " . mysqli_error($conn));
 }
 
-// Fetch data for Shopee inventory
+// Fetch data for Shopee inventory, excluding archived items
 $sql_shopee = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
                FROM product_variants pv
                JOIN products p ON pv.product_id = p.product_id
                JOIN inventory i ON pv.variant_id = i.variant_id
-               WHERE i.channel = 'shopee'";
+               WHERE i.channel = 'shopee' AND pv.is_archived = 0";
 $result_shopee = mysqli_query($conn, $sql_shopee);
 
 if (!$result_shopee) {
     die("Error executing query for Shopee: " . mysqli_error($conn));
 }
 
-// Fetch data for TikTok inventory
+// Fetch data for TikTok inventory, excluding archived items
 $sql_tiktok = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
                FROM product_variants pv
                JOIN products p ON pv.product_id = p.product_id
                JOIN inventory i ON pv.variant_id = i.variant_id
-               WHERE i.channel = 'tiktok'";
+               WHERE i.channel = 'tiktok' AND pv.is_archived = 0";
 $result_tiktok = mysqli_query($conn, $sql_tiktok);
 
 if (!$result_tiktok) {
@@ -212,8 +213,8 @@ if (!$result_tiktok) {
                             <tr data-item-id="<?php echo $row['variant_id']; ?>">
                                 <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
                                 <td><?php echo $row['variant_id']; ?></td>
-                                <td class="wrap-text"><?php echo $row['name']; ?></td> <!-- Enable wrapping for long names -->
-                                <td class="wrap-text"><?php echo $row['category']; ?></td> <!-- Enable wrapping for long categories -->
+                                <td class="wrap-text"><?php echo $row['name']; ?></td>
+                                <td class="wrap-text"><?php echo $row['category']; ?></td>
                                 <td><?php echo $row['quantity_physical_store'] + $row['quantity_shopee'] + $row['quantity_tiktok']; ?></td>
                                 <td><?php echo $row['size']; ?></td>
                                 <td><?php echo $row['color']; ?></td>
@@ -242,7 +243,7 @@ if (!$result_tiktok) {
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
                                     <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                    <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -291,7 +292,7 @@ if (!$result_tiktok) {
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
                                     <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                    <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -338,7 +339,7 @@ if (!$result_tiktok) {
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
                                     <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                    <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -385,7 +386,7 @@ if (!$result_tiktok) {
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
                                     <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                    <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -399,14 +400,14 @@ if (!$result_tiktok) {
         </div>
         <div id="selection-bar" class="selection-bar hidden">
             <span id="selected-count">0 items selected</span>
-            <button class="selection-action delete">Delete</button>
+            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
         </div>
-
 
     </div>
 </body>
 
 </html>
+
 
 
 
@@ -538,9 +539,9 @@ if (!$result_tiktok) {
 <script>
     function initializeInventoryManagement() {
         let originalData = [];
-        let lastCheckedProduct = null; // Track the last checked product name
-        let isVariantMode = false; // Track if form is in variant mode
-        let existingProductId = null; // Track existing product ID for variant submissions
+        let lastCheckedProduct = null;
+        let isVariantMode = false;
+        let existingProductId = null;
 
         function capitalizeWords(str) {
             return str.replace(/\b\w/g, char => char.toUpperCase());
@@ -559,44 +560,55 @@ if (!$result_tiktok) {
                 .catch(error => console.error('Error:', error));
         }
 
-        function attachDeleteButtonListeners() {
-            document.querySelectorAll('.action-button.delete').forEach(button => {
+        function attachArchiveButtonListeners() {
+            document.querySelectorAll('.action-button.archive').forEach(button => {
                 button.addEventListener('click', function() {
                     const row = button.closest('tr');
                     const itemId = row.getAttribute('data-item-id');
-                    const dataType = row.closest('.tab-content').getAttribute('data-type'); // Get whether it's "variant" or "inventory"
+                    const quantity = parseInt(row.querySelector('td:nth-child(5)').textContent); // assuming the quantity is in the 5th column
 
+                    if (quantity > 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Cannot Archive',
+                            text: 'This item cannot be archived as it still has quantity in stock.',
+                            confirmButtonText: 'OK'
+                        });
+                        return;
+                    }
+
+                    // Proceed with the archive confirmation if quantity is 0
                     Swal.fire({
                         title: 'Are you sure?',
-                        text: 'This will permanently delete the item.',
+                        text: 'This item will be archived.',
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonText: 'Yes, delete it!',
+                        confirmButtonText: 'Yes, archive it!',
                         cancelButtonText: 'No, keep it'
                     }).then(result => {
                         if (result.isConfirmed) {
-                            fetch('../../backend/controllers/delete_item.php', {
+                            // Send archive request to the server
+                            fetch('../../backend/controllers/archive_item.php', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
                                     },
                                     body: JSON.stringify({
-                                        item_id: itemId,
-                                        type: dataType
+                                        item_id: itemId
                                     })
                                 })
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.status === 'success') {
-                                        Swal.fire('Deleted!', data.message, 'success');
-                                        refreshInventory(); // Refresh inventory after deletion
+                                        Swal.fire('Archived!', data.message, 'success');
+                                        row.remove(); // Optionally remove the row from the table
                                     } else {
                                         Swal.fire('Error!', data.message, 'error');
                                     }
                                 })
                                 .catch(error => {
                                     console.error('Error:', error);
-                                    Swal.fire('Error!', 'Something went wrong while deleting the item.', 'error');
+                                    Swal.fire('Error!', 'Something went wrong while archiving the item.', 'error');
                                 });
                         }
                     });
@@ -605,14 +617,12 @@ if (!$result_tiktok) {
         }
 
 
-
-
         document.addEventListener('DOMContentLoaded', () => {
             function initializeSelectAllFeature() {
                 const selectAllCheckboxes = document.querySelectorAll('input[type="checkbox"][id^="select_all"]');
                 const selectionBar = document.getElementById("selection-bar");
                 const selectedCountDisplay = document.getElementById("selected-count");
-                const deleteButton = selectionBar.querySelector('.selection-action.delete');
+                const archiveButton = selectionBar.querySelector('.selection-action.archive');
 
                 function updateSelectionBar() {
                     const activeTabContent = document.querySelector('.tab-content.active');
@@ -631,48 +641,46 @@ if (!$result_tiktok) {
                     selectAllCheckbox.checked = selectedItems.length === rowCheckboxes.length && rowCheckboxes.length > 0;
                 }
 
-                deleteButton.addEventListener('click', function() {
+                archiveButton.addEventListener('click', function() {
                     const activeTabContent = document.querySelector('.tab-content.active');
                     const selectedItems = activeTabContent.querySelectorAll('input[name="select_variant[]"]:checked');
-
-                    // Determine the data-type based on the active tab
-                    const dataType = activeTabContent.getAttribute('data-type'); // "variant" or "inventory"
+                    const dataType = activeTabContent.getAttribute('data-type');
                     const selectedIds = Array.from(selectedItems).map(item => item.value);
 
                     if (selectedIds.length === 0) return;
 
                     Swal.fire({
                         title: `Are you sure?`,
-                        text: `You are about to delete ${selectedIds.length} items.`,
+                        text: `You are about to archive ${selectedIds.length} items.`,
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonText: 'Yes, delete them',
+                        confirmButtonText: 'Yes, archive them',
                         cancelButtonText: 'No, keep them'
                     }).then((result) => {
                         if (result.isConfirmed) {
                             selectedIds.forEach(itemId => {
-                                fetch('../../backend/controllers/delete_item.php', {
+                                fetch('../../backend/controllers/archive_item.php', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'
                                         },
                                         body: JSON.stringify({
                                             item_id: itemId,
-                                            type: dataType // "variant" or "inventory"
+                                            type: dataType
                                         })
                                     })
                                     .then(response => response.json())
                                     .then(data => {
-                                        console.log(data); // Debugging: Log the response data
+                                        console.log(data);
                                         if (data.status === 'success') {
                                             const row = activeTabContent.querySelector(`tr[data-item-id="${itemId}"]`);
                                             if (row) row.remove();
                                         } else {
-                                            console.error(`Failed to delete item with ID ${itemId}: ${data.message}`);
+                                            console.error(`Failed to archive item with ID ${itemId}: ${data.message}`);
                                         }
                                     })
                                     .catch(error => {
-                                        console.error(`Error deleting item with ID ${itemId}:`, error);
+                                        console.error(`Error archiving item with ID ${itemId}:`, error);
                                     });
                             });
 
@@ -682,8 +690,6 @@ if (!$result_tiktok) {
                         }
                     });
                 });
-
-
 
                 selectAllCheckboxes.forEach(selectAllCheckbox => {
                     selectAllCheckbox.addEventListener('change', function() {
@@ -719,30 +725,23 @@ if (!$result_tiktok) {
             initializeSelectAllFeature();
         });
 
-
-
-
-
         document.addEventListener('DOMContentLoaded', () => {
-            // Add event listeners to all delete buttons
-            document.querySelectorAll('.action-button.delete').forEach(button => {
+            document.querySelectorAll('.action-button.archive').forEach(button => {
                 button.addEventListener('click', function() {
                     const row = button.closest('tr');
                     const itemId = row.getAttribute('data-item-id');
-                    const dataType = row.closest('.tab-content').getAttribute('data-type'); // Get whether it's "variant" or "inventory"
+                    const dataType = row.closest('.tab-content').getAttribute('data-type');
 
-                    // Confirm deletion with the user
                     Swal.fire({
                         title: 'Are you sure?',
-                        text: 'This will permanently delete the item.',
+                        text: 'This will archive the item.',
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonText: 'Yes, delete it!',
+                        confirmButtonText: 'Yes, archive it!',
                         cancelButtonText: 'No, keep it'
                     }).then(result => {
                         if (result.isConfirmed) {
-                            // Send delete request to the server
-                            fetch('../../backend/controllers/delete_item.php', {
+                            fetch('../../backend/controllers/archive_item.php', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -755,16 +754,15 @@ if (!$result_tiktok) {
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.status === 'success') {
-                                        // Remove the row from the table on successful deletion
                                         row.remove();
-                                        Swal.fire('Deleted!', data.message, 'success');
+                                        Swal.fire('Archived!', data.message, 'success');
                                     } else {
                                         Swal.fire('Error!', data.message, 'error');
                                     }
                                 })
                                 .catch(error => {
                                     console.error('Error:', error);
-                                    Swal.fire('Error!', 'Something went wrong while deleting the item.', 'error');
+                                    Swal.fire('Error!', 'Something went wrong while archiving the item.', 'error');
                                 });
                         }
                     });
@@ -772,16 +770,12 @@ if (!$result_tiktok) {
             });
         });
 
-
-
-
-
         function fetchOriginalData() {
-            console.log("Fetching original data..."); // Debugging
+            console.log("Fetching original data...");
             fetch('../../backend/controllers/get_inventory.php')
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Fetched data:", data); // Debugging
+                    console.log("Fetched data:", data);
                     if (data.success) {
                         populateInventoryTables(data.items);
                     } else {
@@ -789,7 +783,7 @@ if (!$result_tiktok) {
                     }
                 })
                 .catch(error => {
-                    console.error('Error during fetchOriginalData:', error); // Debugging
+                    console.error('Error during fetchOriginalData:', error);
                 });
         }
 
@@ -813,7 +807,7 @@ if (!$result_tiktok) {
                     <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                     <td>
                         <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                        <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                        <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                     </td>
                 </tr>
             `;
@@ -834,7 +828,7 @@ if (!$result_tiktok) {
                         <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
                             <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                         </td>
                     </tr>
                 `;
@@ -856,7 +850,7 @@ if (!$result_tiktok) {
                         <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
                             <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                         </td>
                     </tr>
                 `;
@@ -878,7 +872,7 @@ if (!$result_tiktok) {
                         <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
                             <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                         </td>
                     </tr>
                 `;
@@ -886,8 +880,7 @@ if (!$result_tiktok) {
                 }
             });
 
-            attachDeleteButtonListeners(); // Reattach delete listeners after repopulating
-
+            attachArchiveButtonListeners();
         }
 
         document.querySelector('.tabs-container').addEventListener('click', function(event) {
@@ -915,7 +908,7 @@ if (!$result_tiktok) {
         function closeModal() {
             modal.style.display = "none";
             resetFormFields();
-            disableFormFields(); // Reset and lock fields on close
+            disableFormFields();
         }
 
         document.querySelectorAll('.channel-checkbox').forEach(checkbox => {
@@ -1001,7 +994,7 @@ if (!$result_tiktok) {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Product exists check response:", data); // Debugging
+                    console.log("Product exists check response:", data);
 
                     if (data.exists) {
                         Swal.fire({
@@ -1017,8 +1010,8 @@ if (!$result_tiktok) {
                                 disableSpecificOptions(data.existing_sizes, data.existing_colors);
                                 existingProductId = data.product_id;
                                 isVariantMode = true;
-                                console.log("Confirmed variant with existingProductId:", existingProductId); // Debugging
-                                submitForm(existingProductId, productName, category, size, color); // Call with existingProductId for variant
+                                console.log("Confirmed variant with existingProductId:", existingProductId);
+                                submitForm(existingProductId, productName, category, size, color);
                             } else {
                                 resetFormFields();
                                 document.getElementById('name').value = "";
@@ -1026,7 +1019,7 @@ if (!$result_tiktok) {
                             }
                         });
                     } else {
-                        submitForm(null, productName, category, size, color); // Call with null if it's a new product
+                        submitForm(null, productName, category, size, color);
                     }
                 })
                 .catch(error => {
@@ -1052,7 +1045,7 @@ if (!$result_tiktok) {
                 size,
                 color,
                 channels: selectedChannels.map(chk => chk.value)
-            }); // Debugging
+            });
 
             if (selectedChannels.length === 0) {
                 Swal.fire({
@@ -1068,7 +1061,7 @@ if (!$result_tiktok) {
 
             selectedChannels.forEach(channel => {
                 const quantityInput = document.querySelector(`input[name="quantity-${channel.value.toLowerCase().replace(' ', '-')}"]`);
-                console.log(`Channel ${channel.value}, Quantity Provided: ${quantityInput.value}`); // Debugging
+                console.log(`Channel ${channel.value}, Quantity Provided: ${quantityInput.value}`);
                 if (!quantityInput || quantityInput.value.trim() === "" || parseInt(quantityInput.value) <= 0) {
                     quantityProvided = false;
                 }
@@ -1091,7 +1084,7 @@ if (!$result_tiktok) {
             formData.append('color', color);
             if (existingProductId) formData.append('existing_product_id', existingProductId);
 
-            console.log("Final formData to submit:", Array.from(formData.entries())); // Debugging
+            console.log("Final formData to submit:", Array.from(formData.entries()));
 
             fetch('../../backend/controllers/add_item.php', {
                     method: 'POST',
@@ -1099,7 +1092,7 @@ if (!$result_tiktok) {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Server response after form submission:', data); // Debugging
+                    console.log('Server response after form submission:', data);
                     if (data.success) {
                         Swal.fire({
                             icon: 'success',
@@ -1109,8 +1102,7 @@ if (!$result_tiktok) {
                         });
                         document.getElementById('new-item-form').reset();
                         modal.style.display = "none";
-                        // Add the line below to refresh inventory dynamically
-                        refreshInventory(); // Refresh inventory after adding a new item
+                        refreshInventory();
                     } else {
                         console.error('Server returned error:', data.message);
                         Swal.fire({
@@ -1122,7 +1114,7 @@ if (!$result_tiktok) {
                     }
                 })
                 .catch(error => {
-                    console.error('Fetch error during form submission:', error); // Debugging
+                    console.error('Fetch error during form submission:', error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -1216,7 +1208,7 @@ if (!$result_tiktok) {
         }
 
         function checkProductExists(productName) {
-            console.log("Checking if product exists:", productName); // Debugging
+            console.log("Checking if product exists:", productName);
 
             fetch('../../backend/controllers/check_product_exists.php', {
                     method: 'POST',
@@ -1229,7 +1221,7 @@ if (!$result_tiktok) {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Product exists check response:", data); // Debugging
+                    console.log("Product exists check response:", data);
 
                     if (data.exists) {
                         Swal.fire({
@@ -1245,7 +1237,7 @@ if (!$result_tiktok) {
                                 disableSpecificOptions(data.existing_sizes, data.existing_colors);
                                 isVariantMode = true;
                                 existingProductId = data.product_id;
-                                console.log("Confirmed variant with existingProductId:", existingProductId); // Debugging
+                                console.log("Confirmed variant with existingProductId:", existingProductId);
                             } else {
                                 resetFormFields();
                                 document.getElementById('name').value = "";
@@ -1275,6 +1267,7 @@ if (!$result_tiktok) {
 
     initializeInventoryManagement();
 </script>
+
 
 
 </body>

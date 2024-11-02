@@ -98,6 +98,13 @@ mysqli_close($conn);
                                 <span class="text">Inventory Replenishment</span>
                             </a>
                         </li>
+                        <!-- Archive Items section -->
+                        <li id="archive-item">
+                            <a href="#" id="archive-link">
+                                <i class="icon ph-bold ph-folder-simple"></i> <!-- Icon -->
+                                <span class="text">Archived Items</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -122,7 +129,6 @@ mysqli_close($conn);
                 </div>
             </div>
         </div>
-
 
         <!-- Main Content Area -->
         <div class="main-content" id="main-content">
@@ -179,6 +185,13 @@ mysqli_close($conn);
                 e.preventDefault();
                 $('#main-content').load('../../backend/views/user_management.php');
                 setActive('user-account-link', 'user-account-item');
+            });
+
+            // Load content for Archive Items and set active class
+            $('#archive-link').on('click', function(e) {
+                e.preventDefault();
+                $('#main-content').load('../../backend/views/archived_items.php');
+                setActive('archive-link', 'archive-item');
             });
 
             // Account section links
