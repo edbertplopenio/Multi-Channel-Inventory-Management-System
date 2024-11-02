@@ -1038,95 +1038,154 @@ if (!$result_tiktok) {
         });
 
         function submitForm(existingProductId, productName, category, size, color) {
-            const formData = new FormData(document.getElementById('new-item-form'));
+    const formData = new FormData(document.getElementById('new-item-form'));
+    const selectedChannels = Array.from(document.querySelectorAll('.channel-checkbox:checked'));
 
-            const selectedChannels = Array.from(document.querySelectorAll('.channel-checkbox:checked'));
+    if (selectedChannels.length === 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please select at least one channel and enter a quantity.',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
 
-            console.log("Preparing to submit form data:", {
-                existingProductId,
-                productName,
-                category,
-                size,
-                color,
-                channels: selectedChannels.map(chk => chk.value)
-            });
+    let quantityProvided = true;
 
-            if (selectedChannels.length === 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Please select at least one channel and enter a quantity.',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            let quantityProvided = true;
-
-            selectedChannels.forEach(channel => {
-                const quantityInput = document.querySelector(`input[name="quantity-${channel.value.toLowerCase().replace(' ', '-')}"]`);
-                console.log(`Channel ${channel.value}, Quantity Provided: ${quantityInput.value}`);
-                if (!quantityInput || quantityInput.value.trim() === "" || parseInt(quantityInput.value) <= 0) {
-                    quantityProvided = false;
-                }
-            });
-
-            if (!quantityProvided) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Each selected channel must have a valid quantity greater than zero.',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            selectedChannels.forEach(channel => formData.append('channels[]', channel.value));
-            formData.append('name', productName);
-            formData.append('category', category);
-            formData.append('size', size);
-            formData.append('color', color);
-            if (existingProductId) formData.append('existing_product_id', existingProductId);
-
-            console.log("Final formData to submit:", Array.from(formData.entries()));
-
-            fetch('../../backend/controllers/add_item.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Server response after form submission:', data);
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: 'Product updated successfully!',
-                            confirmButtonText: 'OK'
-                        });
-                        document.getElementById('new-item-form').reset();
-                        modal.style.display = "none";
-                        refreshInventory();
-                    } else {
-                        console.error('Server returned error:', data.message);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Error: ' + data.message,
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Fetch error during form submission:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Something went wrong! Please check the console for more details.',
-                        confirmButtonText: 'OK'
-                    });
-                });
+    selectedChannels.forEach(channel => {
+        const quantityInput = document.querySelector(`input[name="quantity-${channel.value.toLowerCase().replace(' ', '-')}"]`);
+        if (!quantityInput || quantityInput.value.trim() === "" || parseInt(quantityInput.value) <= 0) {
+            quantityProvided = false;
         }
+    });
+
+    if (!quantityProvided) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Each selected channel must have a valid quantity greater than zero.',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    selectedChannels.forEach(channel => formData.append('channels[]', channel.value));
+    formData.append('name', productName);
+    formData.append('category', category);
+    formData.append('size', size);
+    formData.append('color', color);
+    if (existingProductId) formData.append('existing_product_id', existingProductId);
+
+    fetch('../../backend/controllers/add_item.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Product added successfully!',
+                    confirmButtonText: 'OK'
+                });
+                document.getElementById('new-item-form').reset();
+                modal.style.display = "none";
+
+                // Clean up productName to remove extra backslashes
+                const cleanedProductName = productName.replace(/\\/g, "");
+
+                // Use variant_id if available; otherwise, fallback to product_id
+                const variantId = data.variant_id || data.product_id;
+
+                // Combine channels with non-zero quantities into a string for display in the All Inventory table
+                const channelsText = [
+                    data.quantity_physical_store > 0 ? "Physical Store" : null,
+                    data.quantity_shopee > 0 ? "Shopee" : null,
+                    data.quantity_tiktok > 0 ? "TikTok" : null
+                ].filter(Boolean).join(", ") || "N/A";
+
+                // Define a template for the All Inventory table with the "Channel" column
+                const allInventoryRowTemplate = (id, name, category, quantity, size, color, price, dateAdded, image, channels) => `
+                    <tr data-item-id="${id}">
+                        <td><input type="checkbox" name="select_variant[]" value="${id}"></td>
+                        <td>${id}</td>
+                        <td>${name}</td>
+                        <td>${category}</td>
+                        <td>${quantity}</td>
+                        <td>${size}</td>
+                        <td>${color}</td>
+                        <td>${price}</td>
+                        <td>${dateAdded}</td>
+                        <td>${channels}</td>
+                        <td><img src="../../frontend/public/images/${image || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                        <td>
+                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
+                        </td>
+                    </tr>
+                `;
+
+                // Define a template for channel-specific tables without the "Channel" column
+                const channelSpecificRowTemplate = (id, name, category, quantity, size, color, price, dateAdded, image) => `
+                    <tr data-item-id="${id}">
+                        <td><input type="checkbox" name="select_variant[]" value="${id}"></td>
+                        <td>${id}</td>
+                        <td>${name}</td>
+                        <td>${category}</td>
+                        <td>${quantity}</td>
+                        <td>${size}</td>
+                        <td>${color}</td>
+                        <td>${price}</td>
+                        <td>${dateAdded}</td>
+                        <td><img src="../../frontend/public/images/${image || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                        <td>
+                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
+                        </td>
+                    </tr>
+                `;
+
+                // Insert the row into the "All Inventory" table with total quantities and channel summary
+                const allInventoryRow = allInventoryRowTemplate(variantId, cleanedProductName, category, data.total_quantity, size, color, data.price, data.date_added, data.image, channelsText);
+                document.querySelector('#all-inventory .inventory-table tbody').insertAdjacentHTML('beforeend', allInventoryRow);
+
+                // Append rows to specific tables, showing zero if quantity is not provided
+                const physicalStoreQuantity = data.quantity_physical_store || 0;
+                const shopeeQuantity = data.quantity_shopee || 0;
+                const tiktokQuantity = data.quantity_tiktok || 0;
+
+                const physicalStoreRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, physicalStoreQuantity, size, color, data.price, data.date_added, data.image);
+                document.querySelector('#physical-store .inventory-table tbody').insertAdjacentHTML('beforeend', physicalStoreRow);
+
+                const shopeeRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, shopeeQuantity, size, color, data.price, data.date_added, data.image);
+                document.querySelector('#shopee .inventory-table tbody').insertAdjacentHTML('beforeend', shopeeRow);
+
+                const tiktokRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, tiktokQuantity, size, color, data.price, data.date_added, data.image);
+                document.querySelector('#tiktok .inventory-table tbody').insertAdjacentHTML('beforeend', tiktokRow);
+
+                // Re-attach the event listener for the archive button
+                attachArchiveButtonListeners();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error: ' + data.message,
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error during form submission:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Something went wrong! Please check the console for more details.',
+                confirmButtonText: 'OK'
+            });
+        });
+}
 
         function resetFormFields() {
             const nameValue = document.getElementById('name').value;

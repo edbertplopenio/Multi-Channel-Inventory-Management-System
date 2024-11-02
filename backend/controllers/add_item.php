@@ -99,25 +99,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('Failed to add inventory: ' . mysqli_error($conn));
         }
 
-        // Commit the transaction
-        mysqli_commit($conn);
+// Commit the transaction
+mysqli_commit($conn);
 
-        echo json_encode([
-            'success' => true,
-            'product_id' => $product_id,
-            'name' => $name, 
-            'category' => $category, 
-            'size' => $size, 
-            'color' => $color, 
-            'price' => $price, 
-            'date_added' => $date_added, 
-            'channels' => $channels, 
-            'quantity_physical_store' => $quantity_physical_store,
-            'quantity_shopee' => $quantity_shopee,
-            'quantity_tiktok' => $quantity_tiktok,
-            'total_quantity' => $total_quantity,
-            'image' => $image_name
-        ]);
+echo json_encode([
+    'success' => true,
+    'product_id' => $product_id,
+    'variant_id' => $variant_id, // Make sure this is returned
+    'name' => $name, 
+    'category' => $category, 
+    'size' => $size, 
+    'color' => $color, 
+    'price' => $price, 
+    'date_added' => $date_added, 
+    'channels' => $channels, 
+    'quantity_physical_store' => $quantity_physical_store, // Ensure this is accurate
+    'quantity_shopee' => $quantity_shopee,                 // Ensure this is accurate
+    'quantity_tiktok' => $quantity_tiktok,                 // Ensure this is accurate
+    'total_quantity' => $total_quantity,
+    'image' => $image_name
+]);
+
+
 
     } catch (Exception $e) {
         // Rollback the transaction on error
