@@ -213,7 +213,7 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
                 <tbody>
                     <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
-                            <tr>
+                            <tr data-id="<?php echo $row['variant_id']; ?>">
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
                                 <td><?php echo $row['category']; ?></td>
@@ -264,7 +264,7 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
                 <tbody>
                     <?php if (mysqli_num_rows($result_physical_store) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_physical_store)): ?>
-                            <tr>
+                            <tr data-id="<?php echo $row['variant_id']; ?>">
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
                                 <td><?php echo $row['category']; ?></td>
@@ -306,7 +306,7 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
                 <tbody>
                     <?php if (mysqli_num_rows($result_shopee) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_shopee)): ?>
-                            <tr>
+                            <tr data-id="<?php echo $row['variant_id']; ?>">
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
                                 <td><?php echo $row['category']; ?></td>
@@ -348,7 +348,7 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
                 <tbody>
                     <?php if (mysqli_num_rows($result_tiktok) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_tiktok)): ?>
-                            <tr>
+                            <tr data-id="<?php echo $row['variant_id']; ?>">
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
                                 <td><?php echo $row['category']; ?></td>
@@ -372,62 +372,75 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', function() {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    <script>
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
-            tab.classList.add('active');
-            document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
-        });
-    });
-
-    document.querySelectorAll('.unarchive-button').forEach(button => {
-        button.addEventListener('click', function() {
-            const variantId = this.getAttribute('data-id');
-            
-            fetch('../../backend/controllers/unarchive_item.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ variant_id: variantId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: data.message,
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        // Remove the row of the unarchived item
-                        const row = document.querySelector(`tr[data-id="${variantId}"]`);
-                        if (row) row.remove();
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Error unarchiving item: ' + (data.message || 'Unknown error'),
-                        confirmButtonText: 'OK'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Unexpected Error',
-                    text: 'An unexpected error occurred. Please try again later.',
-                    confirmButtonText: 'OK'
-                });
+                tab.classList.add('active');
+                document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
             });
         });
-    });
-</script>
 
+        document.querySelectorAll('.unarchive-button').forEach(button => {
+    button.addEventListener('click', function() {
+        const variantId = this.getAttribute('data-id');
+        const row = document.querySelector(`tr[data-id="${variantId}"]`);
+        const itemName = row ? row.querySelector('td:nth-child(2)').innerText : 'this item';
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `Are you sure you want to unarchive ${itemName}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, unarchive it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('../../backend/controllers/unarchive_item.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ variant_id: variantId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: data.message,
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            // Remove the row of the unarchived item
+                            if (row) row.remove();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error unarchiving item: ' + (data.message || 'Unknown error'),
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Unexpected Error',
+                        text: 'An unexpected error occurred. Please try again later.',
+                        confirmButtonText: 'OK'
+                    });
+                });
+            }
+        });
+    });
+});
+
+    </script>
 </body>
 </html>

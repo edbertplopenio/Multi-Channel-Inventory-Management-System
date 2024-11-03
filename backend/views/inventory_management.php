@@ -14,7 +14,7 @@ if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
 }
 
-// Fetch aggregated data for All Inventory tab
+// Fetch aggregated data for All Inventory tab, excluding archived items
 $sql_all_inventory = "
     SELECT 
         pv.variant_id, 
@@ -32,6 +32,7 @@ $sql_all_inventory = "
     FROM product_variants pv
     JOIN products p ON pv.product_id = p.product_id
     JOIN inventory i ON pv.variant_id = i.variant_id
+    WHERE pv.is_archived = 0
     GROUP BY pv.variant_id, pv.size, pv.color, pv.price, pv.date_added, pv.image";
 $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
 
@@ -39,36 +40,36 @@ if (!$result_all_inventory) {
     die("Error executing query for All Inventory: " . mysqli_error($conn));
 }
 
-// Fetch data for Physical Store inventory
+// Fetch data for Physical Store inventory, excluding archived items
 $sql_physical_store = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
                        FROM product_variants pv
                        JOIN products p ON pv.product_id = p.product_id
                        JOIN inventory i ON pv.variant_id = i.variant_id
-                       WHERE i.channel = 'physical_store'";
+                       WHERE i.channel = 'physical_store' AND pv.is_archived = 0";
 $result_physical_store = mysqli_query($conn, $sql_physical_store);
 
 if (!$result_physical_store) {
     die("Error executing query for Physical Store: " . mysqli_error($conn));
 }
 
-// Fetch data for Shopee inventory
+// Fetch data for Shopee inventory, excluding archived items
 $sql_shopee = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
                FROM product_variants pv
                JOIN products p ON pv.product_id = p.product_id
                JOIN inventory i ON pv.variant_id = i.variant_id
-               WHERE i.channel = 'shopee'";
+               WHERE i.channel = 'shopee' AND pv.is_archived = 0";
 $result_shopee = mysqli_query($conn, $sql_shopee);
 
 if (!$result_shopee) {
     die("Error executing query for Shopee: " . mysqli_error($conn));
 }
 
-// Fetch data for TikTok inventory
+// Fetch data for TikTok inventory, excluding archived items
 $sql_tiktok = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
                FROM product_variants pv
                JOIN products p ON pv.product_id = p.product_id
                JOIN inventory i ON pv.variant_id = i.variant_id
-               WHERE i.channel = 'tiktok'";
+               WHERE i.channel = 'tiktok' AND pv.is_archived = 0";
 $result_tiktok = mysqli_query($conn, $sql_tiktok);
 
 if (!$result_tiktok) {
@@ -188,11 +189,11 @@ if (!$result_tiktok) {
         </div>
 
         <!-- All Inventory Tab -->
-        <div id="all-inventory" class="tab-content active">
+        <div id="all-inventory" class="tab-content active" data-type="variant">
             <table class="inventory-table inventory-table-all">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" id="select_all_all_inventory"></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -209,11 +210,11 @@ if (!$result_tiktok) {
                 <tbody>
                     <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
-                            <tr>
+                            <tr data-item-id="<?php echo $row['variant_id']; ?>">
                                 <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
                                 <td><?php echo $row['variant_id']; ?></td>
-                                <td class="wrap-text"><?php echo $row['name']; ?></td> <!-- Enable wrapping for long names -->
-                                <td class="wrap-text"><?php echo $row['category']; ?></td> <!-- Enable wrapping for long categories -->
+                                <td class="wrap-text"><?php echo $row['name']; ?></td>
+                                <td class="wrap-text"><?php echo $row['category']; ?></td>
                                 <td><?php echo $row['quantity_physical_store'] + $row['quantity_shopee'] + $row['quantity_tiktok']; ?></td>
                                 <td><?php echo $row['size']; ?></td>
                                 <td><?php echo $row['color']; ?></td>
@@ -242,7 +243,7 @@ if (!$result_tiktok) {
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
                                     <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                    <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -252,18 +253,17 @@ if (!$result_tiktok) {
                         </tr>
                     <?php endif; ?>
                 </tbody>
-
             </table>
         </div>
 
-        <!-- Repeat this structure for Physical Store, Shopee, and TikTok tabs with checkboxes beside the Variant ID column -->
+        <!-- Repeat this structure for Physical Store, Shopee, and TikTok tabs, updating the select_all checkbox ID -->
 
         <!-- Physical Store Tab -->
-        <div id="physical-store" class="tab-content">
+        <div id="physical-store" class="tab-content" data-type="inventory">
             <table class="inventory-table inventory-table-physical">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" id="select_all_physical_store"></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -279,7 +279,7 @@ if (!$result_tiktok) {
                 <tbody>
                     <?php if (mysqli_num_rows($result_physical_store) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_physical_store)): ?>
-                            <tr>
+                            <tr data-item-id="<?php echo $row['variant_id']; ?>">
                                 <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
@@ -292,7 +292,7 @@ if (!$result_tiktok) {
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
                                     <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                    <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -306,11 +306,11 @@ if (!$result_tiktok) {
         </div>
 
         <!-- Shopee Tab -->
-        <div id="shopee" class="tab-content">
+        <div id="shopee" class="tab-content" data-type="inventory">
             <table class="inventory-table inventory-table-shopee">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" id="select_all_shopee"></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -326,7 +326,7 @@ if (!$result_tiktok) {
                 <tbody>
                     <?php if (mysqli_num_rows($result_shopee) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_shopee)): ?>
-                            <tr>
+                            <tr data-item-id="<?php echo $row['variant_id']; ?>">
                                 <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
@@ -339,7 +339,7 @@ if (!$result_tiktok) {
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
                                     <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                    <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -353,11 +353,11 @@ if (!$result_tiktok) {
         </div>
 
         <!-- TikTok Tab -->
-        <div id="tiktok" class="tab-content">
+        <div id="tiktok" class="tab-content" data-type="inventory">
             <table class="inventory-table inventory-table-tiktok">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" id="select_all_tiktok"></th>
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -373,7 +373,7 @@ if (!$result_tiktok) {
                 <tbody>
                     <?php if (mysqli_num_rows($result_tiktok) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_tiktok)): ?>
-                            <tr>
+                            <tr data-item-id="<?php echo $row['variant_id']; ?>">
                                 <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
@@ -386,7 +386,7 @@ if (!$result_tiktok) {
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
                                     <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                                    <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -398,11 +398,17 @@ if (!$result_tiktok) {
                 </tbody>
             </table>
         </div>
+        <div id="selection-bar" class="selection-bar hidden">
+            <span id="selected-count">0 items selected</span>
+            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
+        </div>
 
     </div>
 </body>
 
 </html>
+
+
 
 
 
@@ -533,20 +539,263 @@ if (!$result_tiktok) {
 <script>
     function initializeInventoryManagement() {
         let originalData = [];
-        let lastCheckedProduct = null; // Track the last checked product name
-        let isVariantMode = false; // Track if form is in variant mode
-        let existingProductId = null; // Track existing product ID for variant submissions
+        let lastCheckedProduct = null;
+        let isVariantMode = false;
+        let existingProductId = null;
 
         function capitalizeWords(str) {
             return str.replace(/\b\w/g, char => char.toUpperCase());
         }
 
-        function fetchOriginalData() {
-            console.log("Fetching original data..."); // Debugging
+        function refreshInventory() {
             fetch('../../backend/controllers/get_inventory.php')
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Fetched data:", data); // Debugging
+                    if (data.success) {
+                        populateInventoryTables(data.items);
+                    } else {
+                        console.error('Error fetching inventory:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function attachArchiveButtonListeners() {
+            document.querySelectorAll('.action-button.archive').forEach(button => {
+                button.addEventListener('click', function() {
+                    console.log('Archive button clicked'); // Check if this logs in the console
+                    const row = button.closest('tr');
+                    const itemId = row.getAttribute('data-item-id');
+                    const physicalQuantity = parseInt(row.querySelector('td:nth-child(5)').textContent) || 0;
+                    const shopeeQuantity = parseInt(row.querySelector('td:nth-child(6)').textContent) || 0;
+                    const tiktokQuantity = parseInt(row.querySelector('td:nth-child(7)').textContent) || 0;
+
+                    // Check if all quantities are 0
+                    const totalQuantity = physicalQuantity + shopeeQuantity + tiktokQuantity;
+
+                    if (totalQuantity > 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Cannot Archive',
+                            text: 'This item cannot be archived as it still has quantity in stock.',
+                            confirmButtonText: 'OK'
+                        });
+                        return;
+                    }
+
+                    // Proceed with the archive confirmation if total quantity is 0
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'This item will be archived.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, archive it!',
+                        cancelButtonText: 'No, keep it'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            // Send archive request to the server
+                            fetch('../../backend/controllers/archive_item.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        item_id: itemId
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        Swal.fire('Archived!', data.message, 'success');
+                                        refreshInventory(); // Refresh all tabs after archiving
+                                    } else {
+                                        Swal.fire('Error!', data.message, 'error');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire('Error!', 'Something went wrong while archiving the item.', 'error');
+                                });
+                        }
+                    });
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            function initializeSelectAllFeature() {
+                const selectAllCheckboxes = document.querySelectorAll('input[type="checkbox"][id^="select_all"]');
+                const selectionBar = document.getElementById("selection-bar");
+                const selectedCountDisplay = document.getElementById("selected-count");
+                const archiveButton = selectionBar.querySelector('.selection-action.archive');
+
+                function updateSelectionBar() {
+                    const activeTabContent = document.querySelector('.tab-content.active');
+                    const rowCheckboxes = activeTabContent.querySelectorAll('input[name="select_variant[]"]');
+                    const selectedItems = activeTabContent.querySelectorAll('input[name="select_variant[]"]:checked');
+                    const selectedCount = selectedItems.length;
+                    selectedCountDisplay.textContent = `${selectedCount} items selected`;
+
+                    if (selectedCount > 2) {
+                        selectionBar.classList.remove('hidden');
+                    } else {
+                        selectionBar.classList.add('hidden');
+                    }
+
+                    const selectAllCheckbox = activeTabContent.querySelector('input[type="checkbox"][id^="select_all"]');
+                    selectAllCheckbox.checked = selectedItems.length === rowCheckboxes.length && rowCheckboxes.length > 0;
+                }
+
+                archiveButton.addEventListener('click', function() {
+                    const activeTabContent = document.querySelector('.tab-content.active');
+                    const selectedItems = activeTabContent.querySelectorAll('input[name="select_variant[]"]:checked');
+                    const dataType = activeTabContent.getAttribute('data-type');
+                    const selectedIds = Array.from(selectedItems).map(item => item.value);
+
+                    if (selectedIds.length === 0) return;
+
+                    Swal.fire({
+                        title: `Are you sure?`,
+                        text: `You are about to archive ${selectedIds.length} items.`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, archive them',
+                        cancelButtonText: 'No, keep them'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            selectedIds.forEach(itemId => {
+                                fetch('../../backend/controllers/archive_item.php', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            item_id: itemId,
+                                            type: dataType
+                                        })
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log(data);
+                                        if (data.status === 'success') {
+                                            const row = activeTabContent.querySelector(`tr[data-item-id="${itemId}"]`);
+                                            if (row) row.remove();
+                                        } else {
+                                            console.error(`Failed to archive item with ID ${itemId}: ${data.message}`);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error(`Error archiving item with ID ${itemId}:`, error);
+                                    });
+                            });
+
+                            selectionBar.classList.add('hidden');
+                            const selectAllCheckbox = activeTabContent.querySelector('input[type="checkbox"][id^="select_all"]');
+                            if (selectAllCheckbox) selectAllCheckbox.checked = false;
+                        }
+                    });
+                });
+
+                selectAllCheckboxes.forEach(selectAllCheckbox => {
+                    selectAllCheckbox.addEventListener('change', function() {
+                        const table = selectAllCheckbox.closest('.inventory-table');
+                        const rowCheckboxes = table.querySelectorAll('input[name="select_variant[]"]');
+
+                        rowCheckboxes.forEach(rowCheckbox => {
+                            rowCheckbox.checked = selectAllCheckbox.checked;
+                        });
+
+                        updateSelectionBar();
+                    });
+                });
+
+                document.querySelectorAll('.inventory-table input[name="select_variant[]"]').forEach(checkbox => {
+                    checkbox.addEventListener('change', updateSelectionBar);
+                });
+
+                document.querySelector('.tabs-container').addEventListener('click', function(event) {
+                    if (event.target.classList.contains('tab')) {
+                        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+
+                        event.target.classList.add('active');
+                        const activeTabContent = document.getElementById(event.target.getAttribute('data-tab'));
+                        activeTabContent.classList.add('active');
+
+                        updateSelectionBar();
+                    }
+                });
+            }
+
+            initializeSelectAllFeature();
+        });
+
+        // Use delegated event listener for dynamically created buttons
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('archive')) {
+                // Check if the target is the 'archive' button or an icon inside it
+                const button = event.target.closest('.archive');
+                if (!button) return;
+
+                console.log('Archive button clicked'); // Debug log to check if this is triggered
+
+                const row = button.closest('tr');
+                if (!row) {
+                    console.error('No row found for archive action');
+                    return;
+                }
+
+                const itemId = row.getAttribute('data-item-id');
+                if (!itemId) {
+                    console.error('Item ID not found');
+                    return;
+                }
+
+                // Show confirmation before archiving
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This will archive the item.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, archive it!',
+                    cancelButtonText: 'No, keep it'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        // Proceed with archiving logic
+                        fetch('../../backend/controllers/archive_item.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    item_id: itemId
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    row.remove(); // Remove the row from the DOM
+                                    Swal.fire('Archived!', data.message, 'success');
+                                } else {
+                                    Swal.fire('Error!', data.message, 'error');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error archiving item:', error);
+                                Swal.fire('Error!', 'Something went wrong while archiving the item.', 'error');
+                            });
+                    }
+                });
+            }
+        });
+
+
+        function fetchOriginalData() {
+            console.log("Fetching original data...");
+            fetch('../../backend/controllers/get_inventory.php')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched data:", data);
                     if (data.success) {
                         populateInventoryTables(data.items);
                     } else {
@@ -554,7 +803,7 @@ if (!$result_tiktok) {
                     }
                 })
                 .catch(error => {
-                    console.error('Error during fetchOriginalData:', error); // Debugging
+                    console.error('Error during fetchOriginalData:', error);
                 });
         }
 
@@ -564,7 +813,8 @@ if (!$result_tiktok) {
                 const channelsText = item.channels.length === 3 ? 'All Channels' : item.channels.join(' and ');
 
                 const allInventoryRow = `
-                <tr data-product-id="${item.product_id}">
+                <tr data-item-id="${item.product_id}">
+                    <td><input type="checkbox" name="select_variant[]" value="${item.product_id}"></td>
                     <td>${item.product_id}</td>
                     <td>${item.name}</td>
                     <td>${item.category}</td>
@@ -577,7 +827,7 @@ if (!$result_tiktok) {
                     <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                     <td>
                         <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                        <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                        <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                     </td>
                 </tr>
             `;
@@ -585,7 +835,8 @@ if (!$result_tiktok) {
 
                 if (item.quantity_physical_store > 0) {
                     const physicalStoreRow = `
-                    <tr data-product-id="${item.product_id}">
+                    <tr data-item-id="${item.product_id}">
+                        <td><input type="checkbox" name="select_variant[]" value="${item.product_id}"></td>
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
@@ -597,7 +848,7 @@ if (!$result_tiktok) {
                         <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
                             <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                         </td>
                     </tr>
                 `;
@@ -606,7 +857,8 @@ if (!$result_tiktok) {
 
                 if (item.quantity_shopee > 0) {
                     const shopeeRow = `
-                    <tr data-product-id="${item.product_id}">
+                    <tr data-item-id="${item.product_id}">
+                        <td><input type="checkbox" name="select_variant[]" value="${item.product_id}"></td>
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
@@ -618,7 +870,7 @@ if (!$result_tiktok) {
                         <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
                             <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                         </td>
                     </tr>
                 `;
@@ -627,7 +879,8 @@ if (!$result_tiktok) {
 
                 if (item.quantity_tiktok > 0) {
                     const tiktokRow = `
-                    <tr data-product-id="${item.product_id}">
+                    <tr data-item-id="${item.product_id}">
+                        <td><input type="checkbox" name="select_variant[]" value="${item.product_id}"></td>
                         <td>${item.product_id}</td>
                         <td>${item.name}</td>
                         <td>${item.category}</td>
@@ -639,13 +892,15 @@ if (!$result_tiktok) {
                         <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
                             <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                            <button class="action-button delete"><i class="fas fa-trash"></i> Delete</button>
+                            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                         </td>
                     </tr>
                 `;
                     document.querySelector('#tiktok .inventory-table tbody').insertAdjacentHTML('beforeend', tiktokRow);
                 }
             });
+
+            attachArchiveButtonListeners();
         }
 
         document.querySelector('.tabs-container').addEventListener('click', function(event) {
@@ -673,7 +928,7 @@ if (!$result_tiktok) {
         function closeModal() {
             modal.style.display = "none";
             resetFormFields();
-            disableFormFields(); // Reset and lock fields on close
+            disableFormFields();
         }
 
         document.querySelectorAll('.channel-checkbox').forEach(checkbox => {
@@ -759,7 +1014,7 @@ if (!$result_tiktok) {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Product exists check response:", data); // Debugging
+                    console.log("Product exists check response:", data);
 
                     if (data.exists) {
                         Swal.fire({
@@ -775,8 +1030,8 @@ if (!$result_tiktok) {
                                 disableSpecificOptions(data.existing_sizes, data.existing_colors);
                                 existingProductId = data.product_id;
                                 isVariantMode = true;
-                                console.log("Confirmed variant with existingProductId:", existingProductId); // Debugging
-                                submitForm(existingProductId, productName, category, size, color); // Call with existingProductId for variant
+                                console.log("Confirmed variant with existingProductId:", existingProductId);
+                                submitForm(existingProductId, productName, category, size, color);
                             } else {
                                 resetFormFields();
                                 document.getElementById('name').value = "";
@@ -784,7 +1039,7 @@ if (!$result_tiktok) {
                             }
                         });
                     } else {
-                        submitForm(null, productName, category, size, color); // Call with null if it's a new product
+                        submitForm(null, productName, category, size, color);
                     }
                 })
                 .catch(error => {
@@ -800,17 +1055,7 @@ if (!$result_tiktok) {
 
         function submitForm(existingProductId, productName, category, size, color) {
             const formData = new FormData(document.getElementById('new-item-form'));
-
             const selectedChannels = Array.from(document.querySelectorAll('.channel-checkbox:checked'));
-
-            console.log("Preparing to submit form data:", {
-                existingProductId,
-                productName,
-                category,
-                size,
-                color,
-                channels: selectedChannels.map(chk => chk.value)
-            }); // Debugging
 
             if (selectedChannels.length === 0) {
                 Swal.fire({
@@ -826,7 +1071,6 @@ if (!$result_tiktok) {
 
             selectedChannels.forEach(channel => {
                 const quantityInput = document.querySelector(`input[name="quantity-${channel.value.toLowerCase().replace(' ', '-')}"]`);
-                console.log(`Channel ${channel.value}, Quantity Provided: ${quantityInput.value}`); // Debugging
                 if (!quantityInput || quantityInput.value.trim() === "" || parseInt(quantityInput.value) <= 0) {
                     quantityProvided = false;
                 }
@@ -849,26 +1093,106 @@ if (!$result_tiktok) {
             formData.append('color', color);
             if (existingProductId) formData.append('existing_product_id', existingProductId);
 
-            console.log("Final formData to submit:", Array.from(formData.entries())); // Debugging
-
             fetch('../../backend/controllers/add_item.php', {
                     method: 'POST',
                     body: formData
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Server response after form submission:', data); // Debugging
                     if (data.success) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',
-                            text: 'Product updated successfully!',
+                            text: 'Product added successfully!',
                             confirmButtonText: 'OK'
                         });
                         document.getElementById('new-item-form').reset();
                         modal.style.display = "none";
+
+                        // Clean up productName to remove extra backslashes
+                        const cleanedProductName = productName.replace(/\\/g, "");
+
+                        // Use variant_id if available; otherwise, fallback to product_id
+                        const variantId = data.variant_id || data.product_id;
+
+                        // Determine `channelsText` for the All Inventory table
+                        const hasPhysicalStore = data.quantity_physical_store > 0;
+                        const hasShopee = data.quantity_shopee > 0;
+                        const hasTiktok = data.quantity_tiktok > 0;
+
+                        let channelsText;
+                        if (hasPhysicalStore && hasShopee && hasTiktok) {
+                            channelsText = "All Channels";
+                        } else {
+                            channelsText = [
+                                hasPhysicalStore ? "Physical Store" : null,
+                                hasShopee ? "Shopee" : null,
+                                hasTiktok ? "TikTok" : null
+                            ].filter(Boolean).join(", ") || "N/A";
+                        }
+
+                        // Define a template for the All Inventory table with the "Channel" column
+                        const allInventoryRowTemplate = (id, name, category, quantity, size, color, price, dateAdded, image, channels) => `
+                    <tr data-item-id="${id}">
+                        <td><input type="checkbox" name="select_variant[]" value="${id}"></td>
+                        <td>${id}</td>
+                        <td>${name}</td>
+                        <td>${category}</td>
+                        <td>${quantity}</td>
+                        <td>${size}</td>
+                        <td>${color}</td>
+                        <td>${price}</td>
+                        <td>${dateAdded}</td>
+                        <td>${channels}</td>
+                        <td><img src="../../frontend/public/images/${image || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                        <td>
+                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
+                        </td>
+                    </tr>
+                `;
+
+                        // Define a template for channel-specific tables without the "Channel" column
+                        const channelSpecificRowTemplate = (id, name, category, quantity, size, color, price, dateAdded, image) => `
+                    <tr data-item-id="${id}">
+                        <td><input type="checkbox" name="select_variant[]" value="${id}"></td>
+                        <td>${id}</td>
+                        <td>${name}</td>
+                        <td>${category}</td>
+                        <td>${quantity}</td>
+                        <td>${size}</td>
+                        <td>${color}</td>
+                        <td>${price}</td>
+                        <td>${dateAdded}</td>
+                        <td><img src="../../frontend/public/images/${image || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                        <td>
+                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
+                        </td>
+                    </tr>
+                `;
+
+                        // Insert the row into the "All Inventory" table with total quantities and channel summary
+                        const allInventoryRow = allInventoryRowTemplate(variantId, cleanedProductName, category, data.total_quantity, size, color, data.price, data.date_added, data.image, channelsText);
+                        document.querySelector('#all-inventory .inventory-table tbody').insertAdjacentHTML('beforeend', allInventoryRow);
+
+                        // Append rows to specific tables, showing zero if quantity is not provided
+                        const physicalStoreQuantity = data.quantity_physical_store || 0;
+                        const shopeeQuantity = data.quantity_shopee || 0;
+                        const tiktokQuantity = data.quantity_tiktok || 0;
+
+                        const physicalStoreRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, physicalStoreQuantity, size, color, data.price, data.date_added, data.image);
+                        document.querySelector('#physical-store .inventory-table tbody').insertAdjacentHTML('beforeend', physicalStoreRow);
+
+                        const shopeeRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, shopeeQuantity, size, color, data.price, data.date_added, data.image);
+                        document.querySelector('#shopee .inventory-table tbody').insertAdjacentHTML('beforeend', shopeeRow);
+
+                        const tiktokRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, tiktokQuantity, size, color, data.price, data.date_added, data.image);
+                        document.querySelector('#tiktok .inventory-table tbody').insertAdjacentHTML('beforeend', tiktokRow);
+
+                        // Re-attach the event listener for the archive button
+                        attachArchiveButtonListeners();
                     } else {
-                        console.error('Server returned error:', data.message);
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -878,7 +1202,7 @@ if (!$result_tiktok) {
                     }
                 })
                 .catch(error => {
-                    console.error('Fetch error during form submission:', error); // Debugging
+                    console.error('Fetch error during form submission:', error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -972,7 +1296,7 @@ if (!$result_tiktok) {
         }
 
         function checkProductExists(productName) {
-            console.log("Checking if product exists:", productName); // Debugging
+            console.log("Checking if product exists:", productName);
 
             fetch('../../backend/controllers/check_product_exists.php', {
                     method: 'POST',
@@ -985,7 +1309,7 @@ if (!$result_tiktok) {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Product exists check response:", data); // Debugging
+                    console.log("Product exists check response:", data);
 
                     if (data.exists) {
                         Swal.fire({
@@ -1001,7 +1325,7 @@ if (!$result_tiktok) {
                                 disableSpecificOptions(data.existing_sizes, data.existing_colors);
                                 isVariantMode = true;
                                 existingProductId = data.product_id;
-                                console.log("Confirmed variant with existingProductId:", existingProductId); // Debugging
+                                console.log("Confirmed variant with existingProductId:", existingProductId);
                             } else {
                                 resetFormFields();
                                 document.getElementById('name').value = "";
@@ -1031,6 +1355,9 @@ if (!$result_tiktok) {
 
     initializeInventoryManagement();
 </script>
+
+
+
 
 </body>
 
@@ -1078,7 +1405,6 @@ if (!$result_tiktok) {
         height: 95vh;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
     }
 
     .header {
@@ -1190,12 +1516,27 @@ if (!$result_tiktok) {
         color: #aaa;
     }
 
+    /* Set a fixed height and make the table content scrollable for each tab */
+    /* Add a fixed height to the table container for each tab */
     .tab-content {
         display: none;
         padding-top: 20px;
         overflow-y: auto;
-        flex-grow: 1;
+        /* Enable vertical scrolling for the content */
+        height: calc(100vh - 280px);
+        /* Adjust height as needed */
     }
+
+    /* Make the table header sticky */
+    .inventory-table thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f4f7fc;
+        /* Match background color */
+        z-index: 1;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
 
     .tab-content.active {
         display: block;
@@ -1209,7 +1550,9 @@ if (!$result_tiktok) {
         overflow-y: auto;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         max-height: 100%;
+        /* Ensure table fits within tab content */
         table-layout: fixed;
+        /* Keeps column widths fixed */
     }
 
     .inventory-table th,
@@ -1227,6 +1570,8 @@ if (!$result_tiktok) {
         text-overflow: ellipsis;
     }
 
+
+    /* Checkbox Styling */
     input[type="checkbox"] {
         appearance: none;
         width: 16px;
@@ -1257,6 +1602,7 @@ if (!$result_tiktok) {
         transform: rotate(45deg);
     }
 
+    /* Column width adjustments for All Inventory tab */
     .inventory-table-all th:nth-child(1),
     .inventory-table-all td:nth-child(1) {
         width: 50px;
@@ -1318,6 +1664,7 @@ if (!$result_tiktok) {
         white-space: nowrap;
     }
 
+    /* Column width adjustments for Physical Store tab */
     .inventory-table-physical th:nth-child(1),
     .inventory-table-physical td:nth-child(1) {
         width: 40px;
@@ -1379,6 +1726,7 @@ if (!$result_tiktok) {
         white-space: nowrap;
     }
 
+    /* Column width adjustments for Shopee tab */
     .inventory-table-shopee th:nth-child(1),
     .inventory-table-shopee td:nth-child(1) {
         width: 40px;
@@ -1440,6 +1788,7 @@ if (!$result_tiktok) {
         white-space: nowrap;
     }
 
+    /* Column width adjustments for TikTok tab */
     .inventory-table-tiktok th:nth-child(1),
     .inventory-table-tiktok td:nth-child(1) {
         width: 40px;
@@ -1501,6 +1850,8 @@ if (!$result_tiktok) {
         white-space: nowrap;
     }
 
+
+    /* Ensure buttons do not get truncated */
     .inventory-table td .action-button {
         white-space: normal;
         display: inline-flex;
@@ -1525,6 +1876,16 @@ if (!$result_tiktok) {
 
     .inventory-table tr:last-child td {
         border-bottom: none;
+    }
+
+    .tab-content {
+        display: none;
+        padding-top: 20px;
+    }
+
+    .tab-content.active {
+        display: block;
+        height: 100%;
     }
 
     .action-button {
@@ -1560,6 +1921,19 @@ if (!$result_tiktok) {
 
     .action-button:hover {
         opacity: 0.9;
+    }
+
+    .new-item-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+        height: 95vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .new-item-container form {
@@ -1649,6 +2023,7 @@ if (!$result_tiktok) {
         background-color: #0056b3;
     }
 
+    /* Modal styles */
     .modal {
         display: none;
         position: fixed;
@@ -1708,6 +2083,7 @@ if (!$result_tiktok) {
         font-size: 12px;
     }
 
+    /* Filter input styling */
     .filter-input-container {
         position: relative;
         display: inline-block;
@@ -1744,6 +2120,7 @@ if (!$result_tiktok) {
         color: #0056b3;
     }
 
+    /* Dropdown styling for filters */
     .filter-dropdown {
         background-color: white;
         border: 1px solid #ccc;
@@ -1808,5 +2185,48 @@ if (!$result_tiktok) {
     #apply-filters:hover,
     #reset-filters:hover {
         background-color: #004085;
+    }
+
+
+    .selection-bar {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        background-color: #007bff;
+        /* Main accent color */
+        color: white;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+    }
+
+    .selection-bar.hidden {
+        display: none;
+    }
+
+    .selection-bar .selection-action {
+        background-color: white;
+        color: #007bff;
+        /* Accent color for action text */
+        border: none;
+        padding: 5px 10px;
+        border-radius: 50px;
+        /* Makes the button rounded */
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .selection-bar .selection-action:hover {
+        background-color: #0056b3;
+        /* Hover color */
+        color: white;
     }
 </style>
