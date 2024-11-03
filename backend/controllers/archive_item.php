@@ -2,6 +2,7 @@
 // archive_item.php
 require_once '../../backend/config/db_connection.php';
 
+// Decode JSON input
 $data = json_decode(file_get_contents("php://input"), true);
 $variant_id = $data['item_id'] ?? null;
 
@@ -16,6 +17,10 @@ $quantity_check_query = "
     FROM inventory 
     WHERE variant_id = ?";
 $quantity_stmt = $conn->prepare($quantity_check_query);
+if (!$quantity_stmt) {
+    echo json_encode(['status' => 'error', 'message' => 'Query preparation failed: ' . $conn->error]);
+    exit;
+}
 $quantity_stmt->bind_param("i", $variant_id);
 $quantity_stmt->execute();
 $quantity_result = $quantity_stmt->get_result();
@@ -29,24 +34,24 @@ if ($quantity_row['total_quantity'] > 0) {
     exit;
 }
 
-// Proceed to archive the item if quantity is zero
-$query = "UPDATE product_variants SET is_archived = 1, date_archived = CURDATE() WHERE variant_id = ?";
-$stmt = $conn->prepare($query);
+// Proceed to archive the item if the total quantity is zero
+$archive_query = "UPDATE product_variants SET is_archived = 1, date_archived = CURDATE() WHERE variant_id = ?";
+$archive_stmt = $conn->prepare($archive_query);
 
-if (!$stmt) {
+if (!$archive_stmt) {
     echo json_encode(['status' => 'error', 'message' => 'Query preparation failed: ' . $conn->error]);
     exit;
 }
 
-$stmt->bind_param("i", $variant_id);
+$archive_stmt->bind_param("i", $variant_id);
 
-if ($stmt->execute()) {
+if ($archive_stmt->execute()) {
     echo json_encode(['status' => 'success', 'message' => 'Item archived successfully']);
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Failed to archive item: ' . $stmt->error]);
+    echo json_encode(['status' => 'error', 'message' => 'Failed to archive item: ' . $archive_stmt->error]);
 }
 
 // Close statements and connection
-$stmt->close();
+$archive_stmt->close();
 $quantity_stmt->close();
 $conn->close();

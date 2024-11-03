@@ -143,60 +143,66 @@ mysqli_close($conn);
             $('#main-content').load('../../backend/views/dashboard.php');
 
             // Function to handle active class toggle
-            function setActive(linkId, itemId) {
+            function setActive(itemId) {
                 // Remove active class from all menu items
                 $('.menu ul li').removeClass('active');
                 // Add active class to the clicked menu item
                 $('#' + itemId).addClass('active');
             }
 
-            // Load content and set active class when links are clicked
-            $('#dashboard-link').on('click', function(e) {
+            // Use delegated event listeners for dynamically loaded content
+            $('.menu').on('click', 'a', function(e) {
                 e.preventDefault();
-                $('#main-content').load('../../backend/views/dashboard.php');
-                setActive('dashboard-link', 'dashboard-item');
+                const linkId = $(this).attr('id');
+                let contentUrl = '';
+
+                switch (linkId) {
+                    case 'dashboard-link':
+                        contentUrl = '../../backend/views/dashboard.php';
+                        setActive('dashboard-item');
+                        break;
+                    case 'inventory-link':
+                        contentUrl = '../../backend/views/inventory_management.php';
+                        setActive('inventory-item');
+                        break;
+                    case 'sales-link':
+                        contentUrl = '../../backend/views/sales_record.php';
+                        setActive('sales-item');
+                        break;
+                    case 'forecast-link':
+                        contentUrl = '../../backend/views/demand_forecasting.php';
+                        setActive('forecast-item');
+                        break;
+                    case 'replenishment-link':
+                        contentUrl = '../../backend/views/inventory_replenishment.php';
+                        setActive('replenishment-item');
+                        break;
+                    case 'user-account-link':
+                        contentUrl = '../../backend/views/user_management.php';
+                        setActive('user-account-item');
+                        break;
+                    case 'archive-link':
+                        contentUrl = '../../backend/views/archived_items.php';
+                        setActive('archive-item');
+                        break;
+                    default:
+                        return; // Do nothing if the link ID is not recognized
+                }
+
+                if (contentUrl) {
+                    $('#main-content').load(contentUrl, function(response, status, xhr) {
+                        if (status === "error") {
+                            console.error(`Error loading content: ${xhr.statusText}`);
+                        } else {
+                            console.log(`Loaded content from ${contentUrl}`);
+                        }
+                    });
+                }
             });
 
-            $('#inventory-link').on('click', function(e) {
-                e.preventDefault();
-                $('#main-content').load('../../backend/views/inventory_management.php');
-                setActive('inventory-link', 'inventory-item');
-            });
-
-            $('#sales-link').on('click', function(e) {
-                e.preventDefault();
-                $('#main-content').load('../../backend/views/sales_record.php');
-                setActive('sales-link', 'sales-item');
-            });
-
-            $('#forecast-link').on('click', function(e) {
-                e.preventDefault();
-                $('#main-content').load('../../backend/views/demand_forecasting.php');
-                setActive('forecast-link', 'forecast-item');
-            });
-
-            $('#replenishment-link').on('click', function(e) {
-                e.preventDefault();
-                $('#main-content').load('../../backend/views/inventory_replenishment.php');
-                setActive('replenishment-link', 'replenishment-item');
-            });
-
-            $('#user-account-link').on('click', function(e) {
-                e.preventDefault();
-                $('#main-content').load('../../backend/views/user_management.php');
-                setActive('user-account-link', 'user-account-item');
-            });
-
-            // Load content for Archive Items and set active class
-            $('#archive-link').on('click', function(e) {
-                e.preventDefault();
-                $('#main-content').load('../../backend/views/archived_items.php');
-                setActive('archive-link', 'archive-item');
-            });
-
-            // Account section links
-            $('#logout-link').on('click', function(e) {
-                setActive('logout-link', 'logout-item');
+            // Account section links (example for logout link)
+            $('.account-section').on('click', '#logout-link', function(e) {
+                setActive('logout-item');
             });
         });
     </script>
