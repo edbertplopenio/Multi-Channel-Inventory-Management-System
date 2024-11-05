@@ -87,6 +87,7 @@ if (!$result_tiktok) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
 </head>
 
 <body>
@@ -560,6 +561,68 @@ if (!$result_tiktok) {
                 .catch(error => console.error('Error:', error));
         }
 
+        function attachArchiveButtonListeners() {
+            document.querySelectorAll('.action-button.archive').forEach(button => {
+                button.addEventListener('click', function() {
+                    console.log('Archive button clicked'); // Check if this logs in the console
+                    const row = button.closest('tr');
+                    const itemId = row.getAttribute('data-item-id');
+                    const physicalQuantity = parseInt(row.querySelector('td:nth-child(5)').textContent) || 0;
+                    const shopeeQuantity = parseInt(row.querySelector('td:nth-child(6)').textContent) || 0;
+                    const tiktokQuantity = parseInt(row.querySelector('td:nth-child(7)').textContent) || 0;
+
+                    // Check if all quantities are 0
+                    const totalQuantity = physicalQuantity + shopeeQuantity + tiktokQuantity;
+
+                    if (totalQuantity > 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Cannot Archive',
+                            text: 'This item cannot be archived as it still has quantity in stock.',
+                            confirmButtonText: 'OK'
+                        });
+                        return;
+                    }
+
+                    // Proceed with the archive confirmation if total quantity is 0
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'This item will be archived.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, archive it!',
+                        cancelButtonText: 'No, keep it'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            // Send archive request to the server
+                            fetch('../../backend/controllers/archive_item.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        item_id: itemId
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        Swal.fire('Archived!', data.message, 'success');
+                                        refreshInventory(); // Refresh all tabs after archiving
+                                    } else {
+                                        Swal.fire('Error!', data.message, 'error');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire('Error!', 'Something went wrong while archiving the item.', 'error');
+                                });
+                        }
+                    });
+                });
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             function initializeSelectAllFeature() {
                 const selectAllCheckboxes = document.querySelectorAll('input[type="checkbox"][id^="select_all"]');
@@ -569,6 +632,7 @@ if (!$result_tiktok) {
                         const table = selectAllCheckbox.closest('.inventory-table');
                         const rowCheckboxes = table.querySelectorAll('input[name="select_variant[]"]');
 
+                        // Set the checked state of each row checkbox to match the header checkbox
                         rowCheckboxes.forEach(rowCheckbox => {
                             rowCheckbox.checked = selectAllCheckbox.checked;
                         });
@@ -592,12 +656,14 @@ if (!$result_tiktok) {
 
                 selectedCountDisplay.textContent = `${selectedCount} items selected`;
 
+                // Show or hide the selection bar based on the number of selected items
                 if (selectedCount > 0) {
                     selectionBar.classList.remove('hidden');
                 } else {
                     selectionBar.classList.add('hidden');
                 }
 
+                // Update the header checkbox state based on individual row checkboxes
                 const selectAllCheckbox = activeTabContent.querySelector('input[type="checkbox"][id^="select_all"]');
                 if (selectAllCheckbox) {
                     selectAllCheckbox.checked = selectedItems.length === rowCheckboxes.length && rowCheckboxes.length > 0;
@@ -633,6 +699,7 @@ if (!$result_tiktok) {
                     let itemsToArchive = [];
                     let itemsWithQuantity = [];
 
+                    // Check the total quantity across all tables for each selected item
                     selectedIds.forEach(itemId => {
                         const rowsAcrossTables = document.querySelectorAll(`tr[data-item-id="${itemId}"]`);
                         let totalQuantity = 0;
@@ -650,6 +717,7 @@ if (!$result_tiktok) {
                         }
                     });
 
+                    // Case handling for mixed selection
                     if (itemsWithQuantity.length > 0 && itemsToArchive.length > 0) {
                         Swal.fire({
                             icon: 'warning',
@@ -689,46 +757,52 @@ if (!$result_tiktok) {
                         const rowsAcrossTables = document.querySelectorAll(`tr[data-item-id="${itemId}"]`);
 
                         fetch('../../backend/controllers/archive_item.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                item_id: itemId
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    item_id: itemId
+                                })
                             })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                rowsAcrossTables.forEach(row => row.remove());
-                                Swal.fire('Archived!', `Item ID ${itemId} has been archived successfully.`, 'success');
-                            } else {
-                                Swal.fire('Error!', `Failed to archive item ID ${itemId}: ${data.message}`, 'error');
-                            }
-                        })
-                        .catch(error => {
-                            console.error(`Error archiving item with ID ${itemId}:`, error);
-                            Swal.fire('Error!', 'Something went wrong while archiving the item.', 'error');
-                        });
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    rowsAcrossTables.forEach(row => row.remove()); // Remove the item from all relevant tables
+                                    Swal.fire('Archived!', `Item ID ${itemId} has been archived successfully.`, 'success');
+                                } else {
+                                    Swal.fire('Error!', `Failed to archive item ID ${itemId}: ${data.message}`, 'error');
+                                }
+                            })
+                            .catch(error => {
+                                console.error(`Error archiving item with ID ${itemId}:`, error);
+                                Swal.fire('Error!', 'Something went wrong while archiving the item.', 'error');
+                            });
                     });
 
+                    // Hide the selection bar and reset the select all checkbox state
                     selectionBar.classList.add('hidden');
                     const selectAllCheckbox = document.querySelector('.tab-content.active input[type="checkbox"][id^="select_all"]');
                     if (selectAllCheckbox) selectAllCheckbox.checked = false;
                 }
             }
 
+
+            // Initialize the core and additional features step by step
             initializeSelectAllFeature();
             initializeTabClickListener();
             initializeArchiveButton();
         });
 
+
+        // Use delegated event listener for dynamically created buttons
         document.addEventListener('click', function(event) {
             if (event.target.classList.contains('archive')) {
+                // Check if the target is the 'archive' button or an icon inside it
                 const button = event.target.closest('.archive');
                 if (!button) return;
 
-                console.log('Archive button clicked');
+                console.log('Archive button clicked'); // Debug log to check if this is triggered
 
                 const row = button.closest('tr');
                 if (!row) {
@@ -742,6 +816,7 @@ if (!$result_tiktok) {
                     return;
                 }
 
+                // Show confirmation before archiving
                 Swal.fire({
                     title: 'Are you sure?',
                     text: 'This will archive the item.',
@@ -751,32 +826,34 @@ if (!$result_tiktok) {
                     cancelButtonText: 'No, keep it'
                 }).then(result => {
                     if (result.isConfirmed) {
+                        // Proceed with archiving logic
                         fetch('../../backend/controllers/archive_item.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                item_id: itemId
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    item_id: itemId
+                                })
                             })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                row.remove();
-                                Swal.fire('Archived!', data.message, 'success');
-                            } else {
-                                Swal.fire('Error!', data.message, 'error');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error archiving item:', error);
-                            Swal.fire('Error!', 'Something went wrong while archiving the item.', 'error');
-                        });
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    row.remove(); // Remove the row from the DOM
+                                    Swal.fire('Archived!', data.message, 'success');
+                                } else {
+                                    Swal.fire('Error!', data.message, 'error');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error archiving item:', error);
+                                Swal.fire('Error!', 'Something went wrong while archiving the item.', 'error');
+                            });
                     }
                 });
             }
         });
+
 
         function fetchOriginalData() {
             console.log("Fetching original data...");
@@ -887,6 +964,8 @@ if (!$result_tiktok) {
                     document.querySelector('#tiktok .inventory-table tbody').insertAdjacentHTML('beforeend', tiktokRow);
                 }
             });
+
+            attachArchiveButtonListeners();
         }
 
         document.querySelector('.tabs-container').addEventListener('click', function(event) {
@@ -990,53 +1069,53 @@ if (!$result_tiktok) {
             const color = capitalizeWords(document.getElementById('color').value);
 
             fetch('../../backend/controllers/check_product_exists.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: productName
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: productName
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Product exists check response:", data);
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Product exists check response:", data);
 
-                if (data.exists) {
+                    if (data.exists) {
+                        Swal.fire({
+                            title: 'Product Exists',
+                            text: 'Are you adding a variant of this product?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, it\'s a variant',
+                            cancelButtonText: 'No, it\'s a new product'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                populateFormWithExistingProduct(data);
+                                disableSpecificOptions(data.existing_sizes, data.existing_colors);
+                                existingProductId = data.product_id;
+                                isVariantMode = true;
+                                console.log("Confirmed variant with existingProductId:", existingProductId);
+                                submitForm(existingProductId, productName, category, size, color);
+                            } else {
+                                resetFormFields();
+                                document.getElementById('name').value = "";
+                                disableFormFields();
+                            }
+                        });
+                    } else {
+                        submitForm(null, productName, category, size, color);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking product:', error);
                     Swal.fire({
-                        title: 'Product Exists',
-                        text: 'Are you adding a variant of this product?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, it\'s a variant',
-                        cancelButtonText: 'No, it\'s a new product'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            populateFormWithExistingProduct(data);
-                            disableSpecificOptions(data.existing_sizes, data.existing_colors);
-                            existingProductId = data.product_id;
-                            isVariantMode = true;
-                            console.log("Confirmed variant with existingProductId:", existingProductId);
-                            submitForm(existingProductId, productName, category, size, color);
-                        } else {
-                            resetFormFields();
-                            document.getElementById('name').value = "";
-                            disableFormFields();
-                        }
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to check if product exists.',
+                        confirmButtonText: 'OK'
                     });
-                } else {
-                    submitForm(null, productName, category, size, color);
-                }
-            })
-            .catch(error => {
-                console.error('Error checking product:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to check if product exists.',
-                    confirmButtonText: 'OK'
                 });
-            });
         });
 
         function submitForm(existingProductId, productName, category, size, color) {
@@ -1080,41 +1159,45 @@ if (!$result_tiktok) {
             if (existingProductId) formData.append('existing_product_id', existingProductId);
 
             fetch('../../backend/controllers/add_item.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Product added successfully!',
-                        confirmButtonText: 'OK'
-                    });
-                    document.getElementById('new-item-form').reset();
-                    modal.style.display = "none";
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Product added successfully!',
+                            confirmButtonText: 'OK'
+                        });
+                        document.getElementById('new-item-form').reset();
+                        modal.style.display = "none";
 
-                    const cleanedProductName = productName.replace(/\\/g, "");
+                        // Clean up productName to remove extra backslashes
+                        const cleanedProductName = productName.replace(/\\/g, "");
 
-                    const variantId = data.variant_id || data.product_id;
+                        // Use variant_id if available; otherwise, fallback to product_id
+                        const variantId = data.variant_id || data.product_id;
 
-                    const hasPhysicalStore = data.quantity_physical_store > 0;
-                    const hasShopee = data.quantity_shopee > 0;
-                    const hasTiktok = data.quantity_tiktok > 0;
+                        // Determine `channelsText` for the All Inventory table
+                        const hasPhysicalStore = data.quantity_physical_store > 0;
+                        const hasShopee = data.quantity_shopee > 0;
+                        const hasTiktok = data.quantity_tiktok > 0;
 
-                    let channelsText;
-                    if (hasPhysicalStore && hasShopee && hasTiktok) {
-                        channelsText = "All Channels";
-                    } else {
-                        channelsText = [
-                            hasPhysicalStore ? "Physical Store" : null,
-                            hasShopee ? "Shopee" : null,
-                            hasTiktok ? "TikTok" : null
-                        ].filter(Boolean).join(", ") || "N/A";
-                    }
+                        let channelsText;
+                        if (hasPhysicalStore && hasShopee && hasTiktok) {
+                            channelsText = "All Channels";
+                        } else {
+                            channelsText = [
+                                hasPhysicalStore ? "Physical Store" : null,
+                                hasShopee ? "Shopee" : null,
+                                hasTiktok ? "TikTok" : null
+                            ].filter(Boolean).join(", ") || "N/A";
+                        }
 
-                    const allInventoryRowTemplate = (id, name, category, quantity, size, color, price, dateAdded, image, channels) => `
+                        // Define a template for the All Inventory table with the "Channel" column
+                        const allInventoryRowTemplate = (id, name, category, quantity, size, color, price, dateAdded, image, channels) => `
                     <tr data-item-id="${id}">
                         <td><input type="checkbox" name="select_variant[]" value="${id}"></td>
                         <td>${id}</td>
@@ -1134,7 +1217,8 @@ if (!$result_tiktok) {
                     </tr>
                 `;
 
-                    const channelSpecificRowTemplate = (id, name, category, quantity, size, color, price, dateAdded, image) => `
+                        // Define a template for channel-specific tables without the "Channel" column
+                        const channelSpecificRowTemplate = (id, name, category, quantity, size, color, price, dateAdded, image) => `
                     <tr data-item-id="${id}">
                         <td><input type="checkbox" name="select_variant[]" value="${id}"></td>
                         <td>${id}</td>
@@ -1153,39 +1237,44 @@ if (!$result_tiktok) {
                     </tr>
                 `;
 
-                    const allInventoryRow = allInventoryRowTemplate(variantId, cleanedProductName, category, data.total_quantity, size, color, data.price, data.date_added, data.image, channelsText);
-                    document.querySelector('#all-inventory .inventory-table tbody').insertAdjacentHTML('beforeend', allInventoryRow);
+                        // Insert the row into the "All Inventory" table with total quantities and channel summary
+                        const allInventoryRow = allInventoryRowTemplate(variantId, cleanedProductName, category, data.total_quantity, size, color, data.price, data.date_added, data.image, channelsText);
+                        document.querySelector('#all-inventory .inventory-table tbody').insertAdjacentHTML('beforeend', allInventoryRow);
 
-                    const physicalStoreQuantity = data.quantity_physical_store || 0;
-                    const shopeeQuantity = data.quantity_shopee || 0;
-                    const tiktokQuantity = data.quantity_tiktok || 0;
+                        // Append rows to specific tables, showing zero if quantity is not provided
+                        const physicalStoreQuantity = data.quantity_physical_store || 0;
+                        const shopeeQuantity = data.quantity_shopee || 0;
+                        const tiktokQuantity = data.quantity_tiktok || 0;
 
-                    const physicalStoreRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, physicalStoreQuantity, size, color, data.price, data.date_added, data.image);
-                    document.querySelector('#physical-store .inventory-table tbody').insertAdjacentHTML('beforeend', physicalStoreRow);
+                        const physicalStoreRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, physicalStoreQuantity, size, color, data.price, data.date_added, data.image);
+                        document.querySelector('#physical-store .inventory-table tbody').insertAdjacentHTML('beforeend', physicalStoreRow);
 
-                    const shopeeRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, shopeeQuantity, size, color, data.price, data.date_added, data.image);
-                    document.querySelector('#shopee .inventory-table tbody').insertAdjacentHTML('beforeend', shopeeRow);
+                        const shopeeRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, shopeeQuantity, size, color, data.price, data.date_added, data.image);
+                        document.querySelector('#shopee .inventory-table tbody').insertAdjacentHTML('beforeend', shopeeRow);
 
-                    const tiktokRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, tiktokQuantity, size, color, data.price, data.date_added, data.image);
-                    document.querySelector('#tiktok .inventory-table tbody').insertAdjacentHTML('beforeend', tiktokRow);
-                } else {
+                        const tiktokRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, tiktokQuantity, size, color, data.price, data.date_added, data.image);
+                        document.querySelector('#tiktok .inventory-table tbody').insertAdjacentHTML('beforeend', tiktokRow);
+
+                        // Re-attach the event listener for the archive button
+                        attachArchiveButtonListeners();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error: ' + data.message,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error during form submission:', error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Error: ' + data.message,
+                        text: 'Something went wrong! Please check the console for more details.',
                         confirmButtonText: 'OK'
                     });
-                }
-            })
-            .catch(error => {
-                console.error('Fetch error during form submission:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Something went wrong! Please check the console for more details.',
-                    confirmButtonText: 'OK'
                 });
-            });
         }
 
         function resetFormFields() {
@@ -1275,46 +1364,46 @@ if (!$result_tiktok) {
             console.log("Checking if product exists:", productName);
 
             fetch('../../backend/controllers/check_product_exists.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: productName
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: productName
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Product exists check response:", data);
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Product exists check response:", data);
 
-                if (data.exists) {
-                    Swal.fire({
-                        title: 'Product Exists',
-                        text: 'Are you adding a variant of this product?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, it\'s a variant',
-                        cancelButtonText: 'No, it\'s a new product'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            populateFormWithExistingProduct(data);
-                            disableSpecificOptions(data.existing_sizes, data.existing_colors);
-                            isVariantMode = true;
-                            existingProductId = data.product_id;
-                            console.log("Confirmed variant with existingProductId:", existingProductId);
-                        } else {
-                            resetFormFields();
-                            document.getElementById('name').value = "";
-                            disableFormFields();
-                        }
-                    });
-                } else {
-                    enableAllFields();
-                    isVariantMode = false;
-                    existingProductId = null;
-                }
-            })
-            .catch(error => console.error('Error checking product:', error));
+                    if (data.exists) {
+                        Swal.fire({
+                            title: 'Product Exists',
+                            text: 'Are you adding a variant of this product?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, it\'s a variant',
+                            cancelButtonText: 'No, it\'s a new product'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                populateFormWithExistingProduct(data);
+                                disableSpecificOptions(data.existing_sizes, data.existing_colors);
+                                isVariantMode = true;
+                                existingProductId = data.product_id;
+                                console.log("Confirmed variant with existingProductId:", existingProductId);
+                            } else {
+                                resetFormFields();
+                                document.getElementById('name').value = "";
+                                disableFormFields();
+                            }
+                        });
+                    } else {
+                        enableAllFields();
+                        isVariantMode = false;
+                        existingProductId = null;
+                    }
+                })
+                .catch(error => console.error('Error checking product:', error));
         }
 
         function enableAllFields() {
@@ -1331,6 +1420,8 @@ if (!$result_tiktok) {
 
     initializeInventoryManagement();
 </script>
+
+
 
 
 
