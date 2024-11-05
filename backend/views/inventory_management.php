@@ -469,185 +469,254 @@ if (!$result_tiktok) {
 </style>
 
 <script>
-    // Function to update the selection bar visibility and count
-    function updateSelectionBar() {
-        const checkboxes = document.querySelectorAll('.select-item-all:checked');
-        const selectedCount = checkboxes.length;
+// Function to update the selection bar visibility and count
+function updateSelectionBar() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+    const selectedIds = new Set(
+        Array.from(checkboxes)
+            .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude header checkboxes
+            .map(checkbox => checkbox.value) // Use the value (item ID) as the unique identifier
+    );
+    const selectedCount = selectedIds.size;
 
-        // Update the count in the selection bar
-        document.getElementById('selected-count').textContent = `${selectedCount} items selected`;
+    // Update the count in the selection bar
+    document.getElementById('selected-count').textContent = `${selectedCount} items selected`;
 
-        // Show or hide the selection bar based on the count (only show for 2 or more items)
-        const selectionBar = document.getElementById('selection-bar');
-        if (selectedCount >= 2) {
-            selectionBar.style.display = 'flex';
-        } else {
-            selectionBar.style.display = 'none';
-        }
+    // Show or hide the selection bar based on the count
+    const selectionBar = document.getElementById('selection-bar');
+    if (selectedCount > 0) {
+        selectionBar.style.display = 'flex';
+    } else {
+        selectionBar.style.display = 'none';
     }
+}
 
-    // Function to update the "Select All" checkbox and selection bar
-    function updateSelectAll(checkboxClass, selectAllId) {
-        let checkboxes = document.querySelectorAll(checkboxClass);
-        let selectAllCheckbox = document.getElementById(selectAllId);
+// Function to update the "Select All" checkbox and selection bar
+function updateSelectAll(checkboxClass, selectAllId) {
+    let checkboxes = document.querySelectorAll(checkboxClass);
+    let selectAllCheckbox = document.getElementById(selectAllId);
 
-        // Check if all checkboxes are checked
-        let allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-        selectAllCheckbox.checked = allChecked;
+    // Check if all checkboxes are checked
+    let allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+    selectAllCheckbox.checked = allChecked;
 
-        // Update selection bar
-        updateSelectionBar();
-    }
+    // Update selection bar
+    updateSelectionBar();
+}
 
-    // Add event listener to each item checkbox to update the selection bar when clicked
-    function addCheckboxListeners() {
-        const checkboxes = document.querySelectorAll('.select-item-all');
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('click', () => {
-                updateSelectionBar();
-                updateSelectAll('.select-item-all', 'select-all-all');
-            });
+// Function to reset all checkboxes
+function resetCheckboxes() {
+    const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+    allCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    updateSelectionBar(); // Ensure the selection bar is updated after resetting checkboxes
+}
+
+// Add event listener to each item checkbox to update the selection bar when clicked
+function addCheckboxListeners() {
+    const allCheckboxes = [
+        ...document.querySelectorAll('.select-item-all'),
+        ...document.querySelectorAll('.select-item-physical'),
+        ...document.querySelectorAll('.select-item-shopee'),
+        ...document.querySelectorAll('.select-item-tiktok')
+    ];
+    
+    allCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('click', () => {
+            updateSelectionBar();
+            updateSelectAll('.select-item-all', 'select-all-all');
+            updateSelectAll('.select-item-physical', 'select-all-physical');
+            updateSelectAll('.select-item-shopee', 'select-all-shopee');
+            updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
         });
+    });
+}
+
+// Archive button functionality
+document.getElementById('archive-button').addEventListener('click', function() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+    const selectedIds = new Set(
+        Array.from(checkboxes)
+            .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude header checkboxes
+            .map(checkbox => checkbox.value)
+    );
+    let itemsToArchive = [];
+    let itemsWithQuantities = [];
+    let archivedItemCount = 0;
+
+    if (selectedIds.size === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: 'No Items Selected',
+            text: 'Please select items to archive.',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            resetCheckboxes(); // Reset checkboxes after alert
+        });
+        return;
     }
 
-    // Function to check if the selected item has a quantity in any channel
-    function hasQuantityInAnyChannel(itemId) {
+    selectedIds.forEach(itemId => {
         const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
-        if (!itemRow) return false;
+        const itemName = itemRow ? itemRow.querySelector('td:nth-child(3)').innerText : 'Unnamed Item';
+        const itemCategory = itemRow ? itemRow.querySelector('td:nth-child(4)').innerText : 'Uncategorized';
 
-        const quantityPhysicalStore = parseInt(itemRow.dataset.quantityPhysicalStore) || 0;
-        const quantityShopee = parseInt(itemRow.dataset.quantityShopee) || 0;
-        const quantityTiktok = parseInt(itemRow.dataset.quantityTiktok) || 0;
+        if (hasQuantityInAnyChannel(itemId)) {
+            itemsWithQuantities.push(`${itemName} (${itemCategory})`);
+        } else {
+            itemsToArchive.push(itemId);
+        }
+    });
 
-        return (quantityPhysicalStore > 0 || quantityShopee > 0 || quantityTiktok > 0);
+    if (itemsWithQuantities.length > 0) {
+        const itemListHtml = itemsWithQuantities.map(item => `<li>${item}</li>`).join('');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Cannot Archive Some Items',
+            html: `<p>The following items have quantities and cannot be archived:</p><ul>${itemListHtml}</ul>`,
+            confirmButtonText: 'OK'
+        }).then(() => {
+            resetCheckboxes(); // Reset checkboxes after alert
+        });
     }
 
-    // Archive button functionality
-    document.getElementById('archive-button').addEventListener('click', function() {
-        const checkboxes = document.querySelectorAll('.select-item-all:checked');
-        let itemsToArchive = [];
-        let itemsWithQuantities = [];
-        let processedCount = 0;
+    if (itemsToArchive.length > 0) {
+        let archivePromises = itemsToArchive.map(itemId => {
+            console.log(`Attempting to archive item ID: ${itemId}`); // Debugging log
 
-        if (checkboxes.length === 0) {
-            Swal.fire({
-                icon: 'info',
-                title: 'No Items Selected',
-                text: 'Please select items to archive.',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
+            return fetch('../../backend/controllers/archive_item.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ item_id: itemId })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok for item ${itemId}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(`Response for item ${itemId}:`, data); // Debugging log
 
-        checkboxes.forEach(checkbox => {
-            const itemId = checkbox.value;
-            const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
-            const itemName = itemRow ? itemRow.querySelector('td:nth-child(3)').innerText : 'Unnamed Item';
-            const itemCategory = itemRow ? itemRow.querySelector('td:nth-child(4)').innerText : 'Uncategorized';
-
-            if (hasQuantityInAnyChannel(itemId)) {
-                itemsWithQuantities.push(`${itemName} (${itemCategory})`);
-                checkbox.checked = false;
-            } else {
-                itemsToArchive.push(itemId);
-            }
-
-            processedCount++;
-            if (processedCount === checkboxes.length) {
-                updateSelectionBar();
-                updateSelectAll('.select-item-all', 'select-all-all');
-            }
-        });
-
-        if (itemsWithQuantities.length > 0) {
-            const itemListHtml = itemsWithQuantities.map(item => `<li>${item}</li>`).join('');
-            Swal.fire({
-                icon: 'warning',
-                title: 'Cannot Archive Some Items',
-                html: `<p>The following items have quantities and cannot be archived:</p><ul>${itemListHtml}</ul>`,
-                confirmButtonText: 'OK'
-            });
-        }
-
-        if (itemsToArchive.length > 0) {
-            let archivePromises = itemsToArchive.map(itemId => {
-                console.log(`Attempting to archive item ID: ${itemId}`); // Debugging log
-
-                return fetch('../../backend/controllers/archive_item.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ item_id: itemId })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Network response was not ok for item ${itemId}`);
+                if (data.status === 'success') {
+                    const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
+                    if (itemRow) {
+                        itemRow.remove();
+                        archivedItemCount++; // Increment count only if item was successfully removed
                     }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log(`Response for item ${itemId}:`, data); // Debugging log
-
-                    if (data.status === 'success') {
-                        const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
-                        if (itemRow) itemRow.remove();
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: `Error archiving item ${itemId}: ${data.message || 'Unknown error'}`,
-                            confirmButtonText: 'OK'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
+                } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Unexpected Error',
-                        text: `An unexpected error occurred for item ${itemId}. Please try again later.`,
+                        title: 'Error',
+                        text: `Error archiving item ${itemId}: ${data.message || 'Unknown error'}`,
                         confirmButtonText: 'OK'
+                    }).then(() => {
+                        resetCheckboxes(); // Reset checkboxes after alert
                     });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Unexpected Error',
+                    text: `An unexpected error occurred for item ${itemId}. Please try again later.`,
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    resetCheckboxes(); // Reset checkboxes after alert
                 });
             });
+        });
 
-            Promise.all(archivePromises).then(() => {
+        Promise.all(archivePromises).then(() => {
+            if (archivedItemCount > 0) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Archiving Completed',
-                    text: 'Items without quantities have been successfully archived.',
+                    text: `${archivedItemCount} item(s) without quantities have been successfully archived.`,
                     confirmButtonText: 'OK'
+                }).then(() => {
+                    resetCheckboxes(); // Reset checkboxes after alert
                 });
-                updateSelectionBar();
-                updateSelectAll('.select-item-all', 'select-all-all');
-            });
-        } else {
-            if (itemsWithQuantities.length === 0) {
+            } else {
                 Swal.fire({
                     icon: 'info',
-                    title: 'No Items to Archive',
-                    text: 'No items were selected for archiving.',
+                    title: 'No Items Archived',
+                    text: 'No items were archived.',
                     confirmButtonText: 'OK'
+                }).then(() => {
+                    resetCheckboxes(); // Reset checkboxes after alert
                 });
             }
-        }
-
-        updateSelectAll('.select-item-all', 'select-all-all');
-    });
-
-    // Event listener for 'Select All' checkbox functionality
-    document.getElementById('select-all-all').addEventListener('click', function() {
-        let checkboxes = document.querySelectorAll('.select-item-all');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = this.checked;
         });
-        updateSelectionBar();
-    });
+    } else {
+        Swal.fire({
+            icon: 'info',
+            title: 'No Items Archived',
+            text: 'No items were archived as none were eligible.',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            resetCheckboxes(); // Reset checkboxes after alert
+        });
+    }
+});
 
-    // Initialize 'Select All' checkboxes state and add individual checkbox listeners
-    updateSelectAll('.select-item-all', 'select-all-all');
-    addCheckboxListeners();
+// Helper function to check if the selected item has a quantity in any channel
+function hasQuantityInAnyChannel(itemId) {
+    const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
+    if (!itemRow) return false;
+
+    const quantityPhysicalStore = parseInt(itemRow.dataset.quantityPhysicalStore) || 0;
+    const quantityShopee = parseInt(itemRow.dataset.quantityShopee) || 0;
+    const quantityTiktok = parseInt(itemRow.dataset.quantityTiktok) || 0;
+
+    return (quantityPhysicalStore > 0 || quantityShopee > 0 || quantityTiktok > 0);
+}
+
+// Event listener for 'Select All' checkbox functionality for each tab
+document.getElementById('select-all-all').addEventListener('click', function() {
+    let checkboxes = document.querySelectorAll('.select-item-all');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
+    });
+    updateSelectionBar();
+});
+
+document.getElementById('select-all-physical').addEventListener('click', function() {
+    let checkboxes = document.querySelectorAll('.select-item-physical');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
+    });
+    updateSelectionBar();
+});
+
+document.getElementById('select-all-shopee').addEventListener('click', function() {
+    let checkboxes = document.querySelectorAll('.select-item-shopee');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
+    });
+    updateSelectionBar();
+});
+
+document.getElementById('select-all-tiktok').addEventListener('click', function() {
+    let checkboxes = document.querySelectorAll('.select-item-tiktok');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
+    });
+    updateSelectionBar();
+});
+
+// Initialize 'Select All' checkboxes state and add individual checkbox listeners
+updateSelectAll('.select-item-all', 'select-all-all');
+updateSelectAll('.select-item-physical', 'select-all-physical');
+updateSelectAll('.select-item-shopee', 'select-all-shopee');
+updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
+addCheckboxListeners();
+
+
 </script>
 
 
