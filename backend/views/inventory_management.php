@@ -190,11 +190,12 @@ if (!$result_tiktok) {
         </div>
 
         <!-- All Inventory Tab -->
+        <!-- All Inventory Tab -->
         <div id="all-inventory" class="tab-content active" data-type="variant">
             <table class="inventory-table inventory-table-all">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="select_all_all_inventory"></th>
+                        <th><input type="checkbox" id="select-all-all"></th> <!-- Checkbox for selecting all items -->
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -211,42 +212,46 @@ if (!$result_tiktok) {
                 <tbody>
                     <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
-                            <tr data-item-id="<?php echo $row['variant_id']; ?>">
-                                <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
-                                <td><?php echo $row['variant_id']; ?></td>
-                                <td class="wrap-text"><?php echo $row['name']; ?></td>
-                                <td class="wrap-text"><?php echo $row['category']; ?></td>
-                                <td><?php echo $row['quantity_physical_store'] + $row['quantity_shopee'] + $row['quantity_tiktok']; ?></td>
-                                <td><?php echo $row['size']; ?></td>
-                                <td><?php echo $row['color']; ?></td>
-                                <td><?php echo $row['price']; ?></td>
-                                <td><?php echo $row['date_added']; ?></td>
-                                <td class="wrap-text">
-                                    <?php
-                                    $displayChannels = [];
-                                    if ($row['quantity_physical_store'] > 0) {
-                                        $displayChannels[] = "Physical Store";
-                                    }
-                                    if ($row['quantity_shopee'] > 0) {
-                                        $displayChannels[] = "Shopee";
-                                    }
-                                    if ($row['quantity_tiktok'] > 0) {
-                                        $displayChannels[] = "TikTok";
-                                    }
+                            <tr data-item-id="<?php echo $row['variant_id']; ?>"
+    data-quantity-physical-store="<?php echo $row['quantity_physical_store']; ?>"
+    data-quantity-shopee="<?php echo $row['quantity_shopee']; ?>"
+    data-quantity-tiktok="<?php echo $row['quantity_tiktok']; ?>">
+    <td><input type="checkbox" class="select-item-all" value="<?php echo $row['variant_id']; ?>"></td> <!-- Individual checkbox -->
+    <td><?php echo $row['variant_id']; ?></td>
+    <td class="wrap-text"><?php echo $row['name']; ?></td>
+    <td class="wrap-text"><?php echo $row['category']; ?></td>
+    <td><?php echo $row['quantity_physical_store'] + $row['quantity_shopee'] + $row['quantity_tiktok']; ?></td>
+    <td><?php echo $row['size']; ?></td>
+    <td><?php echo $row['color']; ?></td>
+    <td><?php echo $row['price']; ?></td>
+    <td><?php echo $row['date_added']; ?></td>
+    <td class="wrap-text">
+        <?php
+        $displayChannels = [];
+        if ($row['quantity_physical_store'] > 0) {
+            $displayChannels[] = "Physical Store";
+        }
+        if ($row['quantity_shopee'] > 0) {
+            $displayChannels[] = "Shopee";
+        }
+        if ($row['quantity_tiktok'] > 0) {
+            $displayChannels[] = "TikTok";
+        }
 
-                                    if (count($displayChannels) === 3) {
-                                        echo 'All Channels';
-                                    } else {
-                                        echo implode(' and ', $displayChannels);
-                                    }
-                                    ?>
-                                </td>
-                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                                <td>
-                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
-                                </td>
-                            </tr>
+        if (count($displayChannels) === 3) {
+            echo 'All Channels';
+        } else {
+            echo implode(' and ', $displayChannels);
+        }
+        ?>
+    </td>
+    <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+    <td>
+        <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+        <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
+    </td>
+</tr>
+
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
@@ -257,14 +262,12 @@ if (!$result_tiktok) {
             </table>
         </div>
 
-        <!-- Repeat this structure for Physical Store, Shopee, and TikTok tabs, updating the select_all checkbox ID -->
-
         <!-- Physical Store Tab -->
         <div id="physical-store" class="tab-content" data-type="inventory">
             <table class="inventory-table inventory-table-physical">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="select_all_physical_store"></th>
+                        <th><input type="checkbox" id="select-all-physical"></th> <!-- Checkbox for selecting all items -->
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -281,7 +284,7 @@ if (!$result_tiktok) {
                     <?php if (mysqli_num_rows($result_physical_store) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_physical_store)): ?>
                             <tr data-item-id="<?php echo $row['variant_id']; ?>">
-                                <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
+                                <td><input type="checkbox" class="select-item-physical" value="<?php echo $row['variant_id']; ?>"></td> <!-- Individual checkbox -->
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
                                 <td><?php echo $row['category']; ?></td>
@@ -311,7 +314,7 @@ if (!$result_tiktok) {
             <table class="inventory-table inventory-table-shopee">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="select_all_shopee"></th>
+                        <th><input type="checkbox" id="select-all-shopee"></th> <!-- Checkbox for selecting all items -->
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -328,7 +331,7 @@ if (!$result_tiktok) {
                     <?php if (mysqli_num_rows($result_shopee) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_shopee)): ?>
                             <tr data-item-id="<?php echo $row['variant_id']; ?>">
-                                <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
+                                <td><input type="checkbox" class="select-item-shopee" value="<?php echo $row['variant_id']; ?>"></td> <!-- Individual checkbox -->
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
                                 <td><?php echo $row['category']; ?></td>
@@ -358,7 +361,7 @@ if (!$result_tiktok) {
             <table class="inventory-table inventory-table-tiktok">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" id="select_all_tiktok"></th>
+                        <th><input type="checkbox" id="select-all-tiktok"></th> <!-- Checkbox for selecting all items -->
                         <th>Variant ID</th>
                         <th>Name</th>
                         <th>Category</th>
@@ -375,7 +378,7 @@ if (!$result_tiktok) {
                     <?php if (mysqli_num_rows($result_tiktok) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_tiktok)): ?>
                             <tr data-item-id="<?php echo $row['variant_id']; ?>">
-                                <td><input type="checkbox" name="select_variant[]" value="<?php echo $row['variant_id']; ?>"></td>
+                                <td><input type="checkbox" class="select-item-tiktok" value="<?php echo $row['variant_id']; ?>"></td> <!-- Individual checkbox -->
                                 <td><?php echo $row['variant_id']; ?></td>
                                 <td><?php echo $row['name']; ?></td>
                                 <td><?php echo $row['category']; ?></td>
@@ -399,15 +402,242 @@ if (!$result_tiktok) {
                 </tbody>
             </table>
         </div>
-        <div id="selection-bar" class="selection-bar hidden">
-            <span id="selected-count">0 items selected</span>
-            <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
-        </div>
 
     </div>
-</body>
+
+    <style>
+    /* Basic Reset */
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Selection Bar Styling */
+    #selection-bar {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        font-size: 14px;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-width: 250px;
+        max-width: 400px;
+    }
+
+    /* Text Styling */
+    #selected-count {
+        font-weight: bold;
+    }
+
+    /* Button Styling */
+    #archive-button {
+        background-color: #f39c12;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+    }
+
+    #archive-button:hover {
+        background-color: #e67e22;
+    }
+
+    /* Small screens responsiveness */
+    @media (max-width: 480px) {
+        #selection-bar {
+            min-width: 200px;
+            padding: 10px 15px;
+            font-size: 12px;
+        }
+
+        #archive-button {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+    }
+</style>
+
+<script>
+    // Function to update the selection bar visibility and count
+    function updateSelectionBar() {
+        const checkboxes = document.querySelectorAll('.select-item-all:checked');
+        const selectedCount = checkboxes.length;
+
+        // Update the count in the selection bar
+        document.getElementById('selected-count').textContent = `${selectedCount} items selected`;
+
+        // Show or hide the selection bar based on the count
+        const selectionBar = document.getElementById('selection-bar');
+        if (selectedCount > 0) {
+            selectionBar.style.display = 'flex';
+        } else {
+            selectionBar.style.display = 'none';
+        }
+    }
+
+    // Modify the updateSelectAll function to include selection bar update
+    function updateSelectAll(checkboxClass, selectAllId) {
+        let checkboxes = document.querySelectorAll(checkboxClass);
+        let selectAllCheckbox = document.getElementById(selectAllId);
+
+        // Check if all checkboxes are checked
+        let allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+        selectAllCheckbox.checked = allChecked;
+
+        // Update selection bar
+        updateSelectionBar();
+    }
+
+    // Function to check if the selected item has a quantity in any channel
+    function hasQuantityInAnyChannel(itemId) {
+        const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
+        if (!itemRow) return false; // Fallback in case itemRow is not found
+
+        const quantityPhysicalStore = parseInt(itemRow.dataset.quantityPhysicalStore) || 0;
+        const quantityShopee = parseInt(itemRow.dataset.quantityShopee) || 0;
+        const quantityTiktok = parseInt(itemRow.dataset.quantityTiktok) || 0;
+
+        // Return true if any quantity exists in any channel
+        return (quantityPhysicalStore > 0 || quantityShopee > 0 || quantityTiktok > 0);
+    }
+
+    // Archive button functionality
+    document.getElementById('archive-button').addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('.select-item-all:checked');
+        let itemsToArchive = [];
+        let itemsWithQuantities = [];
+        let processedCount = 0;
+
+        checkboxes.forEach(checkbox => {
+            const itemId = checkbox.value;
+            const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
+            const itemName = itemRow ? itemRow.querySelector('td:nth-child(3)').innerText : 'Unnamed Item';
+            const itemCategory = itemRow ? itemRow.querySelector('td:nth-child(4)').innerText : 'Uncategorized';
+
+            if (hasQuantityInAnyChannel(itemId)) {
+                itemsWithQuantities.push(`${itemName} (${itemCategory})`);
+                // Uncheck the checkbox since the item can't be archived
+                checkbox.checked = false;
+            } else {
+                itemsToArchive.push(itemId);
+            }
+
+            processedCount++;
+            if (processedCount === checkboxes.length) {
+                updateSelectionBar();
+                updateSelectAll('.select-item-all', 'select-all-all'); // Update the Select All checkbox state
+            }
+        });
+
+        // Notify the user about items that have quantities
+        if (itemsWithQuantities.length > 0) {
+            const itemListHtml = itemsWithQuantities.map(item => `<li>${item}</li>`).join('');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cannot Archive Some Items',
+                html: `<p>The following items have quantities and cannot be archived:</p><ul>${itemListHtml}</ul>`,
+                confirmButtonText: 'OK'
+            });
+        }
+
+        // Proceed to archive items with no quantities
+        if (itemsToArchive.length > 0) {
+            let archivePromises = itemsToArchive.map(itemId => {
+                return fetch('../../backend/controllers/archive_item.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ item_id: itemId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Remove the row of the archived item from the current view
+                        const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
+                        if (itemRow) itemRow.remove();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: `Error archiving item ${itemId}: ${data.message || 'Unknown error'}`,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Unexpected Error',
+                        text: `An unexpected error occurred for item ${itemId}. Please try again later.`,
+                        confirmButtonText: 'OK'
+                    });
+                });
+            });
+
+            // Wait for all archive operations to complete
+            Promise.all(archivePromises).then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Archiving Completed',
+                    text: 'Items without quantities have been successfully archived.',
+                    confirmButtonText: 'OK'
+                });
+                updateSelectionBar();
+                updateSelectAll('.select-item-all', 'select-all-all'); // Ensure header checkbox is updated after archiving
+            });
+        } else {
+            if (itemsWithQuantities.length === 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No Items to Archive',
+                    text: 'No items were selected for archiving.',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+
+        // Ensure header checkbox is updated after any unsuccessful archive
+        updateSelectAll('.select-item-all', 'select-all-all');
+    });
+
+    // Event listener for 'Select All' checkbox functionality
+    document.getElementById('select-all-all').addEventListener('click', function() {
+        let checkboxes = document.querySelectorAll('.select-item-all');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateSelectionBar();
+    });
+
+    // Initialize 'Select All' checkboxes state
+    updateSelectAll('.select-item-all', 'select-all-all');
+</script>
+
+
+<div id="selection-bar">
+    <span id="selected-count">0 items selected</span>
+    <button id="archive-button">Archive</button>
+</div>
+
+
 
 </html>
+
 
 
 
@@ -787,22 +1017,17 @@ if (!$result_tiktok) {
                 }
             }
 
-
-            // Initialize the core and additional features step by step
             initializeSelectAllFeature();
             initializeTabClickListener();
             initializeArchiveButton();
         });
 
-
-        // Use delegated event listener for dynamically created buttons
         document.addEventListener('click', function(event) {
             if (event.target.classList.contains('archive')) {
-                // Check if the target is the 'archive' button or an icon inside it
                 const button = event.target.closest('.archive');
                 if (!button) return;
 
-                console.log('Archive button clicked'); // Debug log to check if this is triggered
+                console.log('Archive button clicked');
 
                 const row = button.closest('tr');
                 if (!row) {
@@ -816,7 +1041,6 @@ if (!$result_tiktok) {
                     return;
                 }
 
-                // Show confirmation before archiving
                 Swal.fire({
                     title: 'Are you sure?',
                     text: 'This will archive the item.',
@@ -826,7 +1050,6 @@ if (!$result_tiktok) {
                     cancelButtonText: 'No, keep it'
                 }).then(result => {
                     if (result.isConfirmed) {
-                        // Proceed with archiving logic
                         fetch('../../backend/controllers/archive_item.php', {
                                 method: 'POST',
                                 headers: {
@@ -839,7 +1062,7 @@ if (!$result_tiktok) {
                             .then(response => response.json())
                             .then(data => {
                                 if (data.status === 'success') {
-                                    row.remove(); // Remove the row from the DOM
+                                    row.remove();
                                     Swal.fire('Archived!', data.message, 'success');
                                 } else {
                                     Swal.fire('Error!', data.message, 'error');
@@ -853,7 +1076,6 @@ if (!$result_tiktok) {
                 });
             }
         });
-
 
         function fetchOriginalData() {
             console.log("Fetching original data...");
@@ -1174,13 +1396,10 @@ if (!$result_tiktok) {
                         document.getElementById('new-item-form').reset();
                         modal.style.display = "none";
 
-                        // Clean up productName to remove extra backslashes
                         const cleanedProductName = productName.replace(/\\/g, "");
 
-                        // Use variant_id if available; otherwise, fallback to product_id
                         const variantId = data.variant_id || data.product_id;
 
-                        // Determine `channelsText` for the All Inventory table
                         const hasPhysicalStore = data.quantity_physical_store > 0;
                         const hasShopee = data.quantity_shopee > 0;
                         const hasTiktok = data.quantity_tiktok > 0;
@@ -1196,7 +1415,6 @@ if (!$result_tiktok) {
                             ].filter(Boolean).join(", ") || "N/A";
                         }
 
-                        // Define a template for the All Inventory table with the "Channel" column
                         const allInventoryRowTemplate = (id, name, category, quantity, size, color, price, dateAdded, image, channels) => `
                     <tr data-item-id="${id}">
                         <td><input type="checkbox" name="select_variant[]" value="${id}"></td>
@@ -1217,7 +1435,6 @@ if (!$result_tiktok) {
                     </tr>
                 `;
 
-                        // Define a template for channel-specific tables without the "Channel" column
                         const channelSpecificRowTemplate = (id, name, category, quantity, size, color, price, dateAdded, image) => `
                     <tr data-item-id="${id}">
                         <td><input type="checkbox" name="select_variant[]" value="${id}"></td>
@@ -1237,11 +1454,9 @@ if (!$result_tiktok) {
                     </tr>
                 `;
 
-                        // Insert the row into the "All Inventory" table with total quantities and channel summary
                         const allInventoryRow = allInventoryRowTemplate(variantId, cleanedProductName, category, data.total_quantity, size, color, data.price, data.date_added, data.image, channelsText);
                         document.querySelector('#all-inventory .inventory-table tbody').insertAdjacentHTML('beforeend', allInventoryRow);
 
-                        // Append rows to specific tables, showing zero if quantity is not provided
                         const physicalStoreQuantity = data.quantity_physical_store || 0;
                         const shopeeQuantity = data.quantity_shopee || 0;
                         const tiktokQuantity = data.quantity_tiktok || 0;
@@ -1255,7 +1470,6 @@ if (!$result_tiktok) {
                         const tiktokRow = channelSpecificRowTemplate(variantId, cleanedProductName, category, tiktokQuantity, size, color, data.price, data.date_added, data.image);
                         document.querySelector('#tiktok .inventory-table tbody').insertAdjacentHTML('beforeend', tiktokRow);
 
-                        // Re-attach the event listener for the archive button
                         attachArchiveButtonListeners();
                     } else {
                         Swal.fire({
@@ -1420,6 +1634,7 @@ if (!$result_tiktok) {
 
     initializeInventoryManagement();
 </script>
+
 
 
 
