@@ -190,7 +190,6 @@ if (!$result_tiktok) {
         </div>
 
         <!-- All Inventory Tab -->
-        <!-- All Inventory Tab -->
         <div id="all-inventory" class="tab-content active" data-type="variant">
             <table class="inventory-table inventory-table-all">
                 <thead>
@@ -213,45 +212,44 @@ if (!$result_tiktok) {
                     <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
                             <tr data-item-id="<?php echo $row['variant_id']; ?>"
-    data-quantity-physical-store="<?php echo $row['quantity_physical_store']; ?>"
-    data-quantity-shopee="<?php echo $row['quantity_shopee']; ?>"
-    data-quantity-tiktok="<?php echo $row['quantity_tiktok']; ?>">
-    <td><input type="checkbox" class="select-item-all" value="<?php echo $row['variant_id']; ?>"></td> <!-- Individual checkbox -->
-    <td><?php echo $row['variant_id']; ?></td>
-    <td class="wrap-text"><?php echo $row['name']; ?></td>
-    <td class="wrap-text"><?php echo $row['category']; ?></td>
-    <td><?php echo $row['quantity_physical_store'] + $row['quantity_shopee'] + $row['quantity_tiktok']; ?></td>
-    <td><?php echo $row['size']; ?></td>
-    <td><?php echo $row['color']; ?></td>
-    <td><?php echo $row['price']; ?></td>
-    <td><?php echo $row['date_added']; ?></td>
-    <td class="wrap-text">
-        <?php
-        $displayChannels = [];
-        if ($row['quantity_physical_store'] > 0) {
-            $displayChannels[] = "Physical Store";
-        }
-        if ($row['quantity_shopee'] > 0) {
-            $displayChannels[] = "Shopee";
-        }
-        if ($row['quantity_tiktok'] > 0) {
-            $displayChannels[] = "TikTok";
-        }
+                                data-quantity-physical-store="<?php echo $row['quantity_physical_store']; ?>"
+                                data-quantity-shopee="<?php echo $row['quantity_shopee']; ?>"
+                                data-quantity-tiktok="<?php echo $row['quantity_tiktok']; ?>">
+                                <td><input type="checkbox" class="select-item-all" value="<?php echo $row['variant_id']; ?>"></td> <!-- Individual checkbox -->
+                                <td><?php echo $row['variant_id']; ?></td>
+                                <td class="wrap-text"><?php echo $row['name']; ?></td>
+                                <td class="wrap-text"><?php echo $row['category']; ?></td>
+                                <td><?php echo $row['quantity_physical_store'] + $row['quantity_shopee'] + $row['quantity_tiktok']; ?></td>
+                                <td><?php echo $row['size']; ?></td>
+                                <td><?php echo $row['color']; ?></td>
+                                <td><?php echo $row['price']; ?></td>
+                                <td><?php echo $row['date_added']; ?></td>
+                                <td class="wrap-text">
+                                    <?php
+                                    $displayChannels = [];
+                                    if ($row['quantity_physical_store'] > 0) {
+                                        $displayChannels[] = "Physical Store";
+                                    }
+                                    if ($row['quantity_shopee'] > 0) {
+                                        $displayChannels[] = "Shopee";
+                                    }
+                                    if ($row['quantity_tiktok'] > 0) {
+                                        $displayChannels[] = "TikTok";
+                                    }
 
-        if (count($displayChannels) === 3) {
-            echo 'All Channels';
-        } else {
-            echo implode(' and ', $displayChannels);
-        }
-        ?>
-    </td>
-    <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-    <td>
-        <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-        <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
-    </td>
-</tr>
-
+                                    if (count($displayChannels) === 3) {
+                                        echo 'All Channels';
+                                    } else {
+                                        echo implode(' and ', $displayChannels);
+                                    }
+                                    ?>
+                                </td>
+                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td>
+                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
+                                </td>
+                            </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
@@ -405,7 +403,7 @@ if (!$result_tiktok) {
 
     </div>
 
-    <style>
+<style>
     /* Basic Reset */
     body {
         margin: 0;
@@ -479,16 +477,16 @@ if (!$result_tiktok) {
         // Update the count in the selection bar
         document.getElementById('selected-count').textContent = `${selectedCount} items selected`;
 
-        // Show or hide the selection bar based on the count
+        // Show or hide the selection bar based on the count (only show for 2 or more items)
         const selectionBar = document.getElementById('selection-bar');
-        if (selectedCount > 0) {
+        if (selectedCount >= 2) {
             selectionBar.style.display = 'flex';
         } else {
             selectionBar.style.display = 'none';
         }
     }
 
-    // Modify the updateSelectAll function to include selection bar update
+    // Function to update the "Select All" checkbox and selection bar
     function updateSelectAll(checkboxClass, selectAllId) {
         let checkboxes = document.querySelectorAll(checkboxClass);
         let selectAllCheckbox = document.getElementById(selectAllId);
@@ -501,16 +499,26 @@ if (!$result_tiktok) {
         updateSelectionBar();
     }
 
+    // Add event listener to each item checkbox to update the selection bar when clicked
+    function addCheckboxListeners() {
+        const checkboxes = document.querySelectorAll('.select-item-all');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('click', () => {
+                updateSelectionBar();
+                updateSelectAll('.select-item-all', 'select-all-all');
+            });
+        });
+    }
+
     // Function to check if the selected item has a quantity in any channel
     function hasQuantityInAnyChannel(itemId) {
         const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
-        if (!itemRow) return false; // Fallback in case itemRow is not found
+        if (!itemRow) return false;
 
         const quantityPhysicalStore = parseInt(itemRow.dataset.quantityPhysicalStore) || 0;
         const quantityShopee = parseInt(itemRow.dataset.quantityShopee) || 0;
         const quantityTiktok = parseInt(itemRow.dataset.quantityTiktok) || 0;
 
-        // Return true if any quantity exists in any channel
         return (quantityPhysicalStore > 0 || quantityShopee > 0 || quantityTiktok > 0);
     }
 
@@ -521,6 +529,16 @@ if (!$result_tiktok) {
         let itemsWithQuantities = [];
         let processedCount = 0;
 
+        if (checkboxes.length === 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'No Items Selected',
+                text: 'Please select items to archive.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
         checkboxes.forEach(checkbox => {
             const itemId = checkbox.value;
             const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
@@ -529,7 +547,6 @@ if (!$result_tiktok) {
 
             if (hasQuantityInAnyChannel(itemId)) {
                 itemsWithQuantities.push(`${itemName} (${itemCategory})`);
-                // Uncheck the checkbox since the item can't be archived
                 checkbox.checked = false;
             } else {
                 itemsToArchive.push(itemId);
@@ -538,11 +555,10 @@ if (!$result_tiktok) {
             processedCount++;
             if (processedCount === checkboxes.length) {
                 updateSelectionBar();
-                updateSelectAll('.select-item-all', 'select-all-all'); // Update the Select All checkbox state
+                updateSelectAll('.select-item-all', 'select-all-all');
             }
         });
 
-        // Notify the user about items that have quantities
         if (itemsWithQuantities.length > 0) {
             const itemListHtml = itemsWithQuantities.map(item => `<li>${item}</li>`).join('');
             Swal.fire({
@@ -553,9 +569,10 @@ if (!$result_tiktok) {
             });
         }
 
-        // Proceed to archive items with no quantities
         if (itemsToArchive.length > 0) {
             let archivePromises = itemsToArchive.map(itemId => {
+                console.log(`Attempting to archive item ID: ${itemId}`); // Debugging log
+
                 return fetch('../../backend/controllers/archive_item.php', {
                     method: 'POST',
                     headers: {
@@ -563,10 +580,16 @@ if (!$result_tiktok) {
                     },
                     body: JSON.stringify({ item_id: itemId })
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok for item ${itemId}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    console.log(`Response for item ${itemId}:`, data); // Debugging log
+
                     if (data.status === 'success') {
-                        // Remove the row of the archived item from the current view
                         const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
                         if (itemRow) itemRow.remove();
                     } else {
@@ -589,7 +612,6 @@ if (!$result_tiktok) {
                 });
             });
 
-            // Wait for all archive operations to complete
             Promise.all(archivePromises).then(() => {
                 Swal.fire({
                     icon: 'success',
@@ -598,7 +620,7 @@ if (!$result_tiktok) {
                     confirmButtonText: 'OK'
                 });
                 updateSelectionBar();
-                updateSelectAll('.select-item-all', 'select-all-all'); // Ensure header checkbox is updated after archiving
+                updateSelectAll('.select-item-all', 'select-all-all');
             });
         } else {
             if (itemsWithQuantities.length === 0) {
@@ -611,7 +633,6 @@ if (!$result_tiktok) {
             }
         }
 
-        // Ensure header checkbox is updated after any unsuccessful archive
         updateSelectAll('.select-item-all', 'select-all-all');
     });
 
@@ -624,9 +645,11 @@ if (!$result_tiktok) {
         updateSelectionBar();
     });
 
-    // Initialize 'Select All' checkboxes state
+    // Initialize 'Select All' checkboxes state and add individual checkbox listeners
     updateSelectAll('.select-item-all', 'select-all-all');
+    addCheckboxListeners();
 </script>
+
 
 
 <div id="selection-bar">
