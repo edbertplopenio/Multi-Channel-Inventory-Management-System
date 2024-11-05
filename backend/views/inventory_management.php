@@ -558,14 +558,18 @@ document.getElementById('archive-button').addEventListener('click', function() {
     }
 
     selectedIds.forEach(itemId => {
-        const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
-        const itemName = itemRow ? itemRow.querySelector('td:nth-child(3)').innerText : 'Unnamed Item';
-        const itemCategory = itemRow ? itemRow.querySelector('td:nth-child(4)').innerText : 'Uncategorized';
-
-        if (hasQuantityInAnyChannel(itemId)) {
-            itemsWithQuantities.push(`${itemName} (${itemCategory})`);
-        } else {
-            itemsToArchive.push(itemId);
+        const itemRows = document.querySelectorAll(`tr[data-item-id="${itemId}"]`);
+        if (itemRows.length > 0) {
+            // Check if the item has a quantity in any channel
+            if (hasQuantityInAnyChannel(itemId)) {
+                itemRows.forEach(row => {
+                    const itemName = row.querySelector('td:nth-child(3)').innerText;
+                    const itemCategory = row.querySelector('td:nth-child(4)').innerText;
+                    itemsWithQuantities.push(`${itemName} (${itemCategory})`);
+                });
+            } else {
+                itemsToArchive.push(itemId);
+            }
         }
     });
 
@@ -602,11 +606,10 @@ document.getElementById('archive-button').addEventListener('click', function() {
                 console.log(`Response for item ${itemId}:`, data); // Debugging log
 
                 if (data.status === 'success') {
-                    const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
-                    if (itemRow) {
-                        itemRow.remove();
-                        archivedItemCount++; // Increment count only if item was successfully removed
-                    }
+                    // Remove the item from all relevant tables
+                    const itemRows = document.querySelectorAll(`tr[data-item-id="${itemId}"]`);
+                    itemRows.forEach(row => row.remove());
+                    archivedItemCount++; // Increment count only if item was successfully removed
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -715,6 +718,7 @@ updateSelectAll('.select-item-physical', 'select-all-physical');
 updateSelectAll('.select-item-shopee', 'select-all-shopee');
 updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
 addCheckboxListeners();
+
 
 
 </script>
