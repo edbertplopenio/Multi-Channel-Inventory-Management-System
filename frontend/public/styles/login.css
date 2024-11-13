@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 *{
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 .wrapper{
     background: #ececec;
@@ -15,7 +15,7 @@
     min-height: 100vh;
 }
 .side-image{
-    background-image: url("../images/2.jpg"); /* Adjusted to reference the correct path */
+    background-image: url("../images/side-image\ 1.jpg"); /* Adjusted to reference the correct path */
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -98,7 +98,7 @@ img{
    color: #5d5076;
 }
 .input-field .input:focus, .input-field .input:valid{
-    border-bottom: 1px solid #743ae1;
+    border-bottom: 1px solid #007BFE;
 }
 .submit{
     border: none;

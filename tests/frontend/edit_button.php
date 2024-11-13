@@ -405,7 +405,658 @@ if (!$result_tiktok) {
 
 
 
+
+    <style>
+        /* Basic Reset */
+        body {
+            margin: 0;
+            padding: 0;
+
+        }
+
+        /* Rounded Selection Bar Styling */
+        #selection-bar {
+            display: none;
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #201F2B;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 15px;
+            /* Increased for more rounded corners */
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+            font-size: 13px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-width: 250px;
+            max-width: 350px;
+            gap: 10px;
+            /* Added spacing between items */
+        }
+
+        /* Text Styling */
+        #selected-count {
+            flex-grow: 1;
+            /* Allow the text to expand */
+            font-weight: 500;
+        }
+
+        /* Rounded Button Styling */
+        #archive-button {
+            background-color: #3CAE85;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 10px;
+            /* Rounded corners */
+            cursor: pointer;
+            font-size: 13px;
+            margin-left: auto;
+            /* Pushes button to the far right */
+            transition: background-color 0.3s;
+        }
+
+        #archive-button:hover {
+            background-color: #B0BDB8;
+        }
+
+        /* Small screens responsiveness */
+        @media (max-width: 480px) {
+            #selection-bar {
+                min-width: 180px;
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            #archive-button {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+        }
+    </style>
+
+
+    <!--selection bar-->
+    <script>
+        // Function to update the selection bar visibility and count
+        function updateSelectionBar() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const selectedIds = new Set(
+                Array.from(checkboxes)
+                .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude header checkboxes
+                .map(checkbox => checkbox.value) // Use the value (item ID) as the unique identifier
+            );
+            const selectedCount = selectedIds.size;
+
+            // Update the count in the selection bar
+            document.getElementById('selected-count').textContent = `${selectedCount} items selected`;
+
+            // Show or hide the selection bar based on the count
+            const selectionBar = document.getElementById('selection-bar');
+            if (selectedCount > 0) {
+                selectionBar.style.display = 'flex';
+            } else {
+                selectionBar.style.display = 'none';
+            }
+        }
+
+        // Function to update the "Select All" checkbox and selection bar
+        function updateSelectAll(checkboxClass, selectAllId) {
+            let checkboxes = document.querySelectorAll(checkboxClass);
+            let selectAllCheckbox = document.getElementById(selectAllId);
+
+            // Check if all checkboxes are checked
+            let allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+            selectAllCheckbox.checked = allChecked;
+
+            // Update selection bar
+            updateSelectionBar();
+        }
+
+        // Function to reset all checkboxes
+        function resetCheckboxes() {
+            const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+            allCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            updateSelectionBar(); // Ensure the selection bar is updated after resetting checkboxes
+        }
+
+        // Add event listener to each item checkbox to update the selection bar when clicked
+        function addCheckboxListeners() {
+            const allCheckboxes = [
+                ...document.querySelectorAll('.select-item-all'),
+                ...document.querySelectorAll('.select-item-physical'),
+                ...document.querySelectorAll('.select-item-shopee'),
+                ...document.querySelectorAll('.select-item-tiktok')
+            ];
+
+            allCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', () => {
+                    updateSelectionBar();
+                    updateSelectAll('.select-item-all', 'select-all-all');
+                    updateSelectAll('.select-item-physical', 'select-all-physical');
+                    updateSelectAll('.select-item-shopee', 'select-all-shopee');
+                    updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
+                });
+            });
+        }
+
+        // Archive button functionality
+        document.getElementById('archive-button').addEventListener('click', function() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const selectedIds = new Set(
+                Array.from(checkboxes)
+                .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude header checkboxes
+                .map(checkbox => checkbox.value)
+            );
+            let itemsToArchive = [];
+            let itemsWithQuantities = [];
+            let archivedItemCount = 0;
+
+            if (selectedIds.size === 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No Items Selected',
+                    text: 'Please select items to archive.',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    resetCheckboxes(); // Reset checkboxes after alert
+                });
+                return;
+            }
+
+            selectedIds.forEach(itemId => {
+                const itemRows = document.querySelectorAll(`tr[data-item-id="${itemId}"]`);
+                if (itemRows.length > 0) {
+                    // Check if the item has a quantity in any channel
+                    if (hasQuantityInAnyChannel(itemId)) {
+                        itemRows.forEach(row => {
+                            const itemName = row.querySelector('td:nth-child(3)').innerText;
+                            const itemCategory = row.querySelector('td:nth-child(4)').innerText;
+                            itemsWithQuantities.push(`${itemName} (${itemCategory})`);
+                        });
+                    } else {
+                        itemsToArchive.push(itemId);
+                    }
+                }
+            });
+
+            if (itemsWithQuantities.length > 0) {
+                const itemListHtml = itemsWithQuantities.map(item => `<li>${item}</li>`).join('');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cannot Archive Some Items',
+                    html: `<p>The following items have quantities and cannot be archived:</p><ul>${itemListHtml}</ul>`,
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    resetCheckboxes(); // Reset checkboxes after alert
+                });
+            }
+
+            if (itemsToArchive.length > 0) {
+                let archivePromises = itemsToArchive.map(itemId => {
+                    console.log(`Attempting to archive item ID: ${itemId}`); // Debugging log
+
+                    return fetch('../../backend/controllers/archive_item.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                item_id: itemId
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Network response was not ok for item ${itemId}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log(`Response for item ${itemId}:`, data); // Debugging log
+
+                            if (data.status === 'success') {
+                                // Remove the item from all relevant tables
+                                const itemRows = document.querySelectorAll(`tr[data-item-id="${itemId}"]`);
+                                itemRows.forEach(row => row.remove());
+                                archivedItemCount++; // Increment count only if item was successfully removed
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: `Error archiving item ${itemId}: ${data.message || 'Unknown error'}`,
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    resetCheckboxes(); // Reset checkboxes after alert
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Unexpected Error',
+                                text: `An unexpected error occurred for item ${itemId}. Please try again later.`,
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                resetCheckboxes(); // Reset checkboxes after alert
+                            });
+                        });
+                });
+
+                Promise.all(archivePromises).then(() => {
+                    if (archivedItemCount > 0) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Archiving Completed',
+                            text: `${archivedItemCount} item(s) without quantities have been successfully archived.`,
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            resetCheckboxes(); // Reset checkboxes after alert
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'No Items Archived',
+                            text: 'No items were archived.',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            resetCheckboxes(); // Reset checkboxes after alert
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No Items Archived',
+                    text: 'No items were archived as none were eligible.',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    resetCheckboxes(); // Reset checkboxes after alert
+                });
+            }
+        });
+
+        // Helper function to check if the selected item has a quantity in any channel
+        function hasQuantityInAnyChannel(itemId) {
+            const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
+            if (!itemRow) return false;
+
+            const quantityPhysicalStore = parseInt(itemRow.dataset.quantityPhysicalStore) || 0;
+            const quantityShopee = parseInt(itemRow.dataset.quantityShopee) || 0;
+            const quantityTiktok = parseInt(itemRow.dataset.quantityTiktok) || 0;
+
+            return (quantityPhysicalStore > 0 || quantityShopee > 0 || quantityTiktok > 0);
+        }
+
+        // Event listener for 'Select All' checkbox functionality for each tab
+        document.getElementById('select-all-all').addEventListener('click', function() {
+            let checkboxes = document.querySelectorAll('.select-item-all');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateSelectionBar();
+        });
+
+        document.getElementById('select-all-physical').addEventListener('click', function() {
+            let checkboxes = document.querySelectorAll('.select-item-physical');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateSelectionBar();
+        });
+
+        document.getElementById('select-all-shopee').addEventListener('click', function() {
+            let checkboxes = document.querySelectorAll('.select-item-shopee');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateSelectionBar();
+        });
+
+        document.getElementById('select-all-tiktok').addEventListener('click', function() {
+            let checkboxes = document.querySelectorAll('.select-item-tiktok');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateSelectionBar();
+        });
+
+        // Initialize 'Select All' checkboxes state and add individual checkbox listeners
+        updateSelectAll('.select-item-all', 'select-all-all');
+        updateSelectAll('.select-item-physical', 'select-all-physical');
+        updateSelectAll('.select-item-shopee', 'select-all-shopee');
+        updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
+        addCheckboxListeners();
+    </script>
+
+
+
+    <div id="selection-bar">
+        <span id="selected-count">0 items selected</span>
+        <button id="archive-button">Archive</button>
+    </div>
+
+
+
 </html>
+
+
+
+<!-- Edit Item Modal -->
+<!-- Edit Item Modal -->
+<div id="edit-item-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <div class="header">
+            <h1>Edit Inventory Item</h1>
+        </div>
+
+        <form id="edit-item-form">
+            <!-- Hidden field to store variant ID -->
+            <input type="hidden" id="edit-variant-id" name="variant_id">
+
+            <!-- Product Name (Editable) -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-name">Name:</label>
+                    <input type="text" id="edit-name" name="name" required minlength="2">
+                </div>
+            </div>
+
+            <!-- Category (Editable) -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-category">Category:</label>
+                    <select id="edit-category" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Pants">Pants</option>
+                        <option value="Jackets & Outerwear">Jackets & Outerwear</option>
+                        <option value="Tops">Tops</option>
+                        <option value="Sets">Sets</option>
+                        <option value="Shorts">Shorts</option>
+                        <option value="Dresses">Dresses</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Size and Color (Editable) -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-size">Size:</label>
+                    <select id="edit-size" name="size" required>
+                        <option value="">Select Size</option>
+                        <option value="XS">XS</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                        <option value="XXL">XXL</option>
+                        <option value="3XL">3XL</option>
+                        <option value="4XL">4XL</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-color">Color:</label>
+                    <select id="edit-color" name="color" required>
+                        <option value="" selected>Select Color</option>
+                        <option value="White">White</option>
+                        <option value="Beige">Beige</option>
+                        <option value="Dark Choco">Dark Choco</option>
+                        <option value="Fushia Pink">Fushia Pink</option>
+                        <option value="Royal Blue">Royal Blue</option>
+                        <option value="Black">Black</option>
+                        <option value="Tan">Tan</option>
+                        <option value="Raw Umber">Raw Umber</option>
+                        <option value="Gray">Gray</option>
+                        <option value="Pale Mauve">Pale Mauve</option>
+                        <option value="Pantone Simply Taupe">Pantone Simply Taupe</option>
+                        <option value="Salmon Pink">Salmon Pink</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Quantity per Channel (Editable) -->
+            <div class="form-row">
+                <div class="form-group channel-group">
+                    <label>Channels:</label>
+                    <div class="channel-list">
+                        <label>
+                            <input type="checkbox" name="channel[]" value="Physical Store" class="channel-checkbox">
+                            Physical Store
+                        </label>
+                        <input type="number" name="quantity-physical-store" placeholder="Qty" min="1" class="quantity-input" disabled>
+
+                        <label>
+                            <input type="checkbox" name="channel[]" value="Shopee" class="channel-checkbox">
+                            Shopee
+                        </label>
+                        <input type="number" name="quantity-shopee" placeholder="Qty" min="1" class="quantity-input" disabled>
+
+                        <label>
+                            <input type="checkbox" name="channel[]" value="TikTok" class="channel-checkbox">
+                            TikTok
+                        </label>
+                        <input type="number" name="quantity-tiktok" placeholder="Qty" min="1" class="quantity-input" disabled>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price (Editable) -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-price">Price:</label>
+                    <input type="number" id="edit-price" name="price" required min="1">
+                </div>
+
+                <!-- Date Added (Non-Editable) -->
+                <div class="form-group">
+                    <label for="edit-date_added">Date Added:</label>
+                    <input type="date" id="edit-date_added" name="date_added" required disabled>
+                </div>
+            </div>
+
+            <!-- Image (Editable) -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-image">Image:</label>
+                    <input type="file" id="edit-image" name="image" accept="image/png, image/jpeg, image/jpg">
+                </div>
+            </div>
+
+            <!-- Buttons side-by-side -->
+            <div class="form-row buttons-row">
+                <button type="button" class="cancel-button">Cancel</button>
+                <button type="submit" class="save-item-button">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    // Get the Edit Item Modal and Close button references
+    const editItemModal = document.getElementById('edit-item-modal');
+    const editItemCloseButton = editItemModal.querySelector('.close-button');
+    const editItemCancelButton = editItemModal.querySelector('.cancel-button');
+    const editItemForm = document.getElementById('edit-item-form');
+
+    // Function to open the Edit Item modal and populate data
+    function openEditModal(itemData) {
+        editItemModal.style.display = 'flex';
+
+        // Populate the modal with item data from the clicked row
+        document.getElementById('edit-name').value = itemData.name;
+        document.getElementById('edit-category').value = itemData.category;
+        document.getElementById('edit-size').value = itemData.size;
+        document.getElementById('edit-color').value = itemData.color;
+        document.getElementById('edit-price').value = itemData.price;
+        document.getElementById('edit-date_added').value = itemData.date_added;
+
+        // Update the quantity for each channel
+        document.querySelector('input[name="quantity-physical-store"]').value = itemData.quantity_physical_store;
+        document.querySelector('input[name="quantity-shopee"]').value = itemData.quantity_shopee;
+        document.querySelector('input[name="quantity-tiktok"]').value = itemData.quantity_tiktok;
+
+        // Check the relevant checkboxes for available channels
+        document.querySelector('input[value="Physical Store"]').checked = itemData.quantity_physical_store > 0;
+        document.querySelector('input[value="Shopee"]').checked = itemData.quantity_shopee > 0;
+        document.querySelector('input[value="TikTok"]').checked = itemData.quantity_tiktok > 0;
+
+        // Set the hidden variant_id field
+        document.getElementById('edit-variant-id').value = itemData.variant_id;
+    }
+
+    // Function to close the Edit Item modal
+    function closeEditModal() {
+        editItemModal.style.display = 'none';
+    }
+
+    // Add event listeners to all Edit buttons to open the modal and retrieve item data
+    document.querySelectorAll('.action-button.edit').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const row = event.target.closest('tr'); // Get the table row for the clicked button
+            const itemData = {
+                variant_id: row.getAttribute('data-item-id'), // Assuming each row has a data-item-id attribute
+                name: row.querySelector('td:nth-child(3)').innerText,
+                category: row.querySelector('td:nth-child(4)').innerText,
+                size: row.querySelector('td:nth-child(6)').innerText,
+                color: row.querySelector('td:nth-child(7)').innerText,
+                price: row.querySelector('td:nth-child(8)').innerText,
+                date_added: row.querySelector('td:nth-child(9)').innerText,
+                quantity_physical_store: row.getAttribute('data-quantity-physical-store'),
+                quantity_shopee: row.getAttribute('data-quantity-shopee'),
+                quantity_tiktok: row.getAttribute('data-quantity-tiktok')
+            };
+            openEditModal(itemData);
+        });
+    });
+
+    // Event listeners for closing the Edit modal (close and cancel buttons)
+    editItemCloseButton.addEventListener('click', closeEditModal);
+    editItemCancelButton.addEventListener('click', closeEditModal);
+
+    // Close modal when clicking outside the modal content
+    window.addEventListener('click', (event) => {
+        if (event.target === editItemModal) {
+            closeEditModal();
+        }
+    });
+
+    // Edit form submission with duplicate check
+    editItemForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Gather form data
+        const formData = new FormData(editItemForm);
+
+        // Send AJAX request to check for duplicates
+        fetch('/MIOS/backend/controllers/check_duplicates.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // No duplicates, proceed to save the data
+                    saveItem(formData);
+                } else {
+                    // Duplicates found, display error messages using SweetAlert
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Duplicate Found',
+                        text: data.message,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while checking for duplicates.',
+                    confirmButtonText: 'OK'
+                });
+            });
+    });
+
+    // Function to handle saving the item if no duplicates are found
+    function saveItem(formData) {
+        // AJAX request to update the item in the database
+        fetch('/MIOS/backend/controllers/update_item.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Close the modal and show success message
+                    closeEditModal();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Item updated successfully.',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        updateTableRow(formData); // Update the table row without page reload
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Update Failed',
+                        text: data.message,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while updating the item.',
+                    confirmButtonText: 'OK'
+                });
+            });
+    }
+
+    // Function to update the table row with the new data
+    function updateTableRow(formData) {
+        const variantId = formData.get('variant_id');
+
+        // Find the row in the table that corresponds to the updated item
+        const row = document.querySelector(`tr[data-item-id="${variantId}"]`);
+
+        if (row) {
+            // Update each cell in the row with the new values
+            row.querySelector('td:nth-child(3)').innerText = formData.get('name');
+            row.querySelector('td:nth-child(4)').innerText = formData.get('category');
+            row.querySelector('td:nth-child(6)').innerText = formData.get('size');
+            row.querySelector('td:nth-child(7)').innerText = formData.get('color');
+            row.querySelector('td:nth-child(8)').innerText = formData.get('price');
+
+            // Update date if necessary
+            const dateAdded = formData.get('date_added');
+            if (dateAdded) {
+                row.querySelector('td:nth-child(9)').innerText = dateAdded;
+            }
+        }
+    }
+</script>
+
+
+
+
 
 <!-- New Item Modal -->
 <div id="new-item-modal" class="modal">
@@ -528,7 +1179,7 @@ if (!$result_tiktok) {
 </div>
 
 
-<!-- All JS -->
+<!---->
 <script>
     function initializeInventoryManagement() {
         let originalData = [];
@@ -1404,502 +2055,6 @@ if (!$result_tiktok) {
 
 
 
-<!-- Selection bar and Archiving -->
-
-<div id="selection-bar">
-    <span id="selected-count">0 items selected</span>
-    <button id="archive-button">Archive</button>
-</div>
-
-<style>
-    /* Basic Reset */
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-    }
-
-    /* Selection Bar Styling */
-    #selection-bar {
-        display: none;
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: #4CAF50;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        font-size: 14px;
-        z-index: 1000;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        min-width: 250px;
-        max-width: 400px;
-    }
-
-    /* Text Styling */
-    #selected-count {
-        font-weight: bold;
-    }
-
-    /* Button Styling */
-    #archive-button {
-        background-color: #f39c12;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-        transition: background-color 0.3s;
-    }
-
-    #archive-button:hover {
-        background-color: #e67e22;
-    }
-
-    /* Small screens responsiveness */
-    @media (max-width: 480px) {
-        #selection-bar {
-            min-width: 200px;
-            padding: 10px 15px;
-            font-size: 12px;
-        }
-
-        #archive-button {
-            font-size: 12px;
-            padding: 6px 12px;
-        }
-    }
-</style>
-
-<script>
-    // Function to update the selection bar visibility and count
-    function updateSelectionBar() {
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-        const selectedIds = new Set(
-            Array.from(checkboxes)
-            .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude header checkboxes
-            .map(checkbox => checkbox.value) // Use the value (item ID) as the unique identifier
-        );
-        const selectedCount = selectedIds.size;
-
-        // Update the count in the selection bar
-        document.getElementById('selected-count').textContent = `${selectedCount} items selected`;
-
-        // Show or hide the selection bar based on the count
-        const selectionBar = document.getElementById('selection-bar');
-        if (selectedCount > 0) {
-            selectionBar.style.display = 'flex';
-        } else {
-            selectionBar.style.display = 'none';
-        }
-    }
-
-    // Function to update the "Select All" checkbox and selection bar
-    function updateSelectAll(checkboxClass, selectAllId) {
-        let checkboxes = document.querySelectorAll(checkboxClass);
-        let selectAllCheckbox = document.getElementById(selectAllId);
-
-        // Check if all checkboxes are checked
-        let allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-        selectAllCheckbox.checked = allChecked;
-
-        // Update selection bar
-        updateSelectionBar();
-    }
-
-    // Function to reset all checkboxes
-    function resetCheckboxes() {
-        const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
-        allCheckboxes.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        updateSelectionBar(); // Ensure the selection bar is updated after resetting checkboxes
-    }
-
-    // Add event listener to each item checkbox to update the selection bar when clicked
-    function addCheckboxListeners() {
-        const allCheckboxes = [
-            ...document.querySelectorAll('.select-item-all'),
-            ...document.querySelectorAll('.select-item-physical'),
-            ...document.querySelectorAll('.select-item-shopee'),
-            ...document.querySelectorAll('.select-item-tiktok')
-        ];
-
-        allCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('click', () => {
-                updateSelectionBar();
-                updateSelectAll('.select-item-all', 'select-all-all');
-                updateSelectAll('.select-item-physical', 'select-all-physical');
-                updateSelectAll('.select-item-shopee', 'select-all-shopee');
-                updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
-            });
-        });
-    }
-
-    // Archive button functionality
-    document.getElementById('archive-button').addEventListener('click', function() {
-        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-        const selectedIds = new Set(
-            Array.from(checkboxes)
-            .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude header checkboxes
-            .map(checkbox => checkbox.value)
-        );
-        let itemsToArchive = [];
-        let itemsWithQuantities = [];
-        let archivedItemCount = 0;
-
-        if (selectedIds.size === 0) {
-            Swal.fire({
-                icon: 'info',
-                title: 'No Items Selected',
-                text: 'Please select items to archive.',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                resetCheckboxes(); // Reset checkboxes after alert
-            });
-            return;
-        }
-
-        selectedIds.forEach(itemId => {
-            const itemRows = document.querySelectorAll(`tr[data-item-id="${itemId}"]`);
-            if (itemRows.length > 0) {
-                // Check if the item has a quantity in any channel
-                if (hasQuantityInAnyChannel(itemId)) {
-                    itemRows.forEach(row => {
-                        const itemName = row.querySelector('td:nth-child(3)').innerText;
-                        const itemCategory = row.querySelector('td:nth-child(4)').innerText;
-                        itemsWithQuantities.push(`${itemName} (${itemCategory})`);
-                    });
-                } else {
-                    itemsToArchive.push(itemId);
-                }
-            }
-        });
-
-        if (itemsWithQuantities.length > 0) {
-            const itemListHtml = itemsWithQuantities.map(item => `<li>${item}</li>`).join('');
-            Swal.fire({
-                icon: 'warning',
-                title: 'Cannot Archive Some Items',
-                html: `<p>The following items have quantities and cannot be archived:</p><ul>${itemListHtml}</ul>`,
-                confirmButtonText: 'OK'
-            }).then(() => {
-                resetCheckboxes(); // Reset checkboxes after alert
-            });
-        }
-
-        if (itemsToArchive.length > 0) {
-            let archivePromises = itemsToArchive.map(itemId => {
-                console.log(`Attempting to archive item ID: ${itemId}`); // Debugging log
-
-                return fetch('../../backend/controllers/archive_item.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            item_id: itemId
-                        })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Network response was not ok for item ${itemId}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log(`Response for item ${itemId}:`, data); // Debugging log
-
-                        if (data.status === 'success') {
-                            // Remove the item from all relevant tables
-                            const itemRows = document.querySelectorAll(`tr[data-item-id="${itemId}"]`);
-                            itemRows.forEach(row => row.remove());
-                            archivedItemCount++; // Increment count only if item was successfully removed
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: `Error archiving item ${itemId}: ${data.message || 'Unknown error'}`,
-                                confirmButtonText: 'OK'
-                            }).then(() => {
-                                resetCheckboxes(); // Reset checkboxes after alert
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Unexpected Error',
-                            text: `An unexpected error occurred for item ${itemId}. Please try again later.`,
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            resetCheckboxes(); // Reset checkboxes after alert
-                        });
-                    });
-            });
-
-            Promise.all(archivePromises).then(() => {
-                if (archivedItemCount > 0) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Archiving Completed',
-                        text: `${archivedItemCount} item(s) without quantities have been successfully archived.`,
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        resetCheckboxes(); // Reset checkboxes after alert
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'No Items Archived',
-                        text: 'No items were archived.',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        resetCheckboxes(); // Reset checkboxes after alert
-                    });
-                }
-            });
-        } else {
-            Swal.fire({
-                icon: 'info',
-                title: 'No Items Archived',
-                text: 'No items were archived as none were eligible.',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                resetCheckboxes(); // Reset checkboxes after alert
-            });
-        }
-    });
-
-    // Helper function to check if the selected item has a quantity in any channel
-    function hasQuantityInAnyChannel(itemId) {
-        const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
-        if (!itemRow) return false;
-
-        const quantityPhysicalStore = parseInt(itemRow.dataset.quantityPhysicalStore) || 0;
-        const quantityShopee = parseInt(itemRow.dataset.quantityShopee) || 0;
-        const quantityTiktok = parseInt(itemRow.dataset.quantityTiktok) || 0;
-
-        return (quantityPhysicalStore > 0 || quantityShopee > 0 || quantityTiktok > 0);
-    }
-
-    // Event listener for 'Select All' checkbox functionality for each tab
-    document.getElementById('select-all-all').addEventListener('click', function() {
-        let checkboxes = document.querySelectorAll('.select-item-all');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = this.checked;
-        });
-        updateSelectionBar();
-    });
-
-    document.getElementById('select-all-physical').addEventListener('click', function() {
-        let checkboxes = document.querySelectorAll('.select-item-physical');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = this.checked;
-        });
-        updateSelectionBar();
-    });
-
-    document.getElementById('select-all-shopee').addEventListener('click', function() {
-        let checkboxes = document.querySelectorAll('.select-item-shopee');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = this.checked;
-        });
-        updateSelectionBar();
-    });
-
-    document.getElementById('select-all-tiktok').addEventListener('click', function() {
-        let checkboxes = document.querySelectorAll('.select-item-tiktok');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = this.checked;
-        });
-        updateSelectionBar();
-    });
-
-    // Initialize 'Select All' checkboxes state and add individual checkbox listeners
-    updateSelectAll('.select-item-all', 'select-all-all');
-    updateSelectAll('.select-item-physical', 'select-all-physical');
-    updateSelectAll('.select-item-shopee', 'select-all-shopee');
-    updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
-    addCheckboxListeners();
-</script>
-
-
-
-
-
-
-<!-- Edit Item Modal -->
-<div id="edit-item-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <div class="header">
-            <h1>Edit Inventory Item</h1>
-        </div>
-
-        <form id="edit-item-form">
-            <!-- Hidden input for the variant ID -->
-            <input type="hidden" id="edit-variant-id" name="variant_id">
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="edit-name">Name:</label>
-                    <input type="text" id="edit-name" name="name" required minlength="2">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="edit-category">Category:</label>
-                    <select id="edit-category" name="category" required>
-                        <option value="">Select Category</option>
-                        <option value="Pants">Pants</option>
-                        <option value="Jackets & Outerwear">Jackets & Outerwear</option>
-                        <option value="Tops">Tops</option>
-                        <option value="Sets">Sets</option>
-                        <option value="Shorts">Shorts</option>
-                        <option value="Dresses">Dresses</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="edit-size">Size:</label>
-                    <select id="edit-size" name="size" required>
-                        <option value="">Select Size</option>
-                        <option value="XS">XS</option>
-                        <option value="S">S</option>
-                        <option value="M">M</option>
-                        <option value="L">L</option>
-                        <option value="XL">XL</option>
-                        <option value="XXL">XXL</option>
-                        <option value="3XL">3XL</option>
-                        <option value="4XL">4XL</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="edit-color">Color:</label>
-                    <select id="edit-color" name="color" required>
-                        <option value="">Select Color</option>
-                        <option value="White">White</option>
-                        <option value="Beige">Beige</option>
-                        <option value="Dark Choco">Dark Choco</option>
-                        <option value="Fushia Pink">Fushia Pink</option>
-                        <option value="Royal Blue">Royal Blue</option>
-                        <option value="Black">Black</option>
-                        <option value="Tan">Tan</option>
-                        <option value="Raw Umber">Raw Umber</option>
-                        <option value="Gray">Gray</option>
-                        <option value="Pale Mauve">Pale Mauve</option>
-                        <option value="Pantone Simply Taupe">Pantone Simply Taupe</option>
-                        <option value="Salmon Pink">Salmon Pink</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group channel-group">
-                    <label>Channels:</label>
-                    <div class="channel-list">
-                        <label>
-                            <input type="checkbox" name="channel[]" value="Physical Store" class="channel-checkbox">
-                            Physical Store
-                        </label>
-                        <input type="number" name="quantity-physical-store" placeholder="Qty" min="1" class="quantity-input">
-
-                        <label>
-                            <input type="checkbox" name="channel[]" value="Shopee" class="channel-checkbox">
-                            Shopee
-                        </label>
-                        <input type="number" name="quantity-shopee" placeholder="Qty" min="1" class="quantity-input">
-
-                        <label>
-                            <input type="checkbox" name="channel[]" value="TikTok" class="channel-checkbox">
-                            TikTok
-                        </label>
-                        <input type="number" name="quantity-tiktok" placeholder="Qty" min="1" class="quantity-input">
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="edit-price">Price:</label>
-                    <input type="number" id="edit-price" name="price" required min="1">
-                </div>
-
-                <div class="form-group">
-                    <label for="edit-date-added">Date Added:</label>
-                    <input type="date" id="edit-date-added" name="date_added" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="edit-image">Image:</label>
-                    <input type="file" id="edit-image" name="image" accept="image/png, image/jpeg, image/jpg">
-                </div>
-            </div>
-
-            <!-- Buttons side-by-side -->
-            <div class="form-row buttons-row">
-            <button type="button" id="edit-modal-cancel-button" class="cancel-button">Cancel</button>
-            <button type="submit" id="edit-modal-save-button" class="save-item-button">Save Changes</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-// JavaScript for triggering the edit modal with pre-filled data
-document.querySelectorAll('.edit').forEach(button => {
-    button.addEventListener('click', (event) => {
-        const row = event.target.closest('tr');
-        document.getElementById('edit-variant-id').value = row.dataset.itemId;
-        document.getElementById('edit-name').value = row.querySelector('.wrap-text').innerText;
-        document.getElementById('edit-category').value = row.querySelector('td:nth-child(3)').innerText;
-        // populate other fields similarly
-        document.getElementById('edit-item-modal').style.display = 'flex';
-    });
-});
-
-// Close modal on clicking the close button or the specific cancel button for edit modal
-document.querySelector('.close-button').onclick = () => {
-    document.getElementById('edit-item-modal').style.display = 'none';
-};
-
-document.getElementById('edit-modal-cancel-button').onclick = () => {
-    document.getElementById('edit-item-modal').style.display = 'none';
-};
-
-// Handle form submission specifically for the Edit Modal
-document.getElementById('edit-modal-save-button').onclick = (event) => {
-    event.preventDefault(); // Prevent default form submission if needed for custom handling
-
-    // Add your save logic here
-    console.log("Save Changes button clicked");
-    
-    // Hide the modal after saving (if applicable)
-    document.getElementById('edit-item-modal').style.display = 'none';
-};
-</script>
-
-
-
-
-
-
-
-
-
 </body>
 
 </html>
@@ -2430,7 +2585,7 @@ document.getElementById('edit-modal-save-button').onclick = (event) => {
     }
 
     .action-button {
-        background-color: #007bff;
+        background-color: #3CAE85;
         color: #fff;
         padding: 6px 10px;
         border: none;
