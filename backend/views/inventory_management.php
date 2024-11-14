@@ -246,7 +246,7 @@ if (!$result_tiktok) {
                                 </td>
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
-                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="action-button edit" data-variant-id="<?php echo $row['variant_id']; ?>"><i class="fas fa-edit"></i> Edit</button>
                                     <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
@@ -293,7 +293,7 @@ if (!$result_tiktok) {
                                 <td><?php echo $row['date_added']; ?></td>
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
-                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="action-button edit" data-variant-id="<?php echo $row['variant_id']; ?>"><i class="fas fa-edit"></i> Edit</button>
                                     <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
@@ -340,7 +340,7 @@ if (!$result_tiktok) {
                                 <td><?php echo $row['date_added']; ?></td>
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
-                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="action-button edit" data-variant-id="<?php echo $row['variant_id']; ?>"><i class="fas fa-edit"></i> Edit</button>
                                     <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
@@ -387,7 +387,7 @@ if (!$result_tiktok) {
                                 <td><?php echo $row['date_added']; ?></td>
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
-                                    <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="action-button edit" data-variant-id="<?php echo $row['variant_id']; ?>"><i class="fas fa-edit"></i> Edit</button>
                                     <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
@@ -405,7 +405,7 @@ if (!$result_tiktok) {
 
 
 
-</html>
+
 
 <!-- New Item Modal -->
 <div id="new-item-modal" class="modal">
@@ -1747,6 +1747,7 @@ if (!$result_tiktok) {
             <!-- Hidden input for the variant ID -->
             <input type="hidden" id="edit-variant-id" name="variant_id">
 
+            <!-- Name Field -->
             <div class="form-row">
                 <div class="form-group">
                     <label for="edit-name">Name:</label>
@@ -1754,6 +1755,7 @@ if (!$result_tiktok) {
                 </div>
             </div>
 
+            <!-- Category Field -->
             <div class="form-row">
                 <div class="form-group">
                     <label for="edit-category">Category:</label>
@@ -1769,6 +1771,7 @@ if (!$result_tiktok) {
                 </div>
             </div>
 
+            <!-- Size and Color Fields -->
             <div class="form-row">
                 <div class="form-group">
                     <label for="edit-size">Size:</label>
@@ -1805,6 +1808,7 @@ if (!$result_tiktok) {
                 </div>
             </div>
 
+            <!-- Channel and Quantity Fields -->
             <div class="form-row">
                 <div class="form-group channel-group">
                     <label>Channels:</label>
@@ -1830,6 +1834,7 @@ if (!$result_tiktok) {
                 </div>
             </div>
 
+            <!-- Price and Date Added Fields -->
             <div class="form-row">
                 <div class="form-group">
                     <label for="edit-price">Price:</label>
@@ -1842,58 +1847,218 @@ if (!$result_tiktok) {
                 </div>
             </div>
 
+            <!-- Image Upload Field and Preview -->
             <div class="form-row">
                 <div class="form-group">
                     <label for="edit-image">Image:</label>
                     <input type="file" id="edit-image" name="image" accept="image/png, image/jpeg, image/jpg">
+                    <div id="image-preview-container">
+                        <img id="edit-image-preview" src="#" alt="Image Preview" style="display:none;">
+                    </div>
                 </div>
             </div>
 
-            <!-- Buttons side-by-side -->
+            <!-- Form Buttons -->
             <div class="form-row buttons-row">
-            <button type="button" id="edit-modal-cancel-button" class="cancel-button">Cancel</button>
-            <button type="submit" id="edit-modal-save-button" class="save-item-button">Save Changes</button>
+                <button type="button" id="edit-modal-cancel-button" class="cancel-button">Cancel</button>
+                <button type="submit" id="edit-modal-save-button" class="save-item-button">Save Changes</button>
             </div>
         </form>
     </div>
 </div>
 
+
+
 <script>
-// JavaScript for triggering the edit modal with pre-filled data
+// JavaScript for opening and populating the Edit Modal with selected item data
 document.querySelectorAll('.edit').forEach(button => {
     button.addEventListener('click', (event) => {
         const row = event.target.closest('tr');
-        document.getElementById('edit-variant-id').value = row.dataset.itemId;
-        document.getElementById('edit-name').value = row.querySelector('.wrap-text').innerText;
-        document.getElementById('edit-category').value = row.querySelector('td:nth-child(3)').innerText;
-        // populate other fields similarly
-        document.getElementById('edit-item-modal').style.display = 'flex';
+        const editModal = document.getElementById('edit-item-modal'); // Target the edit modal
+
+        // Populate modal fields with row data attributes
+        editModal.querySelector('#edit-variant-id').value = row.getAttribute('data-item-id'); // Variant ID
+        editModal.querySelector('#edit-name').value = row.querySelector('.wrap-text').innerText; // Name
+
+        // Retrieve category, size, and color directly from row cells
+        editModal.querySelector('#edit-category').value = row.querySelector('td:nth-child(4)').innerText.trim(); // Category (4th column)
+        editModal.querySelector('#edit-size').value = row.querySelector('td:nth-child(6)').innerText.trim(); // Size (6th column)
+        editModal.querySelector('#edit-color').value = row.querySelector('td:nth-child(7)').innerText.trim(); // Color (7th column)
+
+        // Set price and date added fields
+        editModal.querySelector('#edit-price').value = row.querySelector('td:nth-child(8)').innerText.trim(); // Price (8th column)
+        editModal.querySelector('#edit-date-added').value = row.querySelector('td:nth-child(9)').innerText.trim(); // Date added (9th column)
+
+        // Set channel-specific quantities from data attributes
+        const physicalStoreQuantity = row.getAttribute('data-quantity-physical-store') || 0;
+        const shopeeQuantity = row.getAttribute('data-quantity-shopee') || 0;
+        const tiktokQuantity = row.getAttribute('data-quantity-tiktok') || 0;
+
+        editModal.querySelector('input[name="quantity-physical-store"]').value = physicalStoreQuantity;
+        editModal.querySelector('input[name="quantity-shopee"]').value = shopeeQuantity;
+        editModal.querySelector('input[name="quantity-tiktok"]').value = tiktokQuantity;
+
+        // Set checkboxes based on quantities (check if quantity is greater than 0)
+        editModal.querySelector('input[name="channel[]"][value="Physical Store"]').checked = physicalStoreQuantity > 0;
+        editModal.querySelector('input[name="channel[]"][value="Shopee"]').checked = shopeeQuantity > 0;
+        editModal.querySelector('input[name="channel[]"][value="TikTok"]').checked = tiktokQuantity > 0;
+
+        // Handle image preview
+        const imageSrc = row.querySelector('img').getAttribute('src');
+        const imagePreview = editModal.querySelector('#edit-image-preview');
+        imagePreview.src = imageSrc;
+        imagePreview.style.display = imageSrc ? 'block' : 'none';
+
+        // Display the modal
+        editModal.style.display = 'flex';
     });
 });
 
-// Close modal on clicking the close button or the specific cancel button for edit modal
-document.querySelector('.close-button').onclick = () => {
-    document.getElementById('edit-item-modal').style.display = 'none';
-};
+// Show preview when a new file is selected
+document.getElementById('edit-image').addEventListener('change', function() {
+    const file = this.files[0];
+    const preview = document.getElementById('edit-image-preview');
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
 
-document.getElementById('edit-modal-cancel-button').onclick = () => {
-    document.getElementById('edit-item-modal').style.display = 'none';
-};
-
-// Handle form submission specifically for the Edit Modal
+// Save changes and send data to the backend on clicking "Save Changes"
 document.getElementById('edit-modal-save-button').onclick = (event) => {
-    event.preventDefault(); // Prevent default form submission if needed for custom handling
+    event.preventDefault(); // Prevent form submission if you are handling data via JavaScript
 
-    // Add your save logic here
-    console.log("Save Changes button clicked");
+    const editModal = document.getElementById('edit-item-modal');
+    const formData = new FormData();
+
+    // Collecting data from the form
+    formData.append('variant_id', editModal.querySelector('#edit-variant-id').value);
+    formData.append('name', editModal.querySelector('#edit-name').value);
+    formData.append('category', editModal.querySelector('#edit-category').value);
+    formData.append('size', editModal.querySelector('#edit-size').value);
+    formData.append('color', editModal.querySelector('#edit-color').value);
+    formData.append('price', editModal.querySelector('#edit-price').value);
+    formData.append('date_added', editModal.querySelector('#edit-date-added').value);
     
-    // Hide the modal after saving (if applicable)
+    // Channel quantities
+    formData.append('quantity_physical_store', editModal.querySelector('input[name="quantity-physical-store"]').value);
+    formData.append('quantity_shopee', editModal.querySelector('input[name="quantity-shopee"]').value);
+    formData.append('quantity_tiktok', editModal.querySelector('input[name="quantity-tiktok"]').value);
+
+    // Image file (if a new one is selected)
+    const imageFile = editModal.querySelector('#edit-image').files[0];
+    if (imageFile) {
+        formData.append('image', imageFile);
+    }
+
+    // Sending data to the backend
+    fetch('../../backend/controllers/update_item.php', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Item Updated!',
+                text: 'The inventory item was updated successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            // Update the specific row fields in the table for instant UI feedback
+            const row = document.querySelector(`tr[data-item-id="${editModal.querySelector('#edit-variant-id').value}"]`);
+            row.querySelector('.wrap-text').innerText = editModal.querySelector('#edit-name').value; // Update Name
+            row.querySelector('td:nth-child(4)').innerText = editModal.querySelector('#edit-category').value; // Update Category
+            row.querySelector('td:nth-child(6)').innerText = editModal.querySelector('#edit-size').value; // Update Size
+            row.querySelector('td:nth-child(7)').innerText = editModal.querySelector('#edit-color').value; // Update Color
+            row.querySelector('td:nth-child(8)').innerText = editModal.querySelector('#edit-price').value; // Update Price
+            row.querySelector('td:nth-child(9)').innerText = editModal.querySelector('#edit-date-added').value; // Update Date
+
+            // Calculate total quantity and update the Quantity column
+            const physicalQuantity = parseInt(editModal.querySelector('input[name="quantity-physical-store"]').value) || 0;
+            const shopeeQuantity = parseInt(editModal.querySelector('input[name="quantity-shopee"]').value) || 0;
+            const tiktokQuantity = parseInt(editModal.querySelector('input[name="quantity-tiktok"]').value) || 0;
+            const totalQuantity = physicalQuantity + shopeeQuantity + tiktokQuantity;
+            row.querySelector('td:nth-child(5)').innerText = totalQuantity;
+
+            // Update the Channel column based on the quantities
+            const activeChannels = [];
+            if (physicalQuantity > 0) {
+                activeChannels.push("Physical Store");
+            }
+            if (shopeeQuantity > 0) {
+                activeChannels.push("Shopee");
+            }
+            if (tiktokQuantity > 0) {
+                activeChannels.push("TikTok");
+            }
+            row.querySelector('td:nth-child(10)').innerText = activeChannels.length === 3 ? 'All Channels' : activeChannels.join(' and ');
+
+            // Close the modal
+            editModal.style.display = 'none';
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Update Failed',
+                text: 'Error updating item: ' + data.message,
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Network Error',
+            text: 'An error occurred while updating the item. Please try again later.',
+        });
+    });
+};
+
+// Close modal when clicking on the close button or cancel button
+document.querySelector('#edit-item-modal .close-button').onclick = () => {
+    document.getElementById('edit-item-modal').style.display = 'none';
+};
+document.getElementById('edit-modal-cancel-button').onclick = () => {
     document.getElementById('edit-item-modal').style.display = 'none';
 };
 </script>
 
 
 
+
+
+
+<style>
+#image-preview-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    max-width: 80px; /* Adjusted max width to make the image smaller */
+    max-height: 80px;
+}
+
+#edit-image-preview {
+    display: block;
+    width: 100%; /* Ensure the image fits within the container */
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    object-fit: contain; /* Keep the image aspect ratio */
+}
+
+
+</style>
 
 
 

@@ -2,12 +2,13 @@
 session_start();
 require_once '../config/db_connection.php';
 
-// Check if the database connection is successful
 if (!$conn) {
     die(json_encode(['success' => false, 'message' => 'Database connection failed: ' . mysqli_connect_error()]));
 }
 
-// Fetch inventory data with channel-specific quantities
+// Check if a specific variant_id is requested
+$variantId = isset($_GET['variant_id']) ? intval($_GET['variant_id']) : null;
+
 $sql = "SELECT 
             pv.variant_id,
             p.product_id,
@@ -24,6 +25,7 @@ $sql = "SELECT
         FROM inventory i
         JOIN product_variants pv ON i.variant_id = pv.variant_id
         JOIN products p ON pv.product_id = p.product_id
+        " . ($variantId ? "WHERE pv.variant_id = $variantId" : "") . "
         GROUP BY pv.variant_id";
 
 $result = mysqli_query($conn, $sql);
@@ -48,13 +50,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     }
 }
 
-// Always return success, even if items are empty
 echo json_encode(['success' => true, 'items' => $items]);
 
-// Close the database connection
-mysqli_close($conn);
-?>
-
-// Close the database connection
 mysqli_close($conn);
 ?>

@@ -152,9 +152,13 @@ mysqli_close($conn);
 
             // Use delegated event listeners for dynamically loaded content
             $('.menu').on('click', 'a', function(e) {
-                e.preventDefault();
                 const linkId = $(this).attr('id');
                 let contentUrl = '';
+
+                // Only prevent default for in-app links
+                if (linkId !== 'logout-link') {
+                    e.preventDefault();
+                }
 
                 switch (linkId) {
                     case 'dashboard-link':
@@ -201,8 +205,8 @@ mysqli_close($conn);
             });
 
             // Account section links (example for logout link)
-            $('.account-section').on('click', '#logout-link', function(e) {
-                setActive('logout-item');
+            $('.account-section').on('click', '#logout-link', function() {
+                setActive('logout-item'); // Set the active class for logout
             });
         });
     </script>
