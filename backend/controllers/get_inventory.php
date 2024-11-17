@@ -3,12 +3,50 @@ session_start();
 require_once '../config/db_connection.php';
 
 if (!$conn) {
-    die(json_encode(['success' => false, 'message' => 'Database connection failed: ' . mysqli_connect_error()]));
+    die(json_encode(['success' => false, 'message' => 'Database connection failed: ' . mysqli_connect_error()])); 
 }
 
 // Check if a specific variant_id is requested
 $variantId = isset($_GET['variant_id']) ? intval($_GET['variant_id']) : null;
 
+// Check if we are validating item name or combination
+$checkType = isset($_GET['check_type']) ? $_GET['check_type'] : null;
+$item_name = isset($_GET['name']) ? trim($_GET['name']) : '';
+$category = isset($_GET['category']) ? trim($_GET['category']) : '';
+$size = isset($_GET['size']) ? trim($_GET['size']) : '';
+$color = isset($_GET['color']) ? trim($_GET['color']) : '';
+
+// If checking for item name uniqueness
+if ($checkType === 'item_name_unique' && !empty($item_name)) {
+    $sql_check_name = "SELECT COUNT(*) AS count FROM products WHERE name = ?";
+    $stmt = mysqli_prepare($conn, $sql_check_name);
+    mysqli_stmt_bind_param($stmt, 's', $item_name);
+    mysqli_stmt_execute($stmt);
+    $result_name = mysqli_stmt_get_result($stmt);
+    $row_name = mysqli_fetch_assoc($result_name);
+    if ($row_name['count'] > 0) {
+        echo json_encode(['success' => false, 'message' => 'Item name already exists.']);
+        exit;
+    }
+}
+
+// If checking for duplicate combination of category, size, and color
+if ($checkType === 'duplicate_item_info' && !empty($category) && !empty($size) && !empty($color)) {
+    $sql_check_duplicate = "SELECT COUNT(*) AS count FROM product_variants pv
+                            JOIN products p ON pv.product_id = p.product_id
+                            WHERE p.category = ? AND pv.size = ? AND pv.color = ?";
+    $stmt = mysqli_prepare($conn, $sql_check_duplicate);
+    mysqli_stmt_bind_param($stmt, 'sss', $category, $size, $color);
+    mysqli_stmt_execute($stmt);
+    $result_duplicate = mysqli_stmt_get_result($stmt);
+    $row_duplicate = mysqli_fetch_assoc($result_duplicate);
+    if ($row_duplicate['count'] > 0) {
+        echo json_encode(['success' => false, 'message' => 'A product with the same category, size, and color already exists.']);
+        exit;
+    }
+}
+
+// Default inventory query
 $sql = "SELECT 
             pv.variant_id,
             p.product_id,

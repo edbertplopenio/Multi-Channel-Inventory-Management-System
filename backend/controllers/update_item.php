@@ -24,7 +24,7 @@ if (isset($_POST['variant_id'], $_POST['name'], $_POST['category'], $_POST['size
 
     // Image upload handling (if a new image is provided)
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $imageName = basename($_FILES['image']['name']);
+        $imageName = time() . '_' . basename($_FILES['image']['name']);
         $imagePath = "../../frontend/public/images/" . $imageName;
 
         // Move uploaded file to target directory and log outcome
@@ -38,7 +38,7 @@ if (isset($_POST['variant_id'], $_POST['name'], $_POST['category'], $_POST['size
         }
     }
 
-    // Step 1: Get `product_id` from `product_variants` table to update `products`
+    // Step 1: Get product_id from product_variants table to update products
     $product_id_query = "SELECT product_id FROM product_variants WHERE variant_id = ?";
     $stmt = $conn->prepare($product_id_query);
     if (!$stmt) {
@@ -58,24 +58,28 @@ if (isset($_POST['variant_id'], $_POST['name'], $_POST['category'], $_POST['size
         exit;
     }
 
-    // Step 2: Update `products` table with new `name`, `category`, and image if provided
-    $updateProductQuery = "UPDATE products SET name = ?, category = ?, image = IF(? != '', ?, image) WHERE product_id = ?";
+    // Step 2: Update products table with new name and category
+    $updateProductQuery = "UPDATE products SET name = ?, category = ? WHERE product_id = ?";
     $productStmt = $conn->prepare($updateProductQuery);
     if (!$productStmt) {
         $response['message'] = "SQL Error: " . $conn->error;
         echo json_encode($response);
         exit;
     }
-    $productStmt->bind_param("ssssi", $name, $category, $imageName, $imageName, $product_id);
+    $productStmt->bind_param("ssi", $name, $category, $product_id);
     if ($productStmt->execute()) {
-        error_log("Product updated with image: " . $imageName);
+        error_log("Product updated with name and category.");
     } else {
         error_log("Failed to update product: " . $productStmt->error);
     }
     $productStmt->close();
 
-    // Step 3: Update `product_variants` table with other details and image if provided
-    $updateQuery = "UPDATE product_variants SET size = ?, color = ?, price = ?, date_added = ?, image = IF(? != '', ?, image) WHERE variant_id = ?";
+    // Step 3: Update product_variants table with other details and image if provided
+    $updateQuery = "
+        UPDATE product_variants 
+        SET size = ?, color = ?, price = ?, date_added = ?, image = IF(? != '', ?, image)
+        WHERE variant_id = ?";
+    
     $stmt = $conn->prepare($updateQuery);
     if (!$stmt) {
         $response['message'] = "SQL Error: " . $conn->error;
@@ -90,13 +94,13 @@ if (isset($_POST['variant_id'], $_POST['name'], $_POST['category'], $_POST['size
     }
     $stmt->close();
 
-    // Step 4: Update quantities in the `inventory` table
+    // Step 4: Update quantities in the inventory table
     $updateInventoryQuery = "
         UPDATE inventory
         SET quantity = CASE channel
-            WHEN 'physical_store' THEN ?
-            WHEN 'shopee' THEN ?
-            WHEN 'tiktok' THEN ?
+            WHEN 'physical_store' THEN ? 
+            WHEN 'shopee' THEN ? 
+            WHEN 'tiktok' THEN ? 
             ELSE quantity END
         WHERE variant_id = ?";
     $inventoryStmt = $conn->prepare($updateInventoryQuery);
@@ -109,6 +113,9 @@ if (isset($_POST['variant_id'], $_POST['name'], $_POST['category'], $_POST['size
     if ($inventoryStmt->execute()) {
         error_log("Inventory quantities updated successfully for variant ID: " . $variant_id);
         $response['success'] = true;
+
+        // Include the image URL in the response to update the frontend
+        $response['new_image_url'] = "../../frontend/public/images" . $imageName;
     } else {
         error_log("Failed to update inventory quantities: " . $inventoryStmt->error);
     }

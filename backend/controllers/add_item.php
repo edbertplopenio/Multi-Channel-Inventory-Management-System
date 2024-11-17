@@ -68,8 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $row = mysqli_fetch_assoc($result_check);
         $product_id = $row['product_id'];
     } else {
-        $sql_insert_product = "INSERT INTO products (name, category, base_price, image) 
-                               VALUES ('$name', '$category', $price, '$image_name')";
+        // Insert the product without an image (images are handled by product_variants now)
+        $sql_insert_product = "INSERT INTO products (name, category, base_price) 
+                               VALUES ('$name', '$category', $price)";
         if (!mysqli_query($conn, $sql_insert_product)) {
             echo json_encode(['success' => false, 'message' => 'Failed to add product: ' . mysqli_error($conn)]);
             exit();
@@ -81,10 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     mysqli_begin_transaction($conn);
 
     try {
-        // Insert into product_variants
-        $sql = "INSERT INTO product_variants (product_id, size, color, price, date_added, image) 
-                VALUES ('$product_id', '$size', '$color', $price, '$date_added', '$image_name')";
-        if (!mysqli_query($conn, $sql)) {
+        // Insert into product_variants with image
+        $sql_variant = "INSERT INTO product_variants (product_id, size, color, price, date_added, image) 
+                        VALUES ('$product_id', '$size', '$color', $price, '$date_added', '$image_name')";
+        if (!mysqli_query($conn, $sql_variant)) {
             throw new Exception('Failed to add product variant: ' . mysqli_error($conn));
         }
 
@@ -99,28 +100,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception('Failed to add inventory: ' . mysqli_error($conn));
         }
 
-// Commit the transaction
-mysqli_commit($conn);
+        // Commit the transaction
+        mysqli_commit($conn);
 
-echo json_encode([
-    'success' => true,
-    'product_id' => $product_id,
-    'variant_id' => $variant_id, // Make sure this is returned
-    'name' => $name, 
-    'category' => $category, 
-    'size' => $size, 
-    'color' => $color, 
-    'price' => $price, 
-    'date_added' => $date_added, 
-    'channels' => $channels, 
-    'quantity_physical_store' => $quantity_physical_store, // Ensure this is accurate
-    'quantity_shopee' => $quantity_shopee,                 // Ensure this is accurate
-    'quantity_tiktok' => $quantity_tiktok,                 // Ensure this is accurate
-    'total_quantity' => $total_quantity,
-    'image' => $image_name
-]);
-
-
+        echo json_encode([
+            'success' => true,
+            'product_id' => $product_id,
+            'variant_id' => $variant_id, // Make sure this is returned
+            'name' => $name, 
+            'category' => $category, 
+            'size' => $size, 
+            'color' => $color, 
+            'price' => $price, 
+            'date_added' => $date_added, 
+            'channels' => $channels, 
+            'quantity_physical_store' => $quantity_physical_store, // Ensure this is accurate
+            'quantity_shopee' => $quantity_shopee,                 // Ensure this is accurate
+            'quantity_tiktok' => $quantity_tiktok,                 // Ensure this is accurate
+            'total_quantity' => $total_quantity,
+            'image' => $image_name
+        ]);
 
     } catch (Exception $e) {
         // Rollback the transaction on error
@@ -134,3 +133,4 @@ echo json_encode([
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
 }
+?>

@@ -1,13 +1,3 @@
-<?php
-session_start();
-
-// Check if the user is logged in
-if (!isset($_SESSION['user_email'])) {
-    header("Location: ../../frontend/public/login.html");
-    exit();
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,53 +5,131 @@ if (!isset($_SESSION['user_email'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="../../frontend/public/styles/dashboard.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Include your existing CSS here */
+        .chart-placeholder {
+            width: 100%;
+            height: 100px;
+            background-color: #f4f7fc;
+            border-radius: 10px;
+        }
+
+        .chart-placeholder.large {
+            height: 300px;
+        }
+
+        .card.full-width {
+            grid-column: span 4;
+        }
+    </style>
 </head>
 <body>
-
     <div class="dashboard-container">
         <div class="header">
             <h1>Analytics</h1>
-
         </div>
 
         <div class="dashboard-cards">
-        <div class="card">
-        <h2>Top Selling</h2>
-        <p class="metric">Product A</p> <!-- Example top-selling product -->
-        <span class="metric-info"><i class="fas fa-arrow-up"></i> 25 units sold</span>
-    </div>
-    <div class="card">
-        <h2>Low Stock</h2>
-        <p class="metric">Product B</p> <!-- Example low stock product -->
-        <span class="metric-info"><i class="fas fa-exclamation-triangle"></i> 5 units left</span>
-    </div>
-    <div class="card">
-        <h2>Slow Moving</h2>
-        <p class="metric">Product C</p> <!-- Example slow-moving product -->
-        <span class="metric-info"><i class="fas fa-arrow-down"></i> 2 units sold this month</span>
-    </div>
-    <div class="card">
-        <h2>Total Sales</h2>
-        <p class="metric">$15,000</p> <!-- Example total sales -->
-        <span class="metric-info"><i class="fas fa-arrow-up"></i> 10% increase since last month</span>
-    </div>
+            <div class="card">
+                <h2>Top Selling</h2>
+                <p class="metric">Product A</p>
+                <span class="metric-info"><i class="fas fa-arrow-up"></i> 25 units sold</span>
+            </div>
+            <div class="card">
+                <h2>Low Stock</h2>
+                <p class="metric">Product B</p>
+                <span class="metric-info"><i class="fas fa-exclamation-triangle"></i> 5 units left</span>
+            </div>
+            <div class="card">
+                <h2>Slow Moving</h2>
+                <p class="metric">Product C</p>
+                <span class="metric-info"><i class="fas fa-arrow-down"></i> 2 units sold this month</span>
+            </div>
+            <div class="card">
+                <h2>Total Sales</h2>
+                <p class="metric">$15,000</p>
+                <span class="metric-info"><i class="fas fa-arrow-up"></i> 10% increase since last month</span>
+            </div>
 
             <div class="card full-width">
                 <h2>Sales Dynamics</h2>
-                <div class="chart-placeholder large"><!-- Large Chart Placeholder --></div>
+                <canvas id="salesChart" class="chart-placeholder large"></canvas> <!-- Chart.js Canvas -->
             </div>
+
             <div class="card full-width">
                 <h2>Overall User Activity</h2>
-                <div class="chart-placeholder large"><!-- Large Chart Placeholder --></div>
+                <div class="chart-placeholder large"></div>
             </div>
-
-
         </div>
     </div>
 
+    <script>
+        // Dummy data for testing
+        var salesData = [
+            { date: '2024-10-01', sales_amount: 5000 },
+            { date: '2024-10-02', sales_amount: 6000 },
+            { date: '2024-10-03', sales_amount: 5500 },
+            { date: '2024-10-04', sales_amount: 7000 },
+            { date: '2024-10-05', sales_amount: 4500 },
+            { date: '2024-10-06', sales_amount: 4000 },
+            { date: '2024-10-07', sales_amount: 6500 }
+        ];
+
+        // Prepare data for the chart
+        var labels = salesData.map(function(item) {
+            return item.date;  // Dates from the dummy data
+        });
+
+        var salesAmounts = salesData.map(function(item) {
+            return item.sales_amount;  // Sales amounts from the dummy data
+        });
+
+        // Create the chart
+        var ctx = document.getElementById('salesChart').getContext('2d');
+        var salesChart = new Chart(ctx, {
+            type: 'line',  // Line chart for sales over time
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Sales Amount',
+                    data: salesAmounts,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                    lineTension: 0.1,  // Smoother line
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'category', // Category scale for dates
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Sales Amount'
+                        },
+                        beginAtZero: true  // Start Y-axis at 0
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
+
 
 
 <style>
