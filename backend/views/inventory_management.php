@@ -1412,70 +1412,7 @@ if (!$result_tiktok) {
         <button id="archive-button">Archive</button>
     </div>
 
-    <style>
-        /* Basic Reset */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
 
-        /* Selection Bar Styling */
-        #selection-bar {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            font-size: 14px;
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            min-width: 250px;
-            max-width: 400px;
-        }
-
-        /* Text Styling */
-        #selected-count {
-            font-weight: bold;
-        }
-
-        /* Button Styling */
-        #archive-button {
-            background-color: #f39c12;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
-        }
-
-        #archive-button:hover {
-            background-color: #e67e22;
-        }
-
-        /* Small screens responsiveness */
-        @media (max-width: 480px) {
-            #selection-bar {
-                min-width: 200px;
-                padding: 10px 15px;
-                font-size: 12px;
-            }
-
-            #archive-button {
-                font-size: 12px;
-                padding: 6px 12px;
-            }
-        }
-    </style>
 
     <script>
         // Function to update the selection bar visibility and count
@@ -1731,7 +1668,90 @@ if (!$result_tiktok) {
         addCheckboxListeners();
     </script>
 
+    <style>
+        /* Basic Reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
+        /* Selection Bar Styling */
+        #selection-bar {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #201F2B;
+            /* A more vibrant and professional green */
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            /* Increased border radius for more rounded corners */
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+            /* Softer and larger shadow for more depth */
+            font-size: 16px;
+            /* Increased font size for better readability */
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-width: 280px;
+            max-width: 450px;
+            transition: all 0.3s ease-in-out;
+            /* Smooth transition for display changes */
+        }
+
+        /* Text Styling */
+        #selected-count {
+            font-weight: 600;
+            /* Slightly bolder text for emphasis */
+            letter-spacing: 0.5px;
+        }
+
+        /* Button Styling */
+        #archive-button {
+            background-color: #3CAE85;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            /* Slightly larger border radius for a smoother button */
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow for the button */
+        }
+
+        /* Hover and Active Effects for the Button */
+        #archive-button:hover {
+            background-color: #287458;
+            transform: translateY(-2px);
+            /* Slight lift effect on hover */
+        }
+
+        #archive-button:active {
+            transform: translateY(1px);
+            /* Button "press" effect */
+        }
+
+        /* Small screens responsiveness */
+        @media (max-width: 480px) {
+            #selection-bar {
+                min-width: 220px;
+                padding: 12px 18px;
+                font-size: 14px;
+                /* Adjust font size for smaller screens */
+            }
+
+            #archive-button {
+                font-size: 13px;
+                padding: 8px 14px;
+            }
+        }
+    </style>
 
 
 
@@ -1980,12 +2000,31 @@ if (!$result_tiktok) {
         });
 
         // Close modal functionality
+        // Close modal functionality with immediate refresh of the selection bar
         document.querySelector('#edit-item-modal .close-button').addEventListener('click', () => {
+            // Ensure all checkbox states are correctly refreshed
+            resetCheckboxStates(); // Custom function to reset checkbox states if needed
+            updateSelectionBar(); // Refresh the selection count before closing modal
             document.getElementById('edit-item-modal').style.display = 'none';
         });
+
         document.getElementById('edit-modal-cancel-button').addEventListener('click', () => {
+            // Ensure all checkbox states are correctly refreshed
+            resetCheckboxStates(); // Custom function to reset checkbox states if needed
+            updateSelectionBar(); // Refresh the selection count before closing modal
             document.getElementById('edit-item-modal').style.display = 'none';
         });
+        // Function to reset checkbox states
+        function resetCheckboxStates() {
+            const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+            allCheckboxes.forEach(checkbox => {
+                checkbox.checked = false; // Uncheck all checkboxes
+            });
+
+            // Optionally, you can add logic to reset specific checkboxes depending on your needs
+            // e.g., uncheck specific checkboxes that were changed during modal interaction
+        }
+
 
         // Handle Image Selection and Preview in Modal
         document.getElementById('edit-image').addEventListener('change', function(event) {
@@ -2279,7 +2318,7 @@ if (!$result_tiktok) {
 
 
 
-    //use the get_inventory
+
 
 
     <style>
@@ -2858,7 +2897,7 @@ if (!$result_tiktok) {
     }
 
     .action-button {
-        background-color: #007bff;
+        background-color: #3CAE85;
         color: #fff;
         padding: 6px 10px;
         border: none;
