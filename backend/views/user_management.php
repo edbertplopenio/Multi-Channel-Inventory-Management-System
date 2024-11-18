@@ -329,12 +329,19 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                 modal.classList.add('show-modal'); // Add show class for animation
             });
 
-            // Close the modal when the "Cancel" button is clicked
-            const cancelButton = document.querySelector(".cancel-button");
-            cancelButton.addEventListener('click', function() {
-                modal.classList.remove('show-modal'); // Remove show class for animation
-                setTimeout(() => modal.style.display = "none"); // Delay for smooth transition
-            });
+// Close the modal and reset the form fields when the "Cancel" button is clicked
+const cancelButton = document.querySelector(".cancel-button");
+cancelButton.addEventListener('click', function() {
+    const modal = document.getElementById("new-user-modal");
+    
+    // Reset all form fields inside the modal
+    const form = document.getElementById('new-user-form');
+    form.reset(); // This resets the form fields
+
+    modal.classList.remove('show-modal'); // Remove show class for animation
+    setTimeout(() => modal.style.display = "none"); // Delay for smooth transition
+});
+
 
             // Delete user functionality
             document.querySelectorAll('.delete').forEach(button => {
