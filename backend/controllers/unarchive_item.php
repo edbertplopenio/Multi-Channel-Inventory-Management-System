@@ -1,6 +1,7 @@
 <?php
 require_once '../../backend/config/db_connection.php';
 
+// Read the JSON input data
 $data = json_decode(file_get_contents("php://input"), true);
 $variant_id = $data['variant_id'] ?? null;
 
@@ -9,6 +10,7 @@ if (!$variant_id) {
     exit;
 }
 
+// Update the archived status of the product variant
 $query = "UPDATE product_variants SET is_archived = 0, date_archived = NULL WHERE variant_id = ?";
 $stmt = $conn->prepare($query);
 

@@ -8,43 +8,19 @@ require_once '../../backend/config/db_connection.php';
 if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
 }
+
 $sql_all_inventory = "
     SELECT pv.variant_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image,
-    pv.is_archived, pv.date_archived,
-    SUM(CASE WHEN i.channel = 'physical_store' THEN i.quantity ELSE 0 END) AS quantity_physical_store,
-    SUM(CASE WHEN i.channel = 'shopee' THEN i.quantity ELSE 0 END) AS quantity_shopee,
-    SUM(CASE WHEN i.channel = 'tiktok' THEN i.quantity ELSE 0 END) AS quantity_tiktok
+    pv.is_archived, pv.date_archived
     FROM product_variants pv
     JOIN products p ON pv.product_id = p.product_id
-    JOIN inventory i ON pv.variant_id = i.variant_id
-    WHERE pv.is_archived = 1
-    GROUP BY pv.variant_id, pv.size, pv.color, pv.price, pv.date_added, pv.image";
+    WHERE pv.is_archived = 1";
 $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
-
-$sql_physical_store = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
-                       FROM product_variants pv
-                       JOIN products p ON pv.product_id = p.product_id
-                       JOIN inventory i ON pv.variant_id = i.variant_id
-                       WHERE i.channel = 'physical_store' AND pv.is_archived = 1";
-$result_physical_store = mysqli_query($conn, $sql_physical_store);
-
-$sql_shopee = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
-               FROM product_variants pv
-               JOIN products p ON pv.product_id = p.product_id
-               JOIN inventory i ON pv.variant_id = i.variant_id
-               WHERE i.channel = 'shopee' AND pv.is_archived = 1";
-$result_shopee = mysqli_query($conn, $sql_shopee);
-
-$sql_tiktok = "SELECT pv.variant_id, p.product_id, p.name, p.category, pv.size, pv.color, pv.price, pv.date_added, pv.image, i.channel, i.quantity
-               FROM product_variants pv
-               JOIN products p ON pv.product_id = p.product_id
-               JOIN inventory i ON pv.variant_id = i.variant_id
-               WHERE i.channel = 'tiktok' AND pv.is_archived = 1";
-$result_tiktok = mysqli_query($conn, $sql_tiktok);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Archived Inventory</title>
@@ -52,7 +28,7 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700');
-        
+
         * {
             margin: 0;
             padding: 0;
@@ -176,8 +152,123 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
         .unarchive-button:hover {
             background-color: #218838;
         }
+
+
+        /* Checkbox column styling */
+        .inventory-table td.checkbox-column {
+            width: 50px;
+            padding: 0;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* Styling for checkboxes */
+        input[type="checkbox"] {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background-color: #ffffff;
+            border: 2px solid #007bff;
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 2px;
+            width: 4px;
+            height: 8px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        input[type="checkbox"]:hover {
+            border-color: #0056b3;
+        }
+
+        input[type="checkbox"]:checked:hover {
+            background-color: #0056b3;
+        }
+
+        /* For when you want to add a hover effect on checkboxes in a table */
+        .inventory-table td.checkbox-column input[type="checkbox"]:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Column width adjustments for different inventory tabs */
+        .inventory-table th:nth-child(1),
+        .inventory-table td:nth-child(1) {
+            width: 50px;
+        }
+
+        .inventory-table th:nth-child(2),
+        .inventory-table td:nth-child(2) {
+            width: 100px;
+        }
+
+        .inventory-table th:nth-child(3),
+        .inventory-table td:nth-child(3) {
+            width: 120px;
+        }
+
+        .inventory-table th:nth-child(4),
+        .inventory-table td:nth-child(4) {
+            width: 90px;
+        }
+
+        .inventory-table th:nth-child(5),
+        .inventory-table td:nth-child(5) {
+            width: 80px;
+        }
+
+        .inventory-table th:nth-child(6),
+        .inventory-table td:nth-child(6) {
+            width: 100px;
+        }
+
+        .inventory-table th:nth-child(7),
+        .inventory-table td:nth-child(7) {
+            width: 80px;
+        }
+
+        .inventory-table th:nth-child(8),
+        .inventory-table td:nth-child(8) {
+            width: 90px;
+        }
+
+        .inventory-table th:nth-child(9),
+        .inventory-table td:nth-child(9) {
+            width: 100px;
+        }
+
+        .inventory-table th:nth-child(10),
+        .inventory-table td:nth-child(10) {
+            width: 90px;
+        }
+
+        .inventory-table th:nth-child(11),
+        .inventory-table td:nth-child(11) {
+            width: 90px;
+        }
+
+        .inventory-table th:nth-child(12),
+        .inventory-table td:nth-child(12) {
+            width: 150px;
+        }
     </style>
 </head>
+
 <body>
     <div class="inventory-container">
         <div class="header">
@@ -185,262 +276,505 @@ $result_tiktok = mysqli_query($conn, $sql_tiktok);
         </div>
         <div class="filters">
             <div class="tabs-container">
-                <button class="tab active" data-tab="all-inventory"><i class="fas fa-warehouse"></i> All Inventory</button>
-                <button class="tab" data-tab="physical-store"><i class="fas fa-store"></i> Physical Store</button>
-                <button class="tab" data-tab="shopee"><i class="fas fa-shopping-bag"></i> Shopee</button>
-                <button class="tab" data-tab="tiktok"><i class="fas fa-music"></i> TikTok</button>
+                <button class="tab inactive" data-tab="all-inventory"><i class="fas fa-warehouse"></i> All Inventory</button>
             </div>
         </div>
 
-        <!-- All Inventory Tab -->
-        <div id="all-inventory" class="tab-content active">
-            <table class="inventory-table">
-                <thead>
-                    <tr>
-                        <th>Variant ID</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Quantity</th>
-                        <th>Size</th>
-                        <th>Color</th>
-                        <th>Price</th>
-                        <th>Date Added</th>
-                        <th>Channel</th>
-                        <th>Image</th>
-                        <th>Action</th>
+<!-- All Inventory Tab -->
+<div id="all-inventory" class="tab-content active" data-type="variant">
+    <table class="inventory-table inventory-table-all">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all-all"></th> <!-- Checkbox for selecting all items -->
+                <th>Variant ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Size</th>
+                <th>Color</th>
+                <th>Price</th>
+                <th>Date Added</th>
+                <th>Image</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
+                    <tr data-id="<?php echo $row['variant_id']; ?>">
+                        <td><input type="checkbox" class="select-item-all" value="<?php echo $row['variant_id']; ?>"></td> <!-- Individual checkbox -->
+                        <td><?php echo $row['variant_id']; ?></td>
+                        <td><?php echo $row['name']; ?></td>
+                        <td><?php echo $row['category']; ?></td>
+                        <td><?php echo $row['size']; ?></td>
+                        <td><?php echo $row['color']; ?></td>
+                        <td><?php echo $row['price']; ?></td>
+                        <td><?php echo $row['date_added']; ?></td>
+                        <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                        <td>
+                            <button class="unarchive-button" data-id="<?php echo $row['variant_id']; ?>">Unarchive</button>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
-                        <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
-                            <tr data-id="<?php echo $row['variant_id']; ?>">
-                                <td><?php echo $row['variant_id']; ?></td>
-                                <td><?php echo $row['name']; ?></td>
-                                <td><?php echo $row['category']; ?></td>
-                                <td><?php echo $row['quantity_physical_store'] + $row['quantity_shopee'] + $row['quantity_tiktok']; ?></td>
-                                <td><?php echo $row['size']; ?></td>
-                                <td><?php echo $row['color']; ?></td>
-                                <td><?php echo $row['price']; ?></td>
-                                <td><?php echo $row['date_added']; ?></td>
-                                <td>
-                                    <?php
-                                    $channels = [];
-                                    if ($row['quantity_physical_store'] > 0) $channels[] = 'Physical Store';
-                                    if ($row['quantity_shopee'] > 0) $channels[] = 'Shopee';
-                                    if ($row['quantity_tiktok'] > 0) $channels[] = 'TikTok';
-                                    echo implode(', ', $channels);
-                                    ?>
-                                </td>
-                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                                <td>
-                                    <button class="unarchive-button" data-id="<?php echo $row['variant_id']; ?>">Unarchive</button>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr><td colspan="11">No archived items found.</td></tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="10">No archived items found.</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+</div>
 
-        <!-- Physical Store Tab -->
-        <div id="physical-store" class="tab-content">
-            <table class="inventory-table">
-                <thead>
-                    <tr>
-                        <th>Variant ID</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Quantity</th>
-                        <th>Size</th>
-                        <th>Color</th>
-                        <th>Price</th>
-                        <th>Date Added</th>
-                        <th>Image</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (mysqli_num_rows($result_physical_store) > 0): ?>
-                        <?php while ($row = mysqli_fetch_assoc($result_physical_store)): ?>
-                            <tr data-id="<?php echo $row['variant_id']; ?>">
-                                <td><?php echo $row['variant_id']; ?></td>
-                                <td><?php echo $row['name']; ?></td>
-                                <td><?php echo $row['category']; ?></td>
-                                <td><?php echo $row['quantity']; ?></td>
-                                <td><?php echo $row['size']; ?></td>
-                                <td><?php echo $row['color']; ?></td>
-                                <td><?php echo $row['price']; ?></td>
-                                <td><?php echo $row['date_added']; ?></td>
-                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                                <td>
-                                    <button class="unarchive-button" data-id="<?php echo $row['variant_id']; ?>">Unarchive</button>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr><td colspan="10">No archived items in Physical Store.</td></tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+</body>
+</html>
 
-        <!-- Shopee Tab -->
-        <div id="shopee" class="tab-content">
-            <table class="inventory-table">
-                <thead>
-                    <tr>
-                        <th>Variant ID</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Quantity</th>
-                        <th>Size</th>
-                        <th>Color</th>
-                        <th>Price</th>
-                        <th>Date Added</th>
-                        <th>Image</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (mysqli_num_rows($result_shopee) > 0): ?>
-                        <?php while ($row = mysqli_fetch_assoc($result_shopee)): ?>
-                            <tr data-id="<?php echo $row['variant_id']; ?>">
-                                <td><?php echo $row['variant_id']; ?></td>
-                                <td><?php echo $row['name']; ?></td>
-                                <td><?php echo $row['category']; ?></td>
-                                <td><?php echo $row['quantity']; ?></td>
-                                <td><?php echo $row['size']; ?></td>
-                                <td><?php echo $row['color']; ?></td>
-                                <td><?php echo $row['price']; ?></td>
-                                <td><?php echo $row['date_added']; ?></td>
-                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                                <td>
-                                    <button class="unarchive-button" data-id="<?php echo $row['variant_id']; ?>">Unarchive</button>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr><td colspan="10">No archived items in Shopee.</td></tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
 
-        <!-- TikTok Tab -->
-        <div id="tiktok" class="tab-content">
-            <table class="inventory-table">
-                <thead>
-                    <tr>
-                        <th>Variant ID</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Quantity</th>
-                        <th>Size</th>
-                        <th>Color</th>
-                        <th>Price</th>
-                        <th>Date Added</th>
-                        <th>Image</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (mysqli_num_rows($result_tiktok) > 0): ?>
-                        <?php while ($row = mysqli_fetch_assoc($result_tiktok)): ?>
-                            <tr data-id="<?php echo $row['variant_id']; ?>">
-                                <td><?php echo $row['variant_id']; ?></td>
-                                <td><?php echo $row['name']; ?></td>
-                                <td><?php echo $row['category']; ?></td>
-                                <td><?php echo $row['quantity']; ?></td>
-                                <td><?php echo $row['size']; ?></td>
-                                <td><?php echo $row['color']; ?></td>
-                                <td><?php echo $row['price']; ?></td>
-                                <td><?php echo $row['date_added']; ?></td>
-                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                                <td>
-                                    <button class="unarchive-button" data-id="<?php echo $row['variant_id']; ?>">Unarchive</button>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr><td colspan="10">No archived items in TikTok.</td></tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+
+
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+<!-- Selection bar and Unarchiving -->
+<div id="selection-bar" style="display: none;">
+    <span id="selected-count">0 items selected</span>
+    <button id="unarchive-button">Unarchive</button>
+</div>
 
-                tab.classList.add('active');
-                document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
+<script>
+    // Function to update the selection bar visibility and count
+    function updateSelectionBar() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedIds = new Set(
+            Array.from(checkboxes)
+                .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude header checkboxes
+                .map(checkbox => checkbox.value) // Use the value (item ID) as the unique identifier
+        );
+        const selectedCount = selectedIds.size;
+
+        // Update the count in the selection bar
+        document.getElementById('selected-count').textContent = `${selectedCount} items selected`;
+
+        // Show or hide the selection bar based on the count
+        const selectionBar = document.getElementById('selection-bar');
+        if (selectedCount > 0) {
+            selectionBar.style.display = 'flex';
+        } else {
+            selectionBar.style.display = 'none';
+        }
+    }
+
+    // Function to update the "Select All" checkbox and selection bar
+    function updateSelectAll(checkboxClass, selectAllId) {
+        let checkboxes = document.querySelectorAll(checkboxClass);
+        let selectAllCheckbox = document.getElementById(selectAllId);
+
+        // Check if all checkboxes are checked
+        let allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+        selectAllCheckbox.checked = allChecked;
+
+        // Update selection bar
+        updateSelectionBar();
+    }
+
+    // Function to reset all checkboxes
+    function resetCheckboxes() {
+        const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+        allCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        updateSelectionBar(); // Ensure the selection bar is updated after resetting checkboxes
+    }
+
+    // Add event listener to each item checkbox to update the selection bar when clicked
+    function addCheckboxListeners() {
+        const allCheckboxes = [
+            ...document.querySelectorAll('.select-item-all'),
+            ...document.querySelectorAll('.select-item-physical'),
+            ...document.querySelectorAll('.select-item-shopee'),
+            ...document.querySelectorAll('.select-item-tiktok')
+        ];
+
+        allCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('click', () => {
+                updateSelectionBar();
+                updateSelectAll('.select-item-all', 'select-all-all');
+                updateSelectAll('.select-item-physical', 'select-all-physical');
+                updateSelectAll('.select-item-shopee', 'select-all-shopee');
+                updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
             });
         });
+    }
 
-        document.querySelectorAll('.unarchive-button').forEach(button => {
-    button.addEventListener('click', function() {
-        const variantId = this.getAttribute('data-id');
-        const row = document.querySelector(`tr[data-id="${variantId}"]`);
-        const itemName = row ? row.querySelector('td:nth-child(2)').innerText : 'this item';
+    // Batch Unarchive button functionality
+    document.getElementById('unarchive-button').addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedIds = new Set(
+            Array.from(checkboxes)
+                .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude "Select All" checkboxes
+                .map(checkbox => checkbox.value) // Get the variant IDs
+        );
+
+        let unarchivedItemCount = 0;
+
+        if (selectedIds.size === 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'No Items Selected',
+                text: 'Please select items to unarchive.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
 
         Swal.fire({
             title: 'Are you sure?',
-            text: `Are you sure you want to unarchive ${itemName}?`,
+            text: `Are you sure you want to unarchive ${selectedIds.size} item(s)?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#28a745',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, unarchive it!'
+            confirmButtonText: 'Yes, unarchive them!'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch('../../backend/controllers/unarchive_item.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ variant_id: variantId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
+                let unarchivePromises = Array.from(selectedIds).map(itemId => {
+                    return fetch('../../backend/controllers/unarchive_item.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ variant_id: itemId })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Item successfully unarchived, remove the row from the table
+                                const row = document.querySelector(`tr[data-id="${itemId}"]`);
+                                if (row) {
+                                    row.remove(); // Remove the row from the table
+                                }
+
+                                unarchivedItemCount++; // Increment the count of successfully unarchived items
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: `Error unarchiving item ${itemId}: ${data.message || 'Unknown error'}`,
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Unexpected Error',
+                                text: `An unexpected error occurred for item ${itemId}. Please try again later.`,
+                                confirmButtonText: 'OK'
+                            });
+                        });
+                });
+
+                // Wait for all unarchive promises to complete
+                Promise.all(unarchivePromises).then(() => {
+                    if (unarchivedItemCount > 0) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Success',
-                            text: data.message,
+                            title: 'Unarchiving Completed',
+                            text: `${unarchivedItemCount} item(s) have been successfully unarchived.`,
                             confirmButtonText: 'OK'
-                        }).then(() => {
-                            // Remove the row of the unarchived item
-                            if (row) row.remove();
                         });
                     } else {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Error unarchiving item: ' + (data.message || 'Unknown error'),
+                            icon: 'info',
+                            title: 'No Items Unarchived',
+                            text: 'No items were unarchived.',
                             confirmButtonText: 'OK'
                         });
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Unexpected Error',
-                        text: 'An unexpected error occurred. Please try again later.',
-                        confirmButtonText: 'OK'
-                    });
+
+                    // Update the selection bar after unarchiving
+                    updateSelectionBar(); // This ensures the selection bar is hidden if no items are selected
+                    
+                    // After unarchiving, ensure the "Select All" checkbox is unchecked if no items are selected
+                    updateSelectAll('.select-item-all', 'select-all-all');
+                    updateSelectAll('.select-item-physical', 'select-all-physical');
+                    updateSelectAll('.select-item-shopee', 'select-all-shopee');
+                    updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
                 });
             }
         });
     });
+
+    // Fetch fresh data from the backend and render the table for a specific tab
+    function fetchDataAndRenderTable(tabId) {
+        const tabMap = {
+            '#all-inventory-table': 'all',
+            '#physical-store-table': 'physical',
+            '#shopee-table': 'shopee',
+            '#tiktok-table': 'tiktok'
+        };
+
+        const category = tabMap[tabId];
+
+        // Fetch data for the specific category
+        fetch(`../../backend/controllers/get_inventory.php?category=${category}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const table = document.querySelector(tabId);
+                    table.innerHTML = ''; // Clear the current content of the table
+
+                    data.items.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.setAttribute('data-id', item.variant_id); // Ensure unique row identifier
+
+                        if (item.is_archived) {
+                            row.classList.add('archived');
+                        }
+
+                        row.innerHTML = `
+                            <td><input type="checkbox" value="${item.variant_id}" class="select-item-${category}" /></td>
+                            <td>${item.name}</td>
+                            <td>${item.quantity_physical_store}</td>
+                            <td>${item.quantity_shopee}</td>
+                            <td>${item.quantity_tiktok}</td>
+                            <td>${item.is_archived ? 'Archived' : 'Active'}</td>
+                        `;
+
+                        table.appendChild(row);
+                    });
+
+                    updateSelectAll(`.select-item-${category}`, `select-all-${category}`);
+                    addCheckboxListeners(); // Rebind checkbox listeners after re-render
+                } else {
+                    console.error('Failed to fetch inventory data:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }
+
+    // Event listener for 'Select All' checkbox functionality for each tab
+    document.getElementById('select-all-all').addEventListener('click', function() {
+        let checkboxes = document.querySelectorAll('.select-item-all');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateSelectionBar();
+    });
+
+    document.getElementById('select-all-physical').addEventListener('click', function() {
+        let checkboxes = document.querySelectorAll('.select-item-physical');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateSelectionBar();
+    });
+
+    document.getElementById('select-all-shopee').addEventListener('click', function() {
+        let checkboxes = document.querySelectorAll('.select-item-shopee');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateSelectionBar();
+    });
+
+    document.getElementById('select-all-tiktok').addEventListener('click', function() {
+        let checkboxes = document.querySelectorAll('.select-item-tiktok');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateSelectionBar();
+    });
+
+    // Initialize 'Select All' checkboxes state and add individual checkbox listeners
+    updateSelectAll('.select-item-all', 'select-all-all');
+    updateSelectAll('.select-item-physical', 'select-all-physical');
+    updateSelectAll('.select-item-shopee', 'select-all-shopee');
+    updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
+    addCheckboxListeners();
+</script>
+
+
+
+
+
+
+
+
+
+
+<style>
+    /* Basic Reset */
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Selection Bar Styling */
+    #selection-bar {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #201F2B;
+        color: white;
+        padding: 12px 20px;  /* Reduced padding for better fit */
+        border-radius: 12px;
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+        font-size: 14px;  /* Reduced font size */
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-width: 280px;
+        max-width: 450px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* Text Styling */
+    #selected-count {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        font-size: 13px;  /* Slightly smaller font size */
+    }
+
+    /* Button Styling */
+    #unarchive-button {
+        background-color: #3CAE85;
+        color: white;
+        border: none;
+        padding: 8px 16px;  /* Reduced padding for smaller button */
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;  /* Adjusted button font size */
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Hover and Active Effects for the Button */
+    #unarchive-button:hover {
+        background-color: #287458;
+        transform: translateY(-2px);
+    }
+
+    #unarchive-button:active {
+        transform: translateY(1px);
+    }
+
+    /* Small screens responsiveness */
+    @media (max-width: 480px) {
+        #selection-bar {
+            min-width: 220px;
+            padding: 12px 18px;
+            font-size: 12px;  /* Further reduced font size on small screens */
+        }
+
+        #unarchive-button {
+            font-size: 13px;
+            padding: 8px 14px;
+        }
+    }
+</style>
+
+
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+// Tab switching functionality (ensuring tabs always stay inactive)
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function(event) {
+        // Prevent the default behavior and don't change the tab's state
+        event.preventDefault();
+
+        // Tabs should never become active
+        return false;
+    });
 });
 
-    </script>
+    // Event delegation for unarchive buttons
+    document.addEventListener('click', function(event) {
+        if (event.target && event.target.classList.contains('unarchive-button')) {
+            const variantId = event.target.getAttribute('data-id');
+            const row = document.querySelector(`tr[data-id="${variantId}"]`);
+            const itemName = row ? row.querySelector('td:nth-child(2)').innerText : 'this item';
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: `Are you sure you want to unarchive ${itemName}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, unarchive it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('../../backend/controllers/unarchive_item.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                variant_id: variantId
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: data.message,
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    // Remove the row of the unarchived item
+                                    if (row) {
+                                        row.remove();  // Remove the row from the DOM
+
+                                        // Optionally, remove it from the other inventory tables
+                                        // You may need to check if the item is in other tab inventories and remove it
+                                        document.querySelectorAll(`tr[data-id="${variantId}"]`).forEach(itemRow => {
+                                            itemRow.remove();
+                                        });
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Error unarchiving item: ' + (data.message || 'Unknown error'),
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Unexpected Error',
+                                text: 'An unexpected error occurred. Please try again later.',
+                                confirmButtonText: 'OK'
+                            });
+                        });
+                }
+            });
+        }
+    });
+</script>
+
 </body>
+
 </html>
+
+
+
+
+//hindi nagdynamic update sa tables sa buttons ng unarchive at all

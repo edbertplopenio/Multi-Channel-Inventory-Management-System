@@ -63,10 +63,13 @@ $sql = "SELECT
         FROM inventory i
         JOIN product_variants pv ON i.variant_id = pv.variant_id
         JOIN products p ON pv.product_id = p.product_id
-        " . ($variantId ? "WHERE pv.variant_id = $variantId" : "") . "
-        GROUP BY pv.variant_id";
+        WHERE 1 " . 
+        ($variantId ? "AND pv.variant_id = $variantId " : "") .
+        ($category ? "AND p.category = '$category' " : "") .  // Added category filtering
+        "GROUP BY pv.variant_id";
 
 $result = mysqli_query($conn, $sql);
+
 
 $items = [];
 if ($result && mysqli_num_rows($result) > 0) {
