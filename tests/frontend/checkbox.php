@@ -341,60 +341,26 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
 </div>
 
 <script>
-    const selectAllCheckbox = document.getElementById('select-all-all');
-    const individualCheckboxes = document.querySelectorAll('.select-item-all');
-    const selectionBar = document.getElementById('selection-bar');
-    const selectedCount = document.getElementById('selected-count');
-
-    let selectedItems = [];
-
     // Function to update the selection bar visibility and count
     function updateSelectionBar() {
-        const selectedCountText = `${selectedItems.length} items selected`;
-        selectedCount.textContent = selectedCountText;
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedIds = new Set(
+            Array.from(checkboxes)
+            .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude header checkboxes
+            .map(checkbox => checkbox.value) // Use the value (item ID) as the unique identifier
+        );
+        const selectedCount = selectedIds.size;
 
-        // Show the selection bar if items are selected, else hide it
-        if (selectedItems.length > 0) {
-            selectionBar.style.display = 'block';
+        // Update the count in the selection bar
+        document.getElementById('selected-count').textContent = `${selectedCount} items selected`;
+
+        // Show or hide the selection bar based on the count
+        const selectionBar = document.getElementById('selection-bar');
+        if (selectedCount > 0) {
+            selectionBar.style.display = 'flex';
         } else {
             selectionBar.style.display = 'none';
         }
-
-        // Check or uncheck the "select all" checkbox based on individual selections
-        if (selectedItems.length === individualCheckboxes.length) {
-            selectAllCheckbox.checked = true;
-        } else {
-            selectAllCheckbox.checked = false;
-        }
-    }
-
-    // Select/Deselect all checkboxes
-    selectAllCheckbox.addEventListener('change', function() {
-        const isChecked = selectAllCheckbox.checked;
-        individualCheckboxes.forEach(checkbox => {
-            checkbox.checked = isChecked;
-            toggleItemSelection(checkbox);
-        });
-    });
-
-    // Toggle individual item selection
-    individualCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            toggleItemSelection(checkbox);
-        });
-    });
-
-    // Add/remove item ID from selectedItems array
-    function toggleItemSelection(checkbox) {
-        const itemId = checkbox.value;
-        if (checkbox.checked) {
-            if (!selectedItems.includes(itemId)) {
-                selectedItems.push(itemId);
-            }
-        } else {
-            selectedItems = selectedItems.filter(id => id !== itemId);
-        }
-        updateSelectionBar();
     }
 
     // Function to update the "Select All" checkbox and selection bar
@@ -439,153 +405,198 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
         });
     }
 
-// Batch Unarchive button functionality
-document.getElementById('unarchive-button').addEventListener('click', function() {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-    const selectedIds = new Set(
-        Array.from(checkboxes)
-        .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude "Select All" checkboxes
-        .map(checkbox => checkbox.value) // Get the variant IDs
-    );
+    // Batch Unarchive button functionality
+    document.getElementById('unarchive-button').addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedIds = new Set(
+            Array.from(checkboxes)
+            .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude "Select All" checkboxes
+            .map(checkbox => checkbox.value) // Get the variant IDs
+        );
 
-    let unarchivedItemCount = 0;
+        let unarchivedItemCount = 0;
 
-    if (selectedIds.size === 0) {
+        if (selectedIds.size === 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'No Items Selected',
+                text: 'Please select items to unarchive.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
         Swal.fire({
-            icon: 'info',
-            title: 'No Items Selected',
-            text: 'Please select items to unarchive.',
-            confirmButtonText: 'OK'
-        });
-        return;
-    }
-
-    Swal.fire({
-        title: 'Are you sure?',
-        text: `Are you sure you want to unarchive ${selectedIds.size} item(s)?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#28a745',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, unarchive them!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            let unarchivePromises = Array.from(selectedIds).map(itemId => {
-                return fetch('../../backend/controllers/unarchive_item.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            variant_id: itemId
+            title: 'Are you sure?',
+            text: `Are you sure you want to unarchive ${selectedIds.size} item(s)?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, unarchive them!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let unarchivePromises = Array.from(selectedIds).map(itemId => {
+                    return fetch('../../backend/controllers/unarchive_item.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                variant_id: itemId
+                            })
                         })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Item successfully unarchived, remove the row from the table
-                            const row = document.querySelector(`tr[data-id="${itemId}"]`);
-                            if (row) {
-                                row.remove(); // Remove the row from the table
-                            }
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Item successfully unarchived, remove the row from the table
+                                const row = document.querySelector(`tr[data-id="${itemId}"]`);
+                                if (row) {
+                                    row.remove(); // Remove the row from the table
+                                }
 
-                            unarchivedItemCount++; // Increment the count of successfully unarchived items
-                        } else {
+                                unarchivedItemCount++; // Increment the count of successfully unarchived items
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: `Error unarchiving item ${itemId}: ${data.message || 'Unknown error'}`,
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Error',
-                                text: `Error unarchiving item ${itemId}: ${data.message || 'Unknown error'}`,
+                                title: 'Unexpected Error',
+                                text: `An unexpected error occurred for item ${itemId}. Please try again later.`,
                                 confirmButtonText: 'OK'
                             });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
+                        });
+                });
+
+                // Wait for all unarchive promises to complete
+                Promise.all(unarchivePromises).then(() => {
+                    if (unarchivedItemCount > 0) {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Unexpected Error',
-                            text: `An unexpected error occurred for item ${itemId}. Please try again later.`,
+                            icon: 'success',
+                            title: 'Unarchiving Completed',
+                            text: `${unarchivedItemCount} item(s) have been successfully unarchived.`,
                             confirmButtonText: 'OK'
                         });
-                    });
-            });
+                    } else {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'No Items Unarchived',
+                            text: 'No items were unarchived.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
 
-            // Wait for all unarchive promises to complete
-            Promise.all(unarchivePromises).then(() => {
-                if (unarchivedItemCount > 0) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Unarchiving Completed',
-                        text: `${unarchivedItemCount} item(s) have been successfully unarchived.`,
-                        confirmButtonText: 'OK'
+                    // Update the selection bar after unarchiving
+                    updateSelectionBar(); // This ensures the selection bar is hidden if no items are selected
+
+                    // After unarchiving, ensure the "Select All" checkbox is unchecked if no items are selected
+                    updateSelectAll('.select-item-all', 'select-all-all');
+                    updateSelectAll('.select-item-physical', 'select-all-physical');
+                    updateSelectAll('.select-item-shopee', 'select-all-shopee');
+                    updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
+                });
+            }
+        });
+    });
+
+    // Fetch fresh data from the backend and render the table for a specific tab
+    function fetchDataAndRenderTable(tabId) {
+        const tabMap = {
+            '#all-inventory-table': 'all',
+            '#physical-store-table': 'physical',
+            '#shopee-table': 'shopee',
+            '#tiktok-table': 'tiktok'
+        };
+
+        const category = tabMap[tabId];
+
+        // Fetch data for the specific category
+        fetch(`../../backend/controllers/get_inventory.php?category=${category}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const table = document.querySelector(tabId);
+                    table.innerHTML = ''; // Clear the current content of the table
+
+                    data.items.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.setAttribute('data-id', item.variant_id); // Ensure unique row identifier
+
+                        if (item.is_archived) {
+                            row.classList.add('archived');
+                        }
+
+                        row.innerHTML = `
+                            <td><input type="checkbox" value="${item.variant_id}" class="select-item-${category}" /></td>
+                            <td>${item.name}</td>
+                            <td>${item.quantity_physical_store}</td>
+                            <td>${item.quantity_shopee}</td>
+                            <td>${item.quantity_tiktok}</td>
+                            <td>${item.is_archived ? 'Archived' : 'Active'}</td>
+                        `;
+
+                        table.appendChild(row);
                     });
+
+                    updateSelectAll(`.select-item-${category}`, `select-all-${category}`);
+                    addCheckboxListeners(); // Rebind checkbox listeners after re-render
                 } else {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'No Items Unarchived',
-                        text: 'No items were unarchived.',
-                        confirmButtonText: 'OK'
-                    });
+                    console.error('Failed to fetch inventory data:', data.message);
                 }
-
-                // Update the selection bar after unarchiving
-                selectedItems = []; // Clear the selected items array
-                updateSelectionBar(); // Ensure the selection bar is hidden if no items are selected
-
-                // After unarchiving, ensure the "Select All" checkbox is unchecked if no items are selected
-                updateSelectAll('.select-item-all', 'select-all-all');
-                updateSelectAll('.select-item-physical', 'select-all-physical');
-                updateSelectAll('.select-item-shopee', 'select-all-shopee');
-                updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
             });
-        }
+    }
+
+    // Event listener for 'Select All' checkbox functionality for each tab
+    document.getElementById('select-all-all').addEventListener('click', function() {
+        let checkboxes = document.querySelectorAll('.select-item-all');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateSelectionBar();
     });
-});
 
-// Function to update the selection bar visibility and count
-function updateSelectionBar() {
-    const selectedCountText = `${selectedItems.length} items selected`;
-    selectedCount.textContent = selectedCountText;
-
-    // Show the selection bar if items are selected, else hide it
-    if (selectedItems.length > 0) {
-        selectionBar.style.display = 'block';
-    } else {
-        selectionBar.style.display = 'none';
-    }
-
-    // Check or uncheck the "select all" checkbox based on individual selections
-    if (selectedItems.length === individualCheckboxes.length) {
-        selectAllCheckbox.checked = true;
-    } else {
-        selectAllCheckbox.checked = false;
-    }
-}
-
-// Add listeners for checkbox changes (including individual item checkboxes)
-individualCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', function() {
-        toggleItemSelection(checkbox); // Toggle item selection
+    document.getElementById('select-all-physical').addEventListener('click', function() {
+        let checkboxes = document.querySelectorAll('.select-item-physical');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateSelectionBar();
     });
-});
 
-// Update item selection and the selection bar
-function toggleItemSelection(checkbox) {
-    const itemId = checkbox.value;
+    document.getElementById('select-all-shopee').addEventListener('click', function() {
+        let checkboxes = document.querySelectorAll('.select-item-shopee');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateSelectionBar();
+    });
 
-    if (checkbox.checked) {
-        if (!selectedItems.includes(itemId)) {
-            selectedItems.push(itemId); // Add item to selection
-        }
-    } else {
-        selectedItems = selectedItems.filter(id => id !== itemId); // Remove item from selection
-    }
+    document.getElementById('select-all-tiktok').addEventListener('click', function() {
+        let checkboxes = document.querySelectorAll('.select-item-tiktok');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateSelectionBar();
+    });
 
-    updateSelectionBar(); // Update the selection bar visibility and count
-}
-
+    // Initialize 'Select All' checkboxes state and add individual checkbox listeners
+    updateSelectAll('.select-item-all', 'select-all-all');
+    updateSelectAll('.select-item-physical', 'select-all-physical');
+    updateSelectAll('.select-item-shopee', 'select-all-shopee');
+    updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
+    addCheckboxListeners();
 </script>
-
 
 
 
