@@ -57,7 +57,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'last_name' => $lastName,
                 'email' => $email,
                 'role' => $role,
-                'status' => 'active',
                 'image' => $imageUrl
             ]
         ]);

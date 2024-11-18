@@ -79,7 +79,6 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Status</th>
                         <th>Image</th> <!-- Image column -->
                         <th>Actions</th>
                     </tr>
@@ -91,8 +90,6 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                             <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></td>
                             <td><?= htmlspecialchars($user['email']); ?></td>
                             <td><?= htmlspecialchars($user['role']); ?></td>
-                            <td><span class="status <?= $user['status'] === 'active' ? 'active' : 'inactive'; ?>">
-                                    <?= htmlspecialchars(ucfirst($user['status'])); ?></span></td>
                             <td>
                                 <?php if ($user['image']): ?>
                                     <img src="../../uploads/<?= htmlspecialchars($user['image']); ?>" alt="User Image" width="50" height="50">
@@ -119,7 +116,6 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Status</th>
                         <th>Image</th> <!-- Image column -->
                         <th>Actions</th>
                     </tr>
@@ -131,8 +127,6 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                             <td><?= htmlspecialchars($admin['first_name'] . ' ' . $admin['last_name']); ?></td>
                             <td><?= htmlspecialchars($admin['email']); ?></td>
                             <td><?= htmlspecialchars($admin['role']); ?></td>
-                            <td><span class="status <?= $admin['status'] === 'active' ? 'active' : 'inactive'; ?>">
-                                    <?= htmlspecialchars(ucfirst($admin['status'])); ?></span></td>
                             <td>
                                 <?php if ($admin['image']): ?>
                                     <img src="../../uploads/<?= htmlspecialchars($admin['image']); ?>" alt="User Image" width="50" height="50">
@@ -159,7 +153,6 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Status</th>
                         <th>Image</th> <!-- Image column -->
                         <th>Actions</th>
                     </tr>
@@ -171,8 +164,6 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                             <td><?= htmlspecialchars($inventoryManager['first_name'] . ' ' . $inventoryManager['last_name']); ?></td>
                             <td><?= htmlspecialchars($inventoryManager['email']); ?></td>
                             <td><?= htmlspecialchars($inventoryManager['role']); ?></td>
-                            <td><span class="status <?= $inventoryManager['status'] === 'active' ? 'active' : 'inactive'; ?>">
-                                    <?= htmlspecialchars(ucfirst($inventoryManager['status'])); ?></span></td>
                             <td>
                                 <?php if ($inventoryManager['image']): ?>
                                     <img src="../../uploads/<?= htmlspecialchars($inventoryManager['image']); ?>" alt="User Image" width="50" height="50">
@@ -342,7 +333,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
             const cancelButton = document.querySelector(".cancel-button");
             cancelButton.addEventListener('click', function() {
                 modal.classList.remove('show-modal'); // Remove show class for animation
-                setTimeout(() => modal.style.display = "none", 300); // Delay for smooth transition
+                setTimeout(() => modal.style.display = "none"); // Delay for smooth transition
             });
 
             // Delete user functionality
@@ -412,7 +403,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                     const lastName = row.cells[1].textContent.split(" ")[1];
                     const email = row.cells[2].textContent;
                     const role = row.cells[3].textContent;
-                    const currentImage = row.cells[5].querySelector('img') ? row.cells[5].querySelector('img').src : '';
+                    const currentImage = row.cells[4].querySelector('img') ? row.cells[4].querySelector('img').src : '';
 
                     // Pre-fill the edit form with existing user data
                     document.getElementById('edit-user-id').value = userId;
@@ -434,7 +425,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
             cancelButtonEdit.addEventListener('click', function() {
                 const modal = document.getElementById("edit-user-modal");
                 modal.classList.remove('show-modal');
-                setTimeout(() => modal.style.display = "none", 300);
+                setTimeout(() => modal.style.display = "none");
             });
 
             // Submit the Add New User form
@@ -463,7 +454,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                             // Close the modal and reset the form
                             const modal = document.getElementById("new-user-modal");
                             modal.classList.remove('show-modal');
-                            setTimeout(() => modal.style.display = "none", 300);
+                            setTimeout(() => modal.style.display = "none");
 
                             Swal.fire({
                                 title: 'Success!',
@@ -571,7 +562,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                 userRow.cells[1].textContent = `${firstName} ${lastName}`;
                 userRow.cells[2].textContent = email;
                 userRow.cells[3].textContent = role;
-                userRow.cells[5].innerHTML = image ? `<img src="../../frontend/public/images/users/${image}" alt="User Image" width="50" height="50">` : '<span>No Image</span>';
+                userRow.cells[4].innerHTML = image ? `<img src="../../frontend/public/images/users/${image}" alt="User Image" width="50" height="50">` : '<span>No Image</span>';
 
                 // Update the role attribute for the row
                 userRow.setAttribute('data-role', role);
@@ -589,9 +580,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
             <td>${firstName} ${lastName}</td>
             <td>${email}</td>
             <td>${role}</td>
-            <td><span class="status active">Active</span></td>
-<td>${image ? `<img src="${image}" alt="User Image" width="50" height="50">` : '<span>No Image</span>'}</td>
-
+            <td>${image ? `<img src="${image}" alt="User Image" width="50" height="50">` : '<span>No Image</span>'}</td>
             <td>
                 <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
                 <button class="action-button delete" data-user-id="${userId}"><i class="fas fa-trash"></i> Delete</button>
@@ -614,7 +603,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                     const lastName = row.cells[1].textContent.split(" ")[1];
                     const email = row.cells[2].textContent;
                     const role = row.cells[3].textContent;
-                    const currentImage = row.cells[5].querySelector('img') ? row.cells[5].querySelector('img').src : '';
+                    const currentImage = row.cells[4].querySelector('img') ? row.cells[4].querySelector('img').src : '';
 
                     document.getElementById('edit-user-id').value = userId;
                     document.getElementById('edit-first-name').value = firstName;
@@ -688,6 +677,7 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
         initializeUserManagement();
         initializeEditAndDeleteButtons(); // Initialize edit/delete buttons when the page loads
     </script>
+
 
 
 
@@ -831,6 +821,8 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
 
     .user-table {
         width: 100%;
+        table-layout: fixed;
+        /* Enables fixed column widths */
         border-collapse: collapse;
         background-color: #fff;
         border-radius: 10px;
@@ -844,6 +836,12 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
         padding: 10px;
         text-align: left;
         border-bottom: 1px solid #eee;
+        overflow: hidden;
+        /* Hides overflowing text */
+        text-overflow: ellipsis;
+        /* Adds ellipsis for truncated text */
+        white-space: nowrap;
+        /* Prevents text wrapping */
     }
 
     .user-table th {
@@ -858,26 +856,47 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
         font-size: 12px;
     }
 
-    .user-table .status {
-        padding: 5px 10px;
-        border-radius: 12px;
-        color: #fff;
-        font-size: 12px;
-        text-align: center;
-        display: inline-block;
-    }
-
-    .status.active {
-        background-color: #28a745;
-    }
-
-    .status.inactive {
-        background-color: #dc3545;
-    }
-
     .user-table tr:last-child td {
         border-bottom: none;
     }
+
+    /* Specify fixed column widths */
+    .user-table th:nth-child(1),
+    .user-table td:nth-child(1) {
+        width: 10%;
+        /* Adjust as needed for User ID */
+    }
+
+    .user-table th:nth-child(2),
+    .user-table td:nth-child(2) {
+        width: 20%;
+        /* Adjust as needed for Name */
+    }
+
+    .user-table th:nth-child(3),
+    .user-table td:nth-child(3) {
+        width: 25%;
+        /* Adjust as needed for Email */
+    }
+
+    .user-table th:nth-child(4),
+    .user-table td:nth-child(4) {
+        width: 15%;
+        /* Adjust as needed for Role */
+    }
+
+    .user-table th:nth-child(5),
+    .user-table td:nth-child(5) {
+        width: 15%;
+        /* Adjust as needed for Image */
+    }
+
+    .user-table th:nth-child(6),
+    .user-table td:nth-child(6) {
+        width: 15%;
+        /* Adjust as needed for Actions */
+    }
+
 
     .action-button {
         background-color: #007bff;
@@ -956,14 +975,6 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
         }
     }
 
-    .new-user-container form {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        column-gap: 20px;
-        row-gap: 20px;
-        padding: 20px 0;
-    }
-
     .form-group {
         display: flex;
         flex-direction: column;
@@ -1009,7 +1020,6 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
     .form-group select option {
         padding: 10px;
     }
-
 
     .buttons-row {
         display: flex;
