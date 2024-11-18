@@ -280,58 +280,59 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
             </div>
         </div>
 
-<!-- All Inventory Tab -->
-<div id="all-inventory" class="tab-content active" data-type="variant">
-    <table class="inventory-table inventory-table-all">
-        <thead>
-            <tr>
-                <th><input type="checkbox" id="select-all-all"></th> <!-- Checkbox for selecting all items -->
-                <th>Variant ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Size</th>
-                <th>Color</th>
-                <th>Price</th>
-                <th>Date Added</th>
-                <th>Image</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
-                <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
-                    <tr data-id="<?php echo $row['variant_id']; ?>">
-                        <td><input type="checkbox" class="select-item-all" value="<?php echo $row['variant_id']; ?>"></td> <!-- Individual checkbox -->
-                        <td><?php echo $row['variant_id']; ?></td>
-                        <td><?php echo $row['name']; ?></td>
-                        <td><?php echo $row['category']; ?></td>
-                        <td><?php echo $row['size']; ?></td>
-                        <td><?php echo $row['color']; ?></td>
-                        <td><?php echo $row['price']; ?></td>
-                        <td><?php echo $row['date_added']; ?></td>
-                        <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
-                        <td>
-                            <button class="unarchive-button" data-id="<?php echo $row['variant_id']; ?>">Unarchive</button>
-                        </td>
+        <!-- All Inventory Tab -->
+        <div id="all-inventory" class="tab-content active" data-type="variant">
+            <table class="inventory-table inventory-table-all">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="select-all-all"></th> <!-- Checkbox for selecting all items -->
+                        <th>Variant ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Date Added</th>
+                        <th>Image</th>
+                        <th>Action</th>
                     </tr>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="10">No archived items found.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
-</div>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($result_all_inventory) > 0): ?>
+                        <?php while ($row = mysqli_fetch_assoc($result_all_inventory)): ?>
+                            <tr data-id="<?php echo $row['variant_id']; ?>">
+                                <td><input type="checkbox" class="select-item-all" value="<?php echo $row['variant_id']; ?>"></td> <!-- Individual checkbox -->
+                                <td><?php echo $row['variant_id']; ?></td>
+                                <td><?php echo $row['name']; ?></td>
+                                <td><?php echo $row['category']; ?></td>
+                                <td><?php echo $row['size']; ?></td>
+                                <td><?php echo $row['color']; ?></td>
+                                <td><?php echo $row['price']; ?></td>
+                                <td><?php echo $row['date_added']; ?></td>
+                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td>
+                                    <button class="unarchive-button" data-id="<?php echo $row['variant_id']; ?>">Unarchive</button>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="10">No archived items found.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </body>
+
 </html>
 
 
 
 
-    </div>
+</div>
 
 <!-- Selection bar and Unarchiving -->
 <div id="selection-bar" style="display: none;">
@@ -345,8 +346,8 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
         const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
         const selectedIds = new Set(
             Array.from(checkboxes)
-                .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude header checkboxes
-                .map(checkbox => checkbox.value) // Use the value (item ID) as the unique identifier
+            .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude header checkboxes
+            .map(checkbox => checkbox.value) // Use the value (item ID) as the unique identifier
         );
         const selectedCount = selectedIds.size;
 
@@ -409,8 +410,8 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
         const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
         const selectedIds = new Set(
             Array.from(checkboxes)
-                .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude "Select All" checkboxes
-                .map(checkbox => checkbox.value) // Get the variant IDs
+            .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude "Select All" checkboxes
+            .map(checkbox => checkbox.value) // Get the variant IDs
         );
 
         let unarchivedItemCount = 0;
@@ -441,7 +442,9 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ variant_id: itemId })
+                            body: JSON.stringify({
+                                variant_id: itemId
+                            })
                         })
                         .then(response => response.json())
                         .then(data => {
@@ -493,7 +496,7 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
 
                     // Update the selection bar after unarchiving
                     updateSelectionBar(); // This ensures the selection bar is hidden if no items are selected
-                    
+
                     // After unarchiving, ensure the "Select All" checkbox is unchecked if no items are selected
                     updateSelectAll('.select-item-all', 'select-all-all');
                     updateSelectAll('.select-item-physical', 'select-all-physical');
@@ -621,10 +624,12 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
         transform: translateX(-50%);
         background-color: #201F2B;
         color: white;
-        padding: 12px 20px;  /* Reduced padding for better fit */
+        padding: 12px 20px;
+        /* Reduced padding for better fit */
         border-radius: 12px;
         box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
-        font-size: 14px;  /* Reduced font size */
+        font-size: 14px;
+        /* Reduced font size */
         z-index: 1000;
         display: flex;
         justify-content: space-between;
@@ -638,7 +643,8 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
     #selected-count {
         font-weight: 600;
         letter-spacing: 0.5px;
-        font-size: 13px;  /* Slightly smaller font size */
+        font-size: 13px;
+        /* Slightly smaller font size */
     }
 
     /* Button Styling */
@@ -646,10 +652,12 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
         background-color: #3CAE85;
         color: white;
         border: none;
-        padding: 8px 16px;  /* Reduced padding for smaller button */
+        padding: 8px 16px;
+        /* Reduced padding for smaller button */
         border-radius: 8px;
         cursor: pointer;
-        font-size: 14px;  /* Adjusted button font size */
+        font-size: 14px;
+        /* Adjusted button font size */
         transition: background-color 0.3s ease, transform 0.2s ease;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     }
@@ -669,7 +677,8 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
         #selection-bar {
             min-width: 220px;
             padding: 12px 18px;
-            font-size: 12px;  /* Further reduced font size on small screens */
+            font-size: 12px;
+            /* Further reduced font size on small screens */
         }
 
         #unarchive-button {
@@ -687,18 +696,18 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-// Tab switching functionality (ensuring tabs always stay inactive)
-document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', function(event) {
-        // Prevent the default behavior and don't change the tab's state
-        event.preventDefault();
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Tab switching functionality (ensuring tabs always stay inactive)
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', function(event) {
+            // Prevent the default behavior and don't change the tab's state
+            event.preventDefault();
 
-        // Tabs should never become active
-        return false;
+            // Tabs should never become active
+            return false;
+        });
     });
-});
 
     // Event delegation for unarchive buttons
     document.addEventListener('click', function(event) {
@@ -737,7 +746,7 @@ document.querySelectorAll('.tab').forEach(tab => {
                                 }).then(() => {
                                     // Remove the row of the unarchived item
                                     if (row) {
-                                        row.remove();  // Remove the row from the DOM
+                                        row.remove(); // Remove the row from the DOM
 
                                         // Optionally, remove it from the other inventory tables
                                         // You may need to check if the item is in other tab inventories and remove it
@@ -777,4 +786,3 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 
 
-//hindi nagdynamic update sa tables sa buttons ng unarchive at all
