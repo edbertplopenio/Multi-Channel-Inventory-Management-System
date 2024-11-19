@@ -3,17 +3,20 @@
 session_start();
 
 // Redirect to login.html if not authenticated
-if (!isset($_SESSION['user_email'])) {
+if (!isset($_SESSION['user_email']) || !isset($_SESSION['user_id'])) {
     header("Location: login.html");
     exit();
 }
 
 // Include the database connection file
-include_once '../../backend/config/db_connection.php';
+require_once '../../backend/config/db_connection.php';
+
+// Initialize the user role
+$user_role = "Unknown Role";
 
 // Fetch the user role from the database
 $user_email = $_SESSION['user_email'];
-$sql = "SELECT role FROM users WHERE email = ?";
+$sql = "SELECT id, role FROM users WHERE email = ?";
 $stmt = mysqli_prepare($conn, $sql);
 
 if ($stmt) {
@@ -24,17 +27,24 @@ if ($stmt) {
     // Get the result
     $result = mysqli_stmt_get_result($stmt);
 
-    // Fetch the user's role
+    // Fetch the user's role and ID
     if ($row = mysqli_fetch_assoc($result)) {
+        $_SESSION['user_role'] = $row['role']; // Store role in the session
+        $_SESSION['user_id'] = $row['id'];    // Ensure user_id is in session
         $user_role = $row['role'];
     } else {
-        $user_role = "Unknown Role"; // Default in case of an error
+        // Handle case where user is not found in the database
+        session_unset();
+        session_destroy();
+        header("Location: login.html");
+        exit();
     }
 
     // Close the statement
     mysqli_stmt_close($stmt);
 } else {
-    $user_role = "Unknown Role"; // Default in case of an error
+    // Handle SQL preparation error
+    die("Database error: Failed to prepare statement.");
 }
 
 // Close the database connection
