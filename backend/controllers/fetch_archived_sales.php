@@ -16,20 +16,17 @@ if (!$conn) {
     exit();
 }
 
-// Get and sanitize input parameters
-$tab = isset($_GET['tab']) ? $_GET['tab'] : 'all-orders';
-$validTabs = ['all-orders', 'physical_store', 'shopee', 'tiktok'];
+// Get the tab type from the AJAX request
+$tab = isset($_GET['tab']) ? $_GET['tab'] : 'archived-sales'; // Default to 'archived-sales'
 
+// Validate the tab parameter (optional in this case since it's only for archived)
+$validTabs = ['archived-sales'];
 if (!in_array($tab, $validTabs)) {
     echo json_encode(['success' => false, 'message' => 'Invalid tab']);
     exit();
 }
 
-// Optional pagination (default: first 50 records)
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
-$offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
-
-// Base SQL query
+// Base SQL query to fetch archived sales data
 $query = "
     SELECT 
         s.variant_id,
@@ -49,39 +46,24 @@ $query = "
     JOIN 
         products p ON pv.product_id = p.product_id
     WHERE 
-        s.is_archived = 0"; // Exclude archived sales
-
-// Add filter for specific channels
-if ($tab !== 'all-orders') {
-    $query .= " AND s.channel = ?";
-}
-
-$query .= " LIMIT ? OFFSET ?"; // Add pagination
+        s.is_archived = 1"; // Fetch only archived sales
 
 // Prepare the SQL statement
 $stmt = $conn->prepare($query);
 if (!$stmt) {
-    echo json_encode(['success' => false, 'message' => 'Failed to prepare SQL statement: ' . $conn->error]);
+    echo json_encode(['success' => false, 'message' => 'Failed to prepare SQL statement']);
     exit();
-}
-
-// Bind parameters
-if ($tab !== 'all-orders') {
-    $stmt->bind_param('sii', $tab, $limit, $offset);
-} else {
-    $stmt->bind_param('ii', $limit, $offset);
 }
 
 // Execute the statement
 if (!$stmt->execute()) {
-    echo json_encode(['success' => false, 'message' => 'Failed to execute query: ' . $stmt->error]);
+    echo json_encode(['success' => false, 'message' => 'Failed to execute query']);
     exit();
 }
 
 // Fetch results
 $result = $stmt->get_result();
 $sales = [];
-
 while ($row = $result->fetch_assoc()) {
     $sales[] = [
         'variant_id' => $row['variant_id'],
@@ -100,7 +82,7 @@ while ($row = $result->fetch_assoc()) {
 header('Content-Type: application/json');
 echo json_encode(['success' => true, 'data' => $sales]);
 
-// Close resources
+// Close the database connection
 $stmt->close();
 $conn->close();
 ?>
