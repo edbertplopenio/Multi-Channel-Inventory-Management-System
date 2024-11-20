@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
     $email = $_POST['email'];
+    $cellphone = $_POST['cellphone']; // Added Cellphone
     $role = $_POST['role'];
 
     // Check if email already exists for other users
@@ -45,13 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Prepare the SQL query for updating user details
     if ($image) {
-        $query = "UPDATE users SET first_name = ?, last_name = ?, email = ?, role = ?, image = ?, updated_at = NOW() WHERE id = ?";
+        $query = "UPDATE users SET first_name = ?, last_name = ?, email = ?, cellphone = ?, role = ?, image = ?, updated_at = NOW() WHERE id = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param('sssssi', $first_name, $last_name, $email, $role, $image, $id);
+        $stmt->bind_param('ssssssi', $first_name, $last_name, $email, $cellphone, $role, $image, $id);
     } else {
-        $query = "UPDATE users SET first_name = ?, last_name = ?, email = ?, role = ?, updated_at = NOW() WHERE id = ?";
+        $query = "UPDATE users SET first_name = ?, last_name = ?, email = ?, cellphone = ?, role = ?, updated_at = NOW() WHERE id = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param('ssssi', $first_name, $last_name, $email, $role, $id);
+        $stmt->bind_param('sssssi', $first_name, $last_name, $email, $cellphone, $role, $id);
     }
 
     if ($stmt->execute()) {
@@ -64,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     'first_name' => $first_name,
                     'last_name' => $last_name,
                     'email' => $email,
+                    'cellphone' => $cellphone, // Added Cellphone
                     'role' => $role,
                     'image' => $imagePath
                 ]

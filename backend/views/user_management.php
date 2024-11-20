@@ -70,116 +70,129 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
             </div>
         </div>
 
-        <!-- All Users Content -->
-        <div id="all-users" class="tab-content active">
-            <table class="user-table" id="user-table">
-                <thead>
-                    <tr>
-                        <th>User ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Image</th> <!-- Image column -->
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($users as $user): ?>
-                        <tr data-user-id="<?= htmlspecialchars($user['id']); ?>" data-role="<?= htmlspecialchars($user['role']); ?>">
-                            <td><?= htmlspecialchars($user['id']); ?></td>
-                            <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></td>
-                            <td><?= htmlspecialchars($user['email']); ?></td>
-                            <td><?= htmlspecialchars($user['role']); ?></td>
-                            <td>
-                                <?php if ($user['image']): ?>
-                                    <img src="../../uploads/<?= htmlspecialchars($user['image']); ?>" alt="User Image" width="50" height="50">
-                                <?php else: ?>
-                                    <span>No Image</span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="action-button delete" data-user-id="<?= htmlspecialchars($user['id']); ?>"><i class="fas fa-trash"></i> Delete</button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+<!-- All Users Content -->
+<div id="all-users" class="tab-content active">
+    <table class="user-table" id="user-table">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Cellphone</th> <!-- Added Cellphone column -->
+                <th>Role</th>
+                <th>Image</th> <!-- Image column -->
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($users as $user): ?>
+                <tr data-user-id="<?= htmlspecialchars($user['id']); ?>" data-role="<?= htmlspecialchars($user['role']); ?>">
+                    <td><?= htmlspecialchars($user['id']); ?></td>
+                    <td><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']); ?></td>
+                    <td><?= htmlspecialchars($user['email']); ?></td>
+                    <td><?= htmlspecialchars($user['cellphone']); ?></td> <!-- Display Cellphone -->
+                    <td><?= htmlspecialchars($user['role']); ?></td>
+                    <td>
+                        <?php if ($user['image']): ?>
+                            <img src="../../frontend/public/images/users/<?= htmlspecialchars($user['image']); ?>" alt="User Image" width="50" height="50">
+                        <?php else: ?>
+                            <span>No Image</span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <button class="action-button user-edit" data-user-id="<?= htmlspecialchars($user['id']); ?>">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-button delete" data-user-id="<?= htmlspecialchars($user['id']); ?>"><i class="fas fa-trash"></i> Delete</button>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 
-        <!-- Admins Content -->
-        <div id="admins" class="tab-content">
-            <table class="user-table" id="admin-table">
-                <thead>
-                    <tr>
-                        <th>User ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Image</th> <!-- Image column -->
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($admins as $admin): ?>
-                        <tr data-user-id="<?= htmlspecialchars($admin['id']); ?>" data-role="Admin">
-                            <td><?= htmlspecialchars($admin['id']); ?></td>
-                            <td><?= htmlspecialchars($admin['first_name'] . ' ' . $admin['last_name']); ?></td>
-                            <td><?= htmlspecialchars($admin['email']); ?></td>
-                            <td><?= htmlspecialchars($admin['role']); ?></td>
-                            <td>
-                                <?php if ($admin['image']): ?>
-                                    <img src="../../uploads/<?= htmlspecialchars($admin['image']); ?>" alt="User Image" width="50" height="50">
-                                <?php else: ?>
-                                    <span>No Image</span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="action-button delete" data-user-id="<?= htmlspecialchars($admin['id']); ?>"><i class="fas fa-trash"></i> Delete</button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+<!-- Admins Content -->
+<div id="admins" class="tab-content">
+    <table class="user-table" id="admin-table">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Cellphone</th> <!-- Added Cellphone column -->
+                <th>Role</th>
+                <th>Image</th> <!-- Image column -->
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($admins as $admin): ?>
+                <tr data-user-id="<?= htmlspecialchars($admin['id']); ?>" data-role="Admin">
+                    <td><?= htmlspecialchars($admin['id']); ?></td>
+                    <td><?= htmlspecialchars($admin['first_name'] . ' ' . $admin['last_name']); ?></td>
+                    <td><?= htmlspecialchars($admin['email']); ?></td>
+                    <td><?= htmlspecialchars($admin['cellphone']); ?></td> <!-- Display Cellphone -->
+                    <td><?= htmlspecialchars($admin['role']); ?></td>
+                    <td>
+                        <?php if ($admin['image']): ?>
+                            <img src="../../frontend/public/images/users/<?= htmlspecialchars($admin['image']); ?>" alt="User Image" width="50" height="50">
+                        <?php else: ?>
+                            <span>No Image</span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <button class="action-button user-edit" data-user-id="<?= htmlspecialchars($admin['id']); ?>">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-button delete" data-user-id="<?= htmlspecialchars($admin['id']); ?>"><i class="fas fa-trash"></i> Delete</button>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 
-        <!-- Inventory Manager Content -->
-        <div id="inventory-manager" class="tab-content">
-            <table class="user-table" id="inventory-manager-table">
-                <thead>
-                    <tr>
-                        <th>User ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Image</th> <!-- Image column -->
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($inventoryManagers as $inventoryManager): ?>
-                        <tr data-user-id="<?= htmlspecialchars($inventoryManager['id']); ?>" data-role="Inventory Manager">
-                            <td><?= htmlspecialchars($inventoryManager['id']); ?></td>
-                            <td><?= htmlspecialchars($inventoryManager['first_name'] . ' ' . $inventoryManager['last_name']); ?></td>
-                            <td><?= htmlspecialchars($inventoryManager['email']); ?></td>
-                            <td><?= htmlspecialchars($inventoryManager['role']); ?></td>
-                            <td>
-                                <?php if ($inventoryManager['image']): ?>
-                                    <img src="../../uploads/<?= htmlspecialchars($inventoryManager['image']); ?>" alt="User Image" width="50" height="50">
-                                <?php else: ?>
-                                    <span>No Image</span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="action-button delete" data-user-id="<?= htmlspecialchars($inventoryManager['id']); ?>"><i class="fas fa-trash"></i> Delete</button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+<!-- Inventory Manager Content -->
+<div id="inventory-manager" class="tab-content">
+    <table class="user-table" id="inventory-manager-table">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Cellphone</th> <!-- Added Cellphone column -->
+                <th>Role</th>
+                <th>Image</th> <!-- Image column -->
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($inventoryManagers as $inventoryManager): ?>
+                <tr data-user-id="<?= htmlspecialchars($inventoryManager['id']); ?>" data-role="Inventory Manager">
+                    <td><?= htmlspecialchars($inventoryManager['id']); ?></td>
+                    <td><?= htmlspecialchars($inventoryManager['first_name'] . ' ' . $inventoryManager['last_name']); ?></td>
+                    <td><?= htmlspecialchars($inventoryManager['email']); ?></td>
+                    <td><?= htmlspecialchars($inventoryManager['cellphone']); ?></td> <!-- Display Cellphone -->
+                    <td><?= htmlspecialchars($inventoryManager['role']); ?></td>
+                    <td>
+                        <?php if ($inventoryManager['image']): ?>
+                            <img src="../../frontend/public/images/users/<?= htmlspecialchars($inventoryManager['image']); ?>" alt="User Image" width="50" height="50">
+                        <?php else: ?>
+                            <span>No Image</span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <button class="action-button user-edit" data-user-id="<?= htmlspecialchars($inventoryManager['id']); ?>">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-button delete" data-user-id="<?= htmlspecialchars($inventoryManager['id']); ?>"><i class="fas fa-trash"></i> Delete</button>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
     </div>
 
     <!-- New User Modal -->
@@ -249,62 +262,76 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
         </div>
     </div>
 
-    <!-- Edit User Modal -->
-    <div id="edit-user-modal" class="modal">
-        <div class="modal-content">
-            <div class="header">
-                <h1>Edit User</h1>
+
+
+
+<!-- Edit User Modal -->
+<div id="edit-user-modal" class="modal">
+    <div class="modal-content">
+        <div class="header">
+            <h1>Edit User</h1>
+        </div>
+
+        <form id="edit-user-form" enctype="multipart/form-data">
+            <input type="hidden" id="edit-user-id" name="id">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-first-name">First Name:</label>
+                    <input type="text" id="edit-first-name" name="first_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-last-name">Last Name:</label>
+                    <input type="text" id="edit-last-name" name="last_name" required>
+                </div>
             </div>
 
-            <form id="edit-user-form" enctype="multipart/form-data">
-                <input type="hidden" id="edit-user-id" name="id">
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="edit-first-name">First Name:</label>
-                        <input type="text" id="edit-first-name" name="first_name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="edit-last-name">Last Name:</label>
-                        <input type="text" id="edit-last-name" name="last_name" required>
-                    </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-email">Email:</label>
+                    <input type="email" id="edit-email" name="email" required>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="edit-email">Email:</label>
-                        <input type="email" id="edit-email" name="email" required>
-                    </div>
+                <div class="form-group">
+                    <label for="edit-cellphone">Cellphone:</label>
+                    <input type="text" id="edit-cellphone" name="cellphone" required>
+                </div>
+            </div>
 
-                    <div class="form-group">
-                        <label for="edit-role">Role:</label>
-                        <select id="edit-role" name="role" required>
-                            <option value="Admin">Admin</option>
-                            <option value="Inventory Manager">Inventory Manager</option>
-                        </select>
-                    </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-role">Role:</label>
+                    <select id="edit-role" name="role" required>
+                        <option value="Admin">Admin</option>
+                        <option value="Inventory Manager">Inventory Manager</option>
+                    </select>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="edit-image">Current Image:</label>
-                        <img id="current-image" src="" alt="Current Image" width="50" height="50">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="edit-image">Upload New Image:</label>
-                        <input type="file" id="edit-image" name="image" accept="image/*">
-                    </div>
+                <div class="form-group">
+                    <label for="edit-image">Current Image:</label>
+                    <img id="current-image" src="" alt="Current Image" width="50" height="50">
                 </div>
+            </div>
 
-                <div class="form-row buttons-row">
-                    <button type="button" class="cancel-button">Cancel</button>
-                    <button type="submit" class="save-user-button">Save Changes</button>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="edit-image">Upload New Image:</label>
+                    <input type="file" id="edit-image" name="image" accept="image/*">
                 </div>
-            </form>
-        </div>
+            </div>
+
+            <div class="form-row buttons-row">
+                <button type="button" class="cancel-button">Cancel</button>
+                <button type="submit" class="save-user-button">Save Changes</button>
+            </div>
+        </form>
     </div>
+</div>
+
+
+
+
 
     <script>
         function initializeUserManagement() {
@@ -329,18 +356,18 @@ $inventoryManagers = filterUsersByRole($users, 'Inventory Manager');
                 modal.classList.add('show-modal'); // Add show class for animation
             });
 
-// Close the modal and reset the form fields when the "Cancel" button is clicked
-const cancelButton = document.querySelector(".cancel-button");
-cancelButton.addEventListener('click', function() {
-    const modal = document.getElementById("new-user-modal");
-    
-    // Reset all form fields inside the modal
-    const form = document.getElementById('new-user-form');
-    form.reset(); // This resets the form fields
+            // Close the modal and reset the form fields when the "Cancel" button is clicked
+            const cancelButton = document.querySelector(".cancel-button");
+            cancelButton.addEventListener('click', function() {
+                const modal = document.getElementById("new-user-modal");
 
-    modal.classList.remove('show-modal'); // Remove show class for animation
-    setTimeout(() => modal.style.display = "none"); // Delay for smooth transition
-});
+                // Reset all form fields inside the modal
+                const form = document.getElementById('new-user-form');
+                form.reset(); // This resets the form fields
+
+                modal.classList.remove('show-modal'); // Remove show class for animation
+                setTimeout(() => modal.style.display = "none"); // Delay for smooth transition
+            });
 
 
             // Delete user functionality
@@ -399,231 +426,285 @@ cancelButton.addEventListener('click', function() {
                 });
             });
 
-            // Handle edit button click
-            document.querySelectorAll('.action-button.edit').forEach(button => {
-                button.addEventListener('click', function() {
-                    const userId = this.closest('tr').getAttribute('data-user-id');
+// Handle edit button click
+document.querySelectorAll('.action-button.user-edit').forEach(button => {
+    button.addEventListener('click', function () {
+        const userId = this.closest('tr').getAttribute('data-user-id');
 
-                    // Fetch user data from the row
-                    const row = this.closest('tr');
-                    const firstName = row.cells[1].textContent.split(" ")[0];
-                    const lastName = row.cells[1].textContent.split(" ")[1];
-                    const email = row.cells[2].textContent;
-                    const role = row.cells[3].textContent;
-                    const currentImage = row.cells[4].querySelector('img') ? row.cells[4].querySelector('img').src : '';
+        // Fetch user data from the row
+        const row = this.closest('tr');
+        const firstName = row.cells[1].textContent.split(" ")[0];
+        const lastName = row.cells[1].textContent.split(" ")[1];
+        const email = row.cells[2].textContent;
+        const cellphone = row.cells[3].textContent; // Fetch Cellphone
+        const role = row.cells[4].textContent;
+        const currentImage = row.cells[5].querySelector('img') ? row.cells[5].querySelector('img').src : '';
 
-                    // Pre-fill the edit form with existing user data
-                    document.getElementById('edit-user-id').value = userId;
-                    document.getElementById('edit-first-name').value = firstName;
-                    document.getElementById('edit-last-name').value = lastName;
-                    document.getElementById('edit-email').value = email;
-                    document.getElementById('edit-role').value = role;
-                    document.getElementById('current-image').src = currentImage;
+        // Pre-fill the edit form with existing user data
+        document.getElementById('edit-user-id').value = userId;
+        document.getElementById('edit-first-name').value = firstName;
+        document.getElementById('edit-last-name').value = lastName;
+        document.getElementById('edit-email').value = email;
+        document.getElementById('edit-cellphone').value = cellphone; // Pre-fill Cellphone
+        document.getElementById('edit-role').value = role;
+        document.getElementById('current-image').src = currentImage;
 
-                    // Show the Edit User modal
-                    const modal = document.getElementById("edit-user-modal");
-                    modal.style.display = "flex";
-                    modal.classList.add('show-modal');
-                });
-            });
+        // Show the Edit User modal
+        const modal = document.getElementById("edit-user-modal");
+        modal.style.display = "flex";
+        modal.classList.add('show-modal');
+    });
+});
 
-            // Close Edit User modal when the Cancel button is clicked
-            const cancelButtonEdit = document.querySelector("#edit-user-modal .cancel-button");
-            cancelButtonEdit.addEventListener('click', function() {
-                const modal = document.getElementById("edit-user-modal");
+// Close Edit User modal when the Cancel button is clicked
+const cancelButtonEdit = document.querySelector("#edit-user-modal .cancel-button");
+cancelButtonEdit.addEventListener('click', function () {
+    const modal = document.getElementById("edit-user-modal");
+    modal.classList.remove('show-modal');
+    setTimeout(() => modal.style.display = "none");
+});
+
+// Submit the Add New User form
+document.getElementById('new-user-form').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent page reload
+
+    const formData = new FormData(this); // Get form data
+
+    fetch('../../backend/controllers/add_user.php', {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Dynamically add the user to the table
+                const userId = data.user.id;
+                const firstName = data.user.first_name;
+                const lastName = data.user.last_name;
+                const email = data.user.email;
+                const cellphone = data.user.cellphone; // Add Cellphone
+                const role = data.user.role;
+                const image = data.user.image;
+
+                const table = document.getElementById("user-table").getElementsByTagName('tbody')[0];
+                const newRow = table.insertRow();
+
+                newRow.setAttribute('data-user-id', userId);
+                newRow.setAttribute('data-role', role);
+
+                newRow.innerHTML = `
+                    <td>${userId}</td>
+                    <td>${firstName} ${lastName}</td>
+                    <td>${email}</td>
+                    <td>${cellphone}</td> <!-- Add Cellphone -->
+                    <td>${role}</td>
+                    <td>
+                        ${image ? `<img src="../../frontend/public/images/users/${image}" alt="User Image" width="50" height="50">` : `<span>No Image</span>`}
+                    </td>
+                    <td>
+                        <button class="action-button user-edit" data-user-id="${userId}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-button delete" data-user-id="${userId}"><i class="fas fa-trash"></i> Delete</button>
+                    </td>
+                `;
+
+                // Close the modal and reset the form
+                const modal = document.getElementById("new-user-modal");
                 modal.classList.remove('show-modal');
                 setTimeout(() => modal.style.display = "none");
+
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'User added successfully.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data.message,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            Swal.fire({
+                title: 'Error!',
+                text: `An unexpected error occurred: ${error.message}`,
+                icon: 'error',
+                confirmButtonText: 'OK'
             });
+        });
+});
 
-            // Submit the Add New User form
-            document.getElementById('new-user-form').addEventListener('submit', function(event) {
-                event.preventDefault(); // Prevent page reload
 
-                const formData = new FormData(this); // Get form data
+ // Submit the Edit User form
+document.getElementById('edit-user-form').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-                fetch('../../backend/controllers/add_user.php', {
-                        method: 'POST',
-                        body: formData,
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            // Dynamically add the user to the table
-                            const userId = data.user.id;
-                            const firstName = data.user.first_name;
-                            const lastName = data.user.last_name;
-                            const email = data.user.email;
-                            const role = data.user.role;
-                            const image = data.user.image;
+    const formData = new FormData(this);
 
-                            addUserRow(userId, firstName, lastName, email, role, image, "user-table");
+    fetch('../../backend/controllers/edit_user.php', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const user = data.user;
 
-                            // Close the modal and reset the form
-                            const modal = document.getElementById("new-user-modal");
-                            modal.classList.remove('show-modal');
-                            setTimeout(() => modal.style.display = "none");
+            // Dynamically update the table row in the relevant tab
+            updateUserRow(user.id, user.first_name, user.last_name, user.email, user.cellphone, user.role, user.image);
+        
 
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'User added successfully.',
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: data.message,
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: `An unexpected error occurred: ${error.message}`,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    });
+            // Close the modal
+            const modal = document.getElementById("edit-user-modal");
+            modal.classList.remove('show-modal');
+            setTimeout(() => modal.style.display = "none", 300);
+
+            Swal.fire({
+                title: 'Success!',
+                text: 'User details updated successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK'
             });
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: data.message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    })
+    .catch(error => {
+        Swal.fire({
+            title: 'Error!',
+            text: `An unexpected error occurred: ${error.message}`,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    });
 
-            // Submit the Edit User form
-            document.getElementById('edit-user-form').addEventListener('submit', function(event) {
-                event.preventDefault();
-
-                const formData = new FormData(this);
-
-                fetch('../../backend/controllers/edit_user.php', {
-                        method: 'POST',
-                        body: formData,
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            const user = data.user;
-                            updateUserRow(user.id, user.first_name, user.last_name, user.email, user.role, user.image, "user-table");
-
-                            const modal = document.getElementById("edit-user-modal");
-                            modal.classList.remove('show-modal');
-                            setTimeout(() => modal.style.display = "none", 300);
-
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'User details updated successfully.',
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: data.message,
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: `An unexpected error occurred: ${error.message}`,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    });
             });
 
         }
 
         function fetchAndLoadUsers() {
-            fetch("../../backend/controllers/get_users.php")
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        loadUsersIntoTable(data.users);
-                    } else {
-                        console.error("Failed to load users:", data.message);
-                    }
-                })
-                .catch(error => console.error("Error loading users:", error));
-        }
-
-        function loadUsersIntoTable(users) {
-            const table = document.getElementById("user-table").querySelector("tbody");
-            table.innerHTML = ""; // Clear existing table rows
-
-            users.forEach(user => {
-                addUserRow(user.id, user.first_name, user.last_name, user.email, user.role, user.image, "user-table");
-            });
-
-            // Re-initialize edit and delete buttons for newly added rows
-            initializeEditAndDeleteButtons();
-        }
-
-        // Function to update the user row in a given table by userId
-        function updateUserRow(userId, firstName, lastName, email, role, image, tableId) {
-            const table = document.getElementById(tableId);
-            const userRow = table.querySelector(`tr[data-user-id="${userId}"]`);
-
-            if (userRow) {
-                userRow.cells[1].textContent = `${firstName} ${lastName}`;
-                userRow.cells[2].textContent = email;
-                userRow.cells[3].textContent = role;
-                userRow.cells[4].innerHTML = image ? `<img src="../../frontend/public/images/users/${image}" alt="User Image" width="50" height="50">` : '<span>No Image</span>';
-
-                // Update the role attribute for the row
-                userRow.setAttribute('data-role', role);
+    fetch("../../backend/controllers/get_users.php")
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                loadUsersIntoTable(data.users);
+            } else {
+                console.error("Failed to load users:", data.message);
             }
-        }
+        })
+        .catch(error => console.error("Error loading users:", error));
+}
 
-        // Function to add a new user row in a given table by userId
-        function addUserRow(userId, firstName, lastName, email, role, image, tableId) {
-            const table = document.getElementById(tableId).querySelector('tbody');
-            const newRow = document.createElement('tr');
-            newRow.setAttribute('data-user-id', userId);
-            newRow.setAttribute('data-role', role);
-            newRow.innerHTML = `
-            <td>${userId}</td>
-            <td>${firstName} ${lastName}</td>
-            <td>${email}</td>
-            <td>${role}</td>
-            <td>${image ? `<img src="${image}" alt="User Image" width="50" height="50">` : '<span>No Image</span>'}</td>
-            <td>
-                <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
-                <button class="action-button delete" data-user-id="${userId}"><i class="fas fa-trash"></i> Delete</button>
-            </td>
-        `;
-            table.appendChild(newRow);
+function loadUsersIntoTable(users) {
+    const table = document.getElementById("user-table").querySelector("tbody");
+    table.innerHTML = ""; // Clear existing table rows
 
-            // Re-initialize the event listeners for the new row
-            initializeEditAndDeleteButtons();
-        }
+    users.forEach(user => {
+        addUserRow(user.id, user.first_name, user.last_name, user.email, user.cellphone, user.role, user.image, "user-table");
+    });
 
-        // Function to reinitialize the Edit and Delete buttons after updating rows
-        function initializeEditAndDeleteButtons() {
-            // Re-initialize the Edit button functionality
-            document.querySelectorAll('.action-button.edit').forEach(button => {
-                button.addEventListener('click', function() {
-                    const userId = this.closest('tr').getAttribute('data-user-id');
-                    const row = this.closest('tr');
-                    const firstName = row.cells[1].textContent.split(" ")[0];
-                    const lastName = row.cells[1].textContent.split(" ")[1];
-                    const email = row.cells[2].textContent;
-                    const role = row.cells[3].textContent;
-                    const currentImage = row.cells[4].querySelector('img') ? row.cells[4].querySelector('img').src : '';
+    // Re-initialize edit and delete buttons for newly added rows
+    initializeEditAndDeleteButtons();
+}
 
-                    document.getElementById('edit-user-id').value = userId;
-                    document.getElementById('edit-first-name').value = firstName;
-                    document.getElementById('edit-last-name').value = lastName;
-                    document.getElementById('edit-email').value = email;
-                    document.getElementById('edit-role').value = role;
-                    document.getElementById('current-image').src = currentImage;
+// Function to update the user row in a given table by userId
+function updateUserRow(userId, firstName, lastName, email, cellphone, role, image) {
+    // Map roles to their respective table IDs
+    const roleToTableId = {
+        "Admin": "admin-table",
+        "Inventory Manager": "inventory-manager-table",
+        "User": "user-table" // Default table (All Users)
+    };
 
-                    const modal = document.getElementById("edit-user-modal");
-                    modal.style.display = "flex";
-                    modal.classList.add('show-modal');
-                });
-            });
+    // Determine the appropriate table ID based on the role
+    const tableId = roleToTableId[role] || "user-table"; // Default to All Users if role is unrecognized
+    const table = document.getElementById(tableId);
+
+    // Locate the row in the identified table
+    const userRow = table.querySelector(`tr[data-user-id="${userId}"]`);
+
+    if (userRow) {
+        // Update the table row content
+        userRow.cells[1].textContent = `${firstName} ${lastName}`;
+        userRow.cells[2].textContent = email;
+        userRow.cells[3].textContent = cellphone; // Update Cellphone
+        userRow.cells[4].textContent = role;
+        userRow.cells[5].innerHTML = image
+            ? `<img src="../../frontend/public/images/users/${image}" alt="User Image" width="50" height="50">`
+            : '<span>No Image</span>';
+
+        // Update the role attribute for filtering purposes
+        userRow.setAttribute('data-role', role);
+    }
+}
+
+// Function to add a new user row in a given table by userId
+function addUserRow(userId, firstName, lastName, email, cellphone, role, image, tableId) {
+    const table = document.getElementById(tableId).querySelector('tbody');
+    const newRow = document.createElement('tr');
+    newRow.setAttribute('data-user-id', userId);
+    newRow.setAttribute('data-role', role);
+    newRow.innerHTML = `
+        <td>${userId}</td>
+        <td>${firstName} ${lastName}</td>
+        <td>${email}</td>
+        <td>${cellphone}</td> <!-- Add Cellphone -->
+        <td>${role}</td>
+        <td>${image ? `<img src="${image}" alt="User Image" width="50" height="50">` : '<span>No Image</span>'}</td>
+        <td>
+            <button class="action-button user-edit" data-user-id="${userId}">
+                <i class="fas fa-edit"></i> Edit
+            </button>
+            <button class="action-button delete" data-user-id="${userId}"><i class="fas fa-trash"></i> Delete</button>
+        </td>
+    `;
+    table.appendChild(newRow);
+
+    // Re-initialize the event listeners for the new row
+    initializeEditAndDeleteButtons();
+}
+
+// Function to reinitialize the Edit and Delete buttons after updating rows
+function initializeEditAndDeleteButtons() {
+    // Re-initialize the Edit button functionality
+    document.querySelectorAll('.action-button.user-edit').forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = this.closest('tr').getAttribute('data-user-id');
+            const row = this.closest('tr');
+            const firstName = row.cells[1].textContent.split(" ")[0];
+            const lastName = row.cells[1].textContent.split(" ")[1];
+            const email = row.cells[2].textContent;
+            const cellphone = row.cells[3].textContent; // Fetch Cellphone
+            const role = row.cells[4].textContent;
+            const currentImage = row.cells[5].querySelector('img') ? row.cells[5].querySelector('img').src : '';
+
+            // Pre-fill the edit form
+            document.getElementById('edit-user-id').value = userId;
+            document.getElementById('edit-first-name').value = firstName;
+            document.getElementById('edit-last-name').value = lastName;
+            document.getElementById('edit-email').value = email;
+            document.getElementById('edit-cellphone').value = cellphone; // Pre-fill Cellphone
+            document.getElementById('edit-role').value = role;
+            document.getElementById('current-image').src = currentImage;
+
+            // Show the Edit User modal
+            const modal = document.getElementById("edit-user-modal");
+            modal.style.display = "flex";
+            modal.classList.add('show-modal');
+        });
+    });
+
+
 
             // Re-initialize the Delete button functionality
             document.querySelectorAll('.action-button.delete').forEach(button => {
@@ -680,6 +761,7 @@ cancelButton.addEventListener('click', function() {
             });
         }
 
+
         // Initialize the User Management functionality
         initializeUserManagement();
         initializeEditAndDeleteButtons(); // Initialize edit/delete buttons when the page loads
@@ -702,7 +784,7 @@ cancelButton.addEventListener('click', function() {
 
 
 
-
+<!-- Css for user management -->
 <style>
     @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700');
 
@@ -867,42 +949,49 @@ cancelButton.addEventListener('click', function() {
         border-bottom: none;
     }
 
-    /* Specify fixed column widths */
-    .user-table th:nth-child(1),
-    .user-table td:nth-child(1) {
-        width: 10%;
-        /* Adjust as needed for User ID */
-    }
+/* Specify fixed column widths */
+.user-table th:nth-child(1),
+.user-table td:nth-child(1) {
+    width: 10%;
+    /* Adjust as needed for User ID */
+}
 
-    .user-table th:nth-child(2),
-    .user-table td:nth-child(2) {
-        width: 20%;
-        /* Adjust as needed for Name */
-    }
+.user-table th:nth-child(2),
+.user-table td:nth-child(2) {
+    width: 20%;
+    /* Adjust as needed for Name */
+}
 
-    .user-table th:nth-child(3),
-    .user-table td:nth-child(3) {
-        width: 25%;
-        /* Adjust as needed for Email */
-    }
+.user-table th:nth-child(3),
+.user-table td:nth-child(3) {
+    width: 20%;
+    /* Adjust as needed for Email */
+}
 
-    .user-table th:nth-child(4),
-    .user-table td:nth-child(4) {
-        width: 15%;
-        /* Adjust as needed for Role */
-    }
+.user-table th:nth-child(4),
+.user-table td:nth-child(4) {
+    width: 15%;
+    /* Adjust as needed for Cellphone */
+}
 
-    .user-table th:nth-child(5),
-    .user-table td:nth-child(5) {
-        width: 15%;
-        /* Adjust as needed for Image */
-    }
+.user-table th:nth-child(5),
+.user-table td:nth-child(5) {
+    width: 15%;
+    /* Adjust as needed for Role */
+}
 
-    .user-table th:nth-child(6),
-    .user-table td:nth-child(6) {
-        width: 15%;
-        /* Adjust as needed for Actions */
-    }
+.user-table th:nth-child(6),
+.user-table td:nth-child(6) {
+    width: 8%;
+    /* Adjust as needed for Image */
+}
+
+.user-table th:nth-child(7),
+.user-table td:nth-child(7) {
+    width: 20%;
+    /* Adjust as needed for Actions */
+}
+
 
 
     .action-button {
@@ -918,7 +1007,7 @@ cancelButton.addEventListener('click', function() {
         transition: background-color 0.3s ease;
     }
 
-    .action-button.edit {
+    .action-button.user-edit {
         background-color: #ffc107;
     }
 
