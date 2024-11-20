@@ -19,3 +19,4 @@ if (ini_get("session.use_cookies")) {
 header("Location: ../../frontend/public/login.html");
 exit();
 ?>
+

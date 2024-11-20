@@ -11,12 +11,14 @@ if (!isset($_SESSION['user_email']) || !isset($_SESSION['user_id'])) {
 // Include the database connection file
 require_once '../../backend/config/db_connection.php';
 
-// Initialize the user role
+// Initialize placeholders
 $user_role = "Unknown Role";
+$user_name = "Unknown User";
+$user_image = "default_user.jpg"; // Default image
 
-// Fetch the user role from the database
+// Fetch the user details (role, name, and image) from the database
 $user_email = $_SESSION['user_email'];
-$sql = "SELECT id, role FROM users WHERE email = ?";
+$sql = "SELECT id, role, CONCAT(first_name, ' ', last_name) AS full_name, image FROM users WHERE email = ?";
 $stmt = mysqli_prepare($conn, $sql);
 
 if ($stmt) {
@@ -27,11 +29,14 @@ if ($stmt) {
     // Get the result
     $result = mysqli_stmt_get_result($stmt);
 
-    // Fetch the user's role and ID
+    // Fetch the user's details
     if ($row = mysqli_fetch_assoc($result)) {
-        $_SESSION['user_role'] = $row['role']; // Store role in the session
-        $_SESSION['user_id'] = $row['id'];    // Ensure user_id is in session
+        $_SESSION['user_role'] = $row['role'];                // Store role in the session
+        $_SESSION['user_id'] = $row['id'];                   // Ensure user_id is in session
+        $_SESSION['user_image'] = $row['image'] ?: $user_image; // Use default if no image is set
+        $_SESSION['user_name'] = $row['full_name'];          // Store full name in session
         $user_role = $row['role'];
+        $user_name = $row['full_name'];
     } else {
         // Handle case where user is not found in the database
         session_unset();
@@ -51,6 +56,7 @@ if ($stmt) {
 mysqli_close($conn);
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -61,6 +67,8 @@ mysqli_close($conn);
     <link rel="stylesheet" href="styles/main.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js"></script> <!-- Include jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body>
@@ -68,12 +76,14 @@ mysqli_close($conn);
         <div class="sidebar">
             <div class="head">
                 <div class="user-img">
-                    <img src="images/user.jpg" alt="User Image" />
+                <div class="user-img">
+    <img src="../../frontend/public/images/users/<?php echo htmlspecialchars($_SESSION['user_image']); ?>" alt="User Image" />
+</div>
                 </div>
                 <div class="user-details">
-                    <p class="title"><?php echo htmlspecialchars($user_role); ?></p>
-                    <p class="name"><?php echo htmlspecialchars($_SESSION['user_email']); ?></p>
-                </div>
+    <p class="title"><?php echo htmlspecialchars($_SESSION['user_role']); ?></p>
+    <p class="name"><?php echo htmlspecialchars($_SESSION['user_name']); ?></p>
+</div>
             </div>
             <div class="nav">
                 <div class="menu">
@@ -214,10 +224,28 @@ mysqli_close($conn);
                 }
             });
 
-            // Account section links (example for logout link)
-            $('.account-section').on('click', '#logout-link', function() {
-                setActive('logout-item'); // Set the active class for logout
-            });
+// Account section links (example for logout link)
+$('.account-section').on('click', '#logout-link', function(e) {
+    e.preventDefault();  // Prevent the default logout behavior
+
+    // Show SweetAlert confirmation dialog
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you really want to logout?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, logout!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Redirect to logout.php
+            window.location.href = '../../backend/views/logout.php';
+        }
+    });
+});
+
         });
     </script>
 </body>
