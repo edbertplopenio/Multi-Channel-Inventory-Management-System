@@ -633,3 +633,49 @@ Current Inventory Record: Array
 )
 
 Sale and Inventory Updated Successfully.
+Incoming Request: {"sale_id":"56","sale_date":"2024-11-17","quantity":"3","total_price":"450.00","channel":"tiktok"}
+Current Sale Record: Array
+(
+    [sale_id] => 56
+    [inventory_id] => 516
+    [variant_id] => 177
+    [product_id] => 105
+    [quantity] => 2
+    [price] => 450.00
+    [total_price] => 450.00
+    [channel] => tiktok
+    [sale_date] => 2024-11-18 00:00:00
+    [user_id] => 36
+    [is_archived] => 0
+)
+
+Current Inventory Record: Array
+(
+    [inventory_id] => 516
+    [quantity] => 0
+)
+
+Insufficient stock. Available: 2, Requested: 3
+Incoming Request: {"sale_id":"56","sale_date":"2024-11-17","quantity":"1","total_price":"450.00","channel":"tiktok"}
+Current Sale Record: Array
+(
+    [sale_id] => 56
+    [inventory_id] => 516
+    [variant_id] => 177
+    [product_id] => 105
+    [quantity] => 2
+    [price] => 450.00
+    [total_price] => 450.00
+    [channel] => tiktok
+    [sale_date] => 2024-11-18 00:00:00
+    [user_id] => 36
+    [is_archived] => 0
+)
+
+Current Inventory Record: Array
+(
+    [inventory_id] => 516
+    [quantity] => 0
+)
+
+Sale and Inventory Updated Successfully.
