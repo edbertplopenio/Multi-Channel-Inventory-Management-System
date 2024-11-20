@@ -38,7 +38,6 @@ if (!isset($_SESSION['user_email'])) {
 </head>
 
 <body>
-
     <div class="sales-record-container">
         <div class="header">
             <h1>Sales Record</h1>
@@ -58,24 +57,18 @@ if (!isset($_SESSION['user_email'])) {
                 <button class="tab" data-tab="tiktok">
                     <i class="fas fa-music"></i> TikTok
                 </button>
-                <!-- New tab for Archived Sales -->
                 <button class="tab" data-tab="archived-sales">
                     <i class="fas fa-archive"></i> Archived Sales
                 </button>
             </div>
-            <div class="filter-input-container">
-                <input type="text" class="filter-input" placeholder="Filter sales orders">
-                <i class="fas fa-filter icon-filter"></i>
-            </div>
         </div>
-
-
 
         <!-- All Orders Content -->
         <div id="all-orders" class="tab-content active">
             <table class="sales-table">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" class="select-all"></th>
                         <th>Variant ID</th>
                         <th>Product Name</th>
                         <th>Variant (Size/Color)</th>
@@ -91,10 +84,12 @@ if (!isset($_SESSION['user_email'])) {
             </table>
         </div>
 
+        <!-- Physical Store Content -->
         <div id="physical_store" class="tab-content">
             <table class="sales-table">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" class="select-all"></th>
                         <th>Variant ID</th>
                         <th>Product Name</th>
                         <th>Variant (Size/Color)</th>
@@ -102,6 +97,7 @@ if (!isset($_SESSION['user_email'])) {
                         <th>Quantity Sold</th>
                         <th>Cost per Item</th>
                         <th>Total Sales</th>
+                        <th>Sales Channel</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -109,10 +105,12 @@ if (!isset($_SESSION['user_email'])) {
             </table>
         </div>
 
+        <!-- Shopee Content -->
         <div id="shopee" class="tab-content">
             <table class="sales-table">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" class="select-all"></th>
                         <th>Variant ID</th>
                         <th>Product Name</th>
                         <th>Variant (Size/Color)</th>
@@ -120,6 +118,7 @@ if (!isset($_SESSION['user_email'])) {
                         <th>Quantity Sold</th>
                         <th>Cost per Item</th>
                         <th>Total Sales</th>
+                        <th>Sales Channel</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -127,10 +126,12 @@ if (!isset($_SESSION['user_email'])) {
             </table>
         </div>
 
+        <!-- TikTok Content -->
         <div id="tiktok" class="tab-content">
             <table class="sales-table">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" class="select-all"></th>
                         <th>Variant ID</th>
                         <th>Product Name</th>
                         <th>Variant (Size/Color)</th>
@@ -138,6 +139,7 @@ if (!isset($_SESSION['user_email'])) {
                         <th>Quantity Sold</th>
                         <th>Cost per Item</th>
                         <th>Total Sales</th>
+                        <th>Sales Channel</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -150,6 +152,7 @@ if (!isset($_SESSION['user_email'])) {
             <table class="sales-table">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" class="select-all"></th>
                         <th>Variant ID</th>
                         <th>Product Name</th>
                         <th>Variant (Size/Color)</th>
@@ -427,6 +430,507 @@ if (!isset($_SESSION['user_email'])) {
                 </form>
             </div>
         </div>
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+    // Handle "Select All" checkbox
+    $('.sales-table').on('change', '.select-all', function () {
+        const isChecked = $(this).is(':checked');
+        const table = $(this).closest('table');
+        table.find('tbody .row-select').prop('checked', isChecked);
+
+        // Update row highlighting if required
+        table.find('tbody tr').toggleClass('selected', isChecked);
+    });
+
+    // Handle individual row selection
+    $('.sales-table').on('change', '.row-select', function () {
+        const table = $(this).closest('table');
+        const allRows = table.find('tbody .row-select').length;
+        const checkedRows = table.find('tbody .row-select:checked').length;
+
+        // Update "Select All" checkbox state
+        const selectAllCheckbox = table.find('.select-all');
+        selectAllCheckbox.prop('checked', allRows === checkedRows);
+        selectAllCheckbox.prop('indeterminate', checkedRows > 0 && checkedRows < allRows);
+
+        // Update row highlighting if required
+        $(this).closest('tr').toggleClass('selected', $(this).is(':checked'));
+    });
+});
+
+</script>
+
+
+
+<style>
+        /* Basic Reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Selection Bar Styling */
+        #selection-bar {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #201F2B;
+            /* A more vibrant and professional green */
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            /* Increased border radius for more rounded corners */
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+            /* Softer and larger shadow for more depth */
+            font-size: 16px;
+            /* Increased font size for better readability */
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-width: 280px;
+            max-width: 450px;
+            transition: all 0.3s ease-in-out;
+            /* Smooth transition for display changes */
+        }
+
+        /* Text Styling */
+        #selected-count {
+            font-weight: 600;
+            /* Slightly bolder text for emphasis */
+            letter-spacing: 0.5px;
+        }
+
+        /* Button Styling */
+        #archive-button {
+            background-color: #3CAE85;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            /* Slightly larger border radius for a smoother button */
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow for the button */
+        }
+
+        /* Hover and Active Effects for the Button */
+        #archive-button:hover {
+            background-color: #287458;
+            transform: translateY(-2px);
+            /* Slight lift effect on hover */
+        }
+
+        #archive-button:active {
+            transform: translateY(1px);
+            /* Button "press" effect */
+        }
+
+        /* Small screens responsiveness */
+        @media (max-width: 480px) {
+            #selection-bar {
+                min-width: 220px;
+                padding: 12px 18px;
+                font-size: 14px;
+                /* Adjust font size for smaller screens */
+            }
+
+            #archive-button {
+                font-size: 13px;
+                padding: 8px 14px;
+            }
+        }
+    </style>
+
+
+<div id="selection-bar">
+    <span id="selected-count">0 items selected</span>
+    <button id="archive-button" class="action-button" style="display: none;">Archive</button>
+    <button id="unarchive-button" class="action-button" style="display: none;">Unarchive</button>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+    let activeTab = 'all-orders'; // Default active tab
+
+    /**
+     * Function to update the selection bar visibility and count based on the active tab.
+     */
+    function updateSelectionBar() {
+        const checkboxes = $(`#${activeTab} .row-select:checked`);
+        const selectedCount = checkboxes.length;
+
+        // Update the count in the selection bar
+        $('#selected-count').text(`${selectedCount} item${selectedCount === 1 ? '' : 's'} selected`);
+
+        // Show or hide the selection bar
+        if (selectedCount > 0) {
+            $('#selection-bar').fadeIn();
+        } else {
+            $('#selection-bar').fadeOut();
+        }
+    }
+
+    /**
+     * Function to handle "Select All" functionality for the active tab.
+     */
+    function handleSelectAll() {
+        const selectAllCheckbox = $(`#${activeTab} .select-all`);
+        const checkboxes = $(`#${activeTab} .row-select`);
+
+        // Check or uncheck all rows based on the "Select All" checkbox
+        checkboxes.prop('checked', selectAllCheckbox.is(':checked'));
+        checkboxes.closest('tr').toggleClass('selected', selectAllCheckbox.is(':checked'));
+
+        updateSelectionBar();
+    }
+
+    /**
+     * Function to update the "Select All" checkbox state based on row selections.
+     */
+    function updateSelectAllCheckbox() {
+        const checkboxes = $(`#${activeTab} .row-select`);
+        const checkedCheckboxes = checkboxes.filter(':checked');
+        const selectAllCheckbox = $(`#${activeTab} .select-all`);
+
+        selectAllCheckbox.prop('checked', checkboxes.length === checkedCheckboxes.length);
+        selectAllCheckbox.prop('indeterminate', checkedCheckboxes.length > 0 && checkedCheckboxes.length < checkboxes.length);
+    }
+
+    /**
+     * Function to dynamically update button visibility based on the active tab.
+     */
+    function updateButtonVisibility() {
+        if (activeTab === 'archived-sales') {
+            $('#archive-button').hide();
+            $('#unarchive-button').show();
+        } else {
+            $('#archive-button').show();
+            $('#unarchive-button').hide();
+        }
+    }
+
+    /**
+     * Archive button functionality for active tab.
+     */
+    $('#archive-button').on('click', function () {
+        const selectedItems = $(`#${activeTab} .row-select:checked`).map(function () {
+            return $(this).val(); // Assuming the checkbox value is the item ID
+        }).get();
+
+        if (selectedItems.length === 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'No Items Selected',
+                text: 'Please select items to archive.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Archive Items',
+            text: `Are you sure you want to archive ${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'}?`,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Archive',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Perform archiving logic (e.g., AJAX request)
+                console.log('Archiving items:', selectedItems);
+
+                // Simulate successful archiving
+                setTimeout(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Archived',
+                        text: `${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'} archived successfully.`,
+                        confirmButtonText: 'OK'
+                    });
+
+                    // Remove archived rows
+                    selectedItems.forEach((id) => {
+                        $(`#${activeTab} .row-select[value="${id}"]`).closest('tr').remove();
+                    });
+
+                    // Reset the selection bar
+                    updateSelectionBar();
+                }, 1000);
+            }
+        });
+    });
+
+    /**
+     * Unarchive button functionality for archived-sales tab.
+     */
+    $('#unarchive-button').on('click', function () {
+        const selectedItems = $(`#archived-sales .row-select:checked`).map(function () {
+            return $(this).val(); // Assuming the checkbox value is the item ID
+        }).get();
+
+        if (selectedItems.length === 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'No Items Selected',
+                text: 'Please select items to unarchive.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        Swal.fire({
+            icon: 'warning',
+            title: 'Unarchive Items',
+            text: `Are you sure you want to unarchive ${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'}?`,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Unarchive',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Perform unarchiving logic (e.g., AJAX request)
+                console.log('Unarchiving items:', selectedItems);
+
+                // Simulate successful unarchiving
+                setTimeout(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Unarchived',
+                        text: `${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'} unarchived successfully.`,
+                        confirmButtonText: 'OK'
+                    });
+
+                    // Remove unarchived rows
+                    selectedItems.forEach((id) => {
+                        $(`#archived-sales .row-select[value="${id}"]`).closest('tr').remove();
+                    });
+
+                    // Reset the selection bar
+                    updateSelectionBar();
+                }, 1000);
+            }
+        });
+    });
+
+    /**
+     * Tab switching logic.
+     */
+    $('.tab').on('click', function () {
+        $('.tab').removeClass('active');
+        $(this).addClass('active');
+        activeTab = $(this).data('tab');
+
+        $('.tab-content').removeClass('active');
+        $(`#${activeTab}`).addClass('active');
+
+        updateButtonVisibility();
+        updateSelectionBar(); // Reset selection bar for new tab
+    });
+
+    // Event delegation for row selection
+    $('.sales-table').on('change', '.row-select', function () {
+        updateSelectAllCheckbox();
+        updateSelectionBar();
+    });
+
+    // Event delegation for "Select All" checkbox
+    $('.sales-table').on('change', '.select-all', function () {
+        handleSelectAll();
+    });
+
+    // Initialize selection bar and button visibility
+    updateButtonVisibility();
+    updateSelectionBar();
+});
+
+</script>
+
+
+
+
+<script>
+    $(document).ready(function () {
+    function archiveItems(itemIds) {
+        $.ajax({
+            url: '../../backend/controllers/bulk_archive.php',
+            type: 'POST',
+            data: { sale_ids: itemIds },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+
+                    // Remove archived items from the current table
+                    itemIds.forEach(id => {
+                        $(`input[data-id="${id}"]`).closest('tr').remove();
+                    });
+
+                    updateSelectionBar();
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.message || 'Failed to archive items.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An unexpected error occurred while archiving items.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    }
+
+    function unarchiveItems(itemIds) {
+        $.ajax({
+            url: '../../backend/controllers/bulk_unarchive.php',
+            type: 'POST',
+            data: { sale_ids: itemIds },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+
+                    // Remove unarchived items from the archived table
+                    itemIds.forEach(id => {
+                        $(`input[data-id="${id}"]`).closest('tr').remove();
+                    });
+
+                    updateSelectionBar();
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.message || 'Failed to unarchive items.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An unexpected error occurred while unarchiving items.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    }
+
+    // Archive button event
+    $('#archive-button').on('click', function () {
+        const selectedItems = getSelectedItems('all-orders', 'physical_store', 'shopee', 'tiktok');
+        if (selectedItems.length === 0) {
+            Swal.fire({
+                title: 'No Items Selected',
+                text: 'Please select items to archive.',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Archive Items',
+            text: `Are you sure you want to archive ${selectedItems.length} item(s)?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Archive',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                archiveItems(selectedItems);
+            }
+        });
+    });
+
+    // Unarchive button event
+    $('#unarchive-button').on('click', function () {
+        const selectedItems = getSelectedItems('archived-sales');
+        if (selectedItems.length === 0) {
+            Swal.fire({
+                title: 'No Items Selected',
+                text: 'Please select items to unarchive.',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Unarchive Items',
+            text: `Are you sure you want to unarchive ${selectedItems.length} item(s)?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Unarchive',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                unarchiveItems(selectedItems);
+            }
+        });
+    });
+
+    // Helper function to get selected item IDs from a tab
+    function getSelectedItems(...tabIds) {
+        let selectedItems = [];
+        tabIds.forEach(tabId => {
+            selectedItems = selectedItems.concat(
+                $(`#${tabId} .row-select:checked`).map(function () {
+                    return $(this).data('id');
+                }).get()
+            );
+        });
+        return selectedItems;
+    }
+});
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         <script>
@@ -817,6 +1321,7 @@ if (!isset($_SESSION['user_email'])) {
                                 response.data.forEach((sale) => {
                                     tbody.append(`
                         <tr>
+                        <td><input type="checkbox" class="row-select" data-id="${sale.sale_id}"></td>
                             <td>${sale.variant_id}</td>
                             <td>${sale.product_name}</td>
                             <td>${sale.variant}</td>
@@ -993,6 +1498,7 @@ if (!isset($_SESSION['user_email'])) {
                                 response.data.forEach((sale) => {
                                     tbody.append(`
                         <tr>
+                        
                             <td>${sale.variant_id}</td>
                             <td>${sale.product_name}</td>
                             <td>${sale.variant}</td>
@@ -1073,6 +1579,7 @@ if (!isset($_SESSION['user_email'])) {
                                 response.data.forEach((sale) => {
                                     tbody.append(`
                             <tr>
+                            <td><input type="checkbox" class="row-select" data-id="${sale.sale_id}"></td>
                                 <td>${sale.variant_id}</td>
                                 <td>${sale.product_name}</td>
                                 <td>${sale.variant}</td>
