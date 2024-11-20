@@ -247,7 +247,9 @@ if (!$result_tiktok) {
                                 </td>
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
-                                    <button class="action-button edit" data-variant-id="<?php echo $row['variant_id']; ?>"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="action-button edit-inventory" data-variant-id="<?php echo $row['variant_id']; ?>">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
                                     <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
@@ -294,7 +296,9 @@ if (!$result_tiktok) {
                                 <td><?php echo $row['date_added']; ?></td>
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
-                                    <button class="action-button edit" data-variant-id="<?php echo $row['variant_id']; ?>"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="action-button edit-inventory" data-variant-id="<?php echo $row['variant_id']; ?>">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
                                     <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
@@ -341,7 +345,9 @@ if (!$result_tiktok) {
                                 <td><?php echo $row['date_added']; ?></td>
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
-                                    <button class="action-button edit" data-variant-id="<?php echo $row['variant_id']; ?>"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="action-button edit-inventory" data-variant-id="<?php echo $row['variant_id']; ?>">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
                                     <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
@@ -388,7 +394,9 @@ if (!$result_tiktok) {
                                 <td><?php echo $row['date_added']; ?></td>
                                 <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
-                                    <button class="action-button edit" data-variant-id="<?php echo $row['variant_id']; ?>"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="action-button edit-inventory" data-variant-id="<?php echo $row['variant_id']; ?>">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
                                     <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                                 </td>
                             </tr>
@@ -876,7 +884,7 @@ if (!$result_tiktok) {
                     <td>${channelsText}</td>
                     <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                     <td>
-                        <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="action-button edit-inventory"><i class="fas fa-edit"></i> Edit</button>
                         <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                     </td>
                 </tr>
@@ -897,7 +905,7 @@ if (!$result_tiktok) {
                         <td>${item.date_added}</td>
                         <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button edit-inventory"><i class="fas fa-edit"></i> Edit</button>
                             <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                         </td>
                     </tr>
@@ -919,7 +927,7 @@ if (!$result_tiktok) {
                         <td>${item.date_added}</td>
                         <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button edit-inventory"><i class="fas fa-edit"></i> Edit</button>
                             <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                         </td>
                     </tr>
@@ -941,7 +949,7 @@ if (!$result_tiktok) {
                         <td>${item.date_added}</td>
                         <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button edit-inventory"><i class="fas fa-edit"></i> Edit</button>
                             <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                         </td>
                     </tr>
@@ -1192,7 +1200,7 @@ if (!$result_tiktok) {
                         <td>${channels}</td>
                         <td><img src="../../frontend/public/images/${image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button edit-inventory"><i class="fas fa-edit"></i> Edit</button>
                             <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                         </td>
                     </tr>
@@ -1211,7 +1219,7 @@ if (!$result_tiktok) {
                         <td>${dateAdded}</td>
                         <td><img src="../../frontend/public/images/${image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
-                            <button class="action-button edit"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="action-button edit-inventory"><i class="fas fa-edit"></i> Edit</button>
                             <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
                         </td>
                     </tr>
@@ -1991,7 +1999,7 @@ if (!$result_tiktok) {
 
         // Event listener using delegation for dynamic content (Edit Button)
         document.addEventListener('click', function(event) {
-            if (event.target.closest('.action-button.edit')) {
+            if (event.target.closest('.action-button.edit-inventory')) {
                 const row = event.target.closest('tr');
                 if (row) {
                     openEditModal(row);
@@ -2919,7 +2927,7 @@ if (!$result_tiktok) {
         flex-wrap: nowrap;
     }
 
-    .action-button.edit {
+    .action-button.edit-inventory {
         background-color: #ffc107;
     }
 
