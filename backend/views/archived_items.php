@@ -278,6 +278,55 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
             <div class="tabs-container">
                 <button class="tab inactive" data-tab="all-inventory"><i class="fas fa-warehouse"></i> All Inventory</button>
             </div>
+            <div class="filter-input-container">
+                <input type="text" class="filter-input" placeholder="Type to filter archived items">
+                <i class="fas fa-filter icon-filter"></i>
+            </div>
+            <style>
+       /* Filter input styling */
+       .filters {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-input-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 10px;
+            margin-left: auto; /* This pushes it to the right */
+        }
+
+        .filter-input {
+            padding: 6px 10px;
+            font-size: 12px;
+            border: 1px solid #ccc;
+            border-radius: 18px;
+            width: 220px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus {
+            border-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        }
+
+        .icon-filter {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .icon-filter:hover {
+            color: #0056b3;
+        }
+</style>
         </div>
 
         <!-- All Inventory Tab -->
@@ -589,10 +638,153 @@ function toggleItemSelection(checkbox) {
 
 
 
+<style>
+        /* Filter input styling */
+        .filter-input-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+
+    .filter-input {
+        padding: 6px 10px;
+        font-size: 12px;
+        border: 1px solid #ccc;
+        border-radius: 18px;
+        width: 220px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .filter-input:focus {
+        border-color: #0056b3;
+        box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+    }
+
+    .icon-filter {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px;
+        color: #888;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .icon-filter:hover {
+        color: #0056b3;
+    }
+</style>
 
 
+<script>
+    // Utility function for debouncing
+    function debounce(func, delay) {
+        let timer;
+        return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
 
+    // Function to filter archived inventory rows
+    function filterArchivedRows(event) {
+        const keyword = event.target.value.toLowerCase().trim();
+        const container = event.target.closest('.inventory-container');
+        const tabContent = container.querySelector('.tab-content.active');
 
+        if (!tabContent) return;
+
+        const rows = tabContent.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const cells = Array.from(row.querySelectorAll('td:not(:has(img, input, button))')); // Skip non-text elements
+            let rowMatches = false;
+
+            // Check if any cell matches the keyword
+            cells.forEach(cell => {
+                const originalText = cell.getAttribute('data-original-text') || cell.textContent;
+                if (!cell.hasAttribute('data-original-text')) {
+                    cell.setAttribute('data-original-text', originalText); // Save original content
+                }
+
+                const cellText = originalText.toLowerCase();
+                if (cellText.includes(keyword)) {
+                    rowMatches = true;
+                    // Highlight matching text
+                    const regex = new RegExp(`(${keyword})`, 'gi');
+                    cell.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+                } else {
+                    cell.innerHTML = originalText; // Reset to original content
+                }
+            });
+
+            // Toggle row visibility
+            row.style.display = rowMatches ? '' : 'none';
+        });
+
+        // Reset rows when keyword is empty
+        if (!keyword) {
+            resetArchivedTableFilters(container);
+        }
+    }
+
+    // Function to reset all rows and remove highlights
+    function resetArchivedTableFilters(container) {
+        const tabContent = container.querySelector('.tab-content.active');
+        if (!tabContent) return;
+
+        const rows = tabContent.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            row.style.display = ''; // Reset visibility
+            const cells = row.querySelectorAll('td');
+            cells.forEach(cell => {
+                const originalText = cell.getAttribute('data-original-text');
+                if (originalText) {
+                    cell.innerHTML = originalText; // Restore original content
+                }
+            });
+        });
+    }
+
+    // Attach input event listener to the filter input
+    document.querySelector('.filter-input').addEventListener(
+        'input',
+        debounce(filterArchivedRows, 300)
+    );
+</script>
+
+<script>
+    // Function to handle "Select All" checkbox for filtered rows
+    function handleSelectAll(event) {
+        const container = event.target.closest('.inventory-container');
+        const tabContent = container.querySelector('.tab-content.active');
+        if (!tabContent) return;
+
+        // Get all visible checkboxes in the filtered table
+        const checkboxes = tabContent.querySelectorAll('tbody tr:visible input[type="checkbox"]');
+        const isChecked = event.target.checked;
+
+        // Set the checked state of each visible checkbox
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+    }
+
+    // Attach event listener to "Select All" checkbox
+    document.getElementById('select-all-all').addEventListener('change', handleSelectAll);
+
+    // jQuery way to ensure only visible rows are considered when filtering
+    (function($){
+        $.fn.extend({
+            visible: function() {
+                return this.filter(function() {
+                    return $(this).css('display') !== 'none';
+                });
+            }
+        });
+    })(jQuery);
+</script>
 
 
 

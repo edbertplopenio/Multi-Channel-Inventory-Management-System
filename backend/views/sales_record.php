@@ -61,6 +61,11 @@ if (!isset($_SESSION['user_email'])) {
                     <i class="fas fa-archive"></i> Archived Sales
                 </button>
             </div>
+            <div class="filter-input-container">
+                <input type="text" class="filter-input" placeholder="Type to filter sales">
+                <i class="fas fa-filter icon-filter"></i>
+
+            </div>
         </div>
 
         <!-- All Orders Content -->
@@ -1780,6 +1785,135 @@ if (!isset($_SESSION['user_email'])) {
             // Call the initialization function when the page loads or when entering the section
             initializeSalesRecord();
         </script>
+
+
+
+<style>
+    /* Add CSS for hiding rows and highlighting matches */
+    .hidden-row {
+        display: none;
+    }
+    mark {
+        background-color: yellow;
+        color: black;
+    }
+
+        /* Filter input styling */
+        .filter-input-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+
+    .filter-input {
+        padding: 6px 10px;
+        font-size: 12px;
+        border: 1px solid #ccc;
+        border-radius: 18px;
+        width: 220px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .filter-input:focus {
+        border-color: #0056b3;
+        box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+    }
+
+    .icon-filter {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px;
+        color: #888;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .icon-filter:hover {
+        color: #0056b3;
+    }
+</style>
+
+<script>
+    // Utility function for debouncing
+    function debounce(func, delay) {
+        let timer;
+        return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    // Function to apply filters to a given container
+    function filterTableRows(event) {
+        const keyword = event.target.value.toLowerCase().trim();
+        const container = event.target.closest('.sales-record-container') || document.querySelector('.inventory-container');
+        const allTabContents = container.querySelectorAll('.tab-content');
+
+        allTabContents.forEach(tabContent => {
+            const rows = tabContent.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const cells = Array.from(row.querySelectorAll('td:not(:has(img, input, button))')); // Exclude cells with non-text content
+                let rowMatches = false;
+
+                // Check if any cell matches the keyword and highlight
+                cells.forEach(cell => {
+                    const originalText = cell.getAttribute('data-original-text') || cell.textContent;
+                    if (!cell.hasAttribute('data-original-text')) {
+                        cell.setAttribute('data-original-text', originalText); // Save the original content
+                    }
+
+                    const cellText = originalText.toLowerCase();
+                    if (cellText.includes(keyword)) {
+                        rowMatches = true;
+                        // Highlight the matching text
+                        const regex = new RegExp(`(${keyword})`, 'gi');
+                        cell.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+                    } else {
+                        cell.innerHTML = originalText; // Reset to original content
+                    }
+                });
+
+                // Toggle row visibility
+                row.style.display = rowMatches ? '' : 'none';
+            });
+        });
+
+        // Reset rows when keyword is empty
+        if (!keyword) {
+            resetTableFilters(container);
+        }
+    }
+
+    // Function to reset all rows and remove highlights
+    function resetTableFilters(container) {
+        const allTabContents = container.querySelectorAll('.tab-content');
+        allTabContents.forEach(tabContent => {
+            const rows = tabContent.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                row.style.display = ''; // Reset visibility
+                const cells = row.querySelectorAll('td');
+                cells.forEach(cell => {
+                    const originalText = cell.getAttribute('data-original-text');
+                    if (originalText) {
+                        cell.innerHTML = originalText; // Restore original content
+                    }
+                });
+            });
+        });
+    }
+
+    // Attach input event listeners to all filter inputs
+    document.querySelectorAll('.filter-input').forEach(filterInput => {
+        filterInput.addEventListener(
+            'input',
+            debounce(filterTableRows, 300)
+        );
+    });
+</script>
+
 
 
 

@@ -117,77 +117,28 @@ if (!$result_tiktok) {
             <div class="filter-input-container">
                 <input type="text" class="filter-input" placeholder="Type to filter inventory items">
                 <i class="fas fa-filter icon-filter"></i>
-
-                <!-- Dropdown with filter options -->
-                <div class="filter-dropdown" id="filter-dropdown">
-                    <div class="filter-section">
-                        <label for="filter-size">Filter by Size:</label>
-                        <select id="filter-size">
-                            <option value="">All Sizes</option>
-                            <option value="XS">XS</option>
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                            <option value="XXL">XXL</option>
-                            <option value="3XL">3XL</option>
-                            <option value="4XL">4XL</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-section">
-                        <label for="filter-color">Filter by Color:</label>
-                        <select id="filter-color">
-                            <option value="">All Colors</option>
-                            <option value="White">White</option>
-                            <option value="Beige">Beige</option>
-                            <option value="Dark Choco">Dark Choco</option>
-                            <option value="Fushia Pink">Fushia Pink</option>
-                            <option value="Royal Blue">Royal Blue</option>
-                            <option value="Black">Black</option>
-                            <option value="Tan">Tan</option>
-                            <option value="Raw Umber">Raw Umber</option>
-                            <option value="Gray">Gray</option>
-                            <option value="Pale Mauve">Pale Mauve</option>
-                            <option value="Pantone Simply Taupe">Pantone Simply Taupe</option>
-                            <option value="Salmon Pink">Salmon Pink</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-section">
-                        <label for="filter-category">Filter by Category:</label>
-                        <select id="filter-category">
-                            <option value="">All Categories</option>
-                            <option value="Pants">Pants</option>
-                            <option value="Jackets & Outerwear">Jackets & Outerwear</option>
-                            <option value="Tops">Tops</option>
-                            <option value="Sets">Sets</option>
-                            <option value="Shorts">Shorts</option>
-                            <option value="Dresses">Dresses</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-section">
-                        <label for="filter-date">Filter by Date Added:</label>
-                        <input type="date" id="filter-date">
-                    </div>
-
-                    <div class="filter-section">
-                        <label for="filter-channel">Filter by Channel:</label>
-                        <select id="filter-channel">
-                            <option value="">All Channels</option>
-                            <option value="Physical Store">Physical Store</option>
-                            <option value="Shopee">Shopee</option>
-                            <option value="TikTok">TikTok</option>
-                        </select>
-                    </div>
-
-                    <div class="filter-section">
-                        <button id="apply-filters">Apply Filters</button>
-                        <button id="reset-filters">Reset Filters</button>
-                    </div>
-                </div>
             </div>
+
+            <script>
+                document.querySelector('.filter-input').addEventListener('input', function () {
+    const keyword = this.value.toLowerCase().trim();
+    const activeTabContent = document.querySelector('.tab-content.active');
+    
+    if (!activeTabContent) {
+        console.error('No active tab found.');
+        return;
+    }
+
+    const rows = activeTabContent.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const rowText = Array.from(row.querySelectorAll('td'))
+            .map(td => td.textContent.toLowerCase())
+            .join(' ');
+        row.style.display = rowText.includes(keyword) ? '' : 'none';
+    });
+});
+
+            </script>
         </div>
 
         <!-- All Inventory Tab -->
@@ -2320,91 +2271,6 @@ if (!$result_tiktok) {
 
 
 
-<style>
-    /* Add CSS for hiding rows and highlighting matches */
-    .hidden-row {
-        display: none;
-    }
-    mark {
-        background-color: yellow;
-        color: black;
-    }
-</style>
-
-<script>
-    // Utility function for debouncing
-    function debounce(func, delay) {
-        let timer;
-        return function (...args) {
-            clearTimeout(timer);
-            timer = setTimeout(() => func.apply(this, args), delay);
-        };
-    }
-
-    // Main filtering function
-    function filterTableRows(event) {
-        const keyword = event.target.value.toLowerCase().trim();
-        const allTabContents = document.querySelectorAll('.tab-content');
-
-        allTabContents.forEach(tabContent => {
-            const rows = tabContent.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                const cells = Array.from(row.querySelectorAll('td:not(:has(img, input, button))')); // Exclude cells with non-text content
-                let rowMatches = false;
-
-                // Check if any cell matches the keyword and highlight
-                cells.forEach(cell => {
-                    const originalText = cell.getAttribute('data-original-text') || cell.textContent;
-                    if (!cell.hasAttribute('data-original-text')) {
-                        cell.setAttribute('data-original-text', originalText); // Save the original content
-                    }
-
-                    const cellText = originalText.toLowerCase();
-                    if (cellText.includes(keyword)) {
-                        rowMatches = true;
-                        // Highlight the matching text
-                        const regex = new RegExp(`(${keyword})`, 'gi');
-                        cell.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
-                    } else {
-                        cell.innerHTML = originalText; // Reset to original content
-                    }
-                });
-
-                // Toggle row visibility
-                row.style.display = rowMatches ? '' : 'none';
-            });
-        });
-
-        // Reset rows when keyword is empty
-        if (!keyword) {
-            resetTableFilters();
-        }
-    }
-
-    // Function to reset all rows and remove highlights
-    function resetTableFilters() {
-        const allTabContents = document.querySelectorAll('.tab-content');
-        allTabContents.forEach(tabContent => {
-            const rows = tabContent.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                row.style.display = ''; // Reset visibility
-                const cells = row.querySelectorAll('td');
-                cells.forEach(cell => {
-                    const originalText = cell.getAttribute('data-original-text');
-                    if (originalText) {
-                        cell.innerHTML = originalText; // Restore original content
-                    }
-                });
-            });
-        });
-    }
-
-    // Attach input event listener with debounce
-    document.querySelector('.filter-input').addEventListener(
-        'input',
-        debounce(filterTableRows, 300)
-    );
-</script>
 
 
 

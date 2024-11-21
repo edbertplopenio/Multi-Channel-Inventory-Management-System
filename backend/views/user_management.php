@@ -768,6 +768,80 @@ function initializeEditAndDeleteButtons() {
     </script>
 
 
+<script>
+    // Utility function for debouncing
+    function debounce(func, delay) {
+        let timer;
+        return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    // Function to filter rows in user management tables
+    function filterUserRows(event) {
+        const keyword = event.target.value.toLowerCase().trim();
+        const container = event.target.closest('.user-management-container');
+        const allTabContents = container.querySelectorAll('.tab-content');
+
+        allTabContents.forEach(tabContent => {
+            const rows = tabContent.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const cells = Array.from(row.querySelectorAll('td:not(:has(img, input, button))')); // Skip non-text content
+                let rowMatches = false;
+
+                // Check if any text cell matches the keyword
+                cells.forEach(cell => {
+                    const originalText = cell.getAttribute('data-original-text') || cell.textContent;
+                    if (!cell.hasAttribute('data-original-text')) {
+                        cell.setAttribute('data-original-text', originalText); // Save the original content
+                    }
+
+                    const cellText = originalText.toLowerCase();
+                    if (cellText.includes(keyword)) {
+                        rowMatches = true;
+                        // Highlight matching text
+                        const regex = new RegExp(`(${keyword})`, 'gi');
+                        cell.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+                    } else {
+                        cell.innerHTML = originalText; // Reset to original content
+                    }
+                });
+
+                // Show or hide the row based on matches
+                row.style.display = rowMatches ? '' : 'none';
+            });
+        });
+
+        // Reset rows when keyword is empty
+        if (!keyword) {
+            resetUserTableFilters(container);
+        }
+    }
+
+    // Function to reset all rows and remove highlights
+    function resetUserTableFilters(container) {
+        const allTabContents = container.querySelectorAll('.tab-content');
+        allTabContents.forEach(tabContent => {
+            const rows = tabContent.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                row.style.display = ''; // Reset visibility
+                const cells = row.querySelectorAll('td');
+                cells.forEach(cell => {
+                    const originalText = cell.getAttribute('data-original-text');
+                    if (originalText) {
+                        cell.innerHTML = originalText; // Restore original text content
+                    }
+                });
+            });
+        });
+    }
+
+    // Attach input event listeners to filter inputs
+    document.querySelectorAll('.filter-input').forEach(filterInput => {
+        filterInput.addEventListener('input', debounce(filterUserRows, 300));
+    });
+</script>
 
 
 
