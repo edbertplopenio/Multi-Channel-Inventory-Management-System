@@ -245,7 +245,7 @@ if (!$result_tiktok) {
                                     }
                                     ?>
                                 </td>
-                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td><img src="../../frontend/public/images/items/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
                                 <button class="action-button edit-inventory" data-variant-id="<?php echo $row['variant_id']; ?>">
                                 <i class="fas fa-edit"></i> Edit
@@ -261,6 +261,12 @@ if (!$result_tiktok) {
                     <?php endif; ?>
                 </tbody>
             </table>
+            <div id="pagination-controls-all" class="pagination-controls">
+    <button class="prev-page" disabled>Previous</button>
+    <span class="pagination-info"></span>
+    <button class="next-page">Next</button>
+</div>
+
         </div>
 
         <!-- Physical Store Tab -->
@@ -294,7 +300,7 @@ if (!$result_tiktok) {
                                 <td><?php echo $row['color']; ?></td>
                                 <td><?php echo $row['price']; ?></td>
                                 <td><?php echo $row['date_added']; ?></td>
-                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td><img src="../../frontend/public/images/items/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
                                 <button class="action-button edit-inventory" data-variant-id="<?php echo $row['variant_id']; ?>">
                                 <i class="fas fa-edit"></i> Edit
@@ -310,6 +316,12 @@ if (!$result_tiktok) {
                     <?php endif; ?>
                 </tbody>
             </table>
+            <div id="pagination-controls-physical" class="pagination-controls">
+    <button class="prev-page" disabled>Previous</button>
+    <span class="pagination-info"></span>
+    <button class="next-page">Next</button>
+</div>
+
         </div>
 
         <!-- Shopee Tab -->
@@ -343,7 +355,7 @@ if (!$result_tiktok) {
                                 <td><?php echo $row['color']; ?></td>
                                 <td><?php echo $row['price']; ?></td>
                                 <td><?php echo $row['date_added']; ?></td>
-                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td><img src="../../frontend/public/images/items/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
                                 <button class="action-button edit-inventory" data-variant-id="<?php echo $row['variant_id']; ?>">
                                 <i class="fas fa-edit"></i> Edit
@@ -359,6 +371,12 @@ if (!$result_tiktok) {
                     <?php endif; ?>
                 </tbody>
             </table>
+            <div id="pagination-controls-shopee" class="pagination-controls">
+    <button class="prev-page" disabled>Previous</button>
+    <span class="pagination-info"></span>
+    <button class="next-page">Next</button>
+</div>
+
         </div>
 
         <!-- TikTok Tab -->
@@ -392,7 +410,7 @@ if (!$result_tiktok) {
                                 <td><?php echo $row['color']; ?></td>
                                 <td><?php echo $row['price']; ?></td>
                                 <td><?php echo $row['date_added']; ?></td>
-                                <td><img src="../../frontend/public/images/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
+                                <td><img src="../../frontend/public/images/items/<?php echo $row['image'] ?: 'image-placeholder.png'; ?>" alt="Image" width="50"></td>
                                 <td>
                                 <button class="action-button edit-inventory" data-variant-id="<?php echo $row['variant_id']; ?>">
                                 <i class="fas fa-edit"></i> Edit
@@ -408,13 +426,96 @@ if (!$result_tiktok) {
                     <?php endif; ?>
                 </tbody>
             </table>
+            <div id="pagination-controls-tiktok" class="pagination-controls">
+    <button class="prev-page" disabled>Previous</button>
+    <span class="pagination-info"></span>
+    <button class="next-page">Next</button>
+</div>
+
         </div>
 
     </div>
 
 
 
+    <script>
+        $(document).ready(function() {
+            const rowsPerPage = 100;
 
+            function setupPagination(tableSelector, paginationSelector) {
+                const table = $(tableSelector);
+                const rows = table.find("tbody tr");
+                const paginationControls = $(paginationSelector);
+                const prevButton = paginationControls.find(".prev-page");
+                const nextButton = paginationControls.find(".next-page");
+                const pageInfo = paginationControls.find(".pagination-info");
+
+                let currentPage = 1;
+                const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+                function updateTable() {
+                    const start = (currentPage - 1) * rowsPerPage;
+                    const end = start + rowsPerPage;
+
+                    rows.hide(); // Hide all rows
+                    rows.slice(start, end).show(); // Show rows for the current page
+
+                    pageInfo.text(`Page ${currentPage} of ${totalPages}`);
+                    prevButton.prop("disabled", currentPage === 1);
+                    nextButton.prop("disabled", currentPage === totalPages);
+                }
+
+                prevButton.on("click", function() {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        updateTable();
+                    }
+                });
+
+                nextButton.on("click", function() {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        updateTable();
+                    }
+                });
+
+                updateTable(); // Initialize table
+            }
+
+            // Initialize pagination for all tables with their respective controls
+            setupPagination(".inventory-table-all", "#pagination-controls-all");
+            setupPagination(".inventory-table-physical", "#pagination-controls-physical");
+            setupPagination(".inventory-table-shopee", "#pagination-controls-shopee");
+            setupPagination(".inventory-table-tiktok", "#pagination-controls-tiktok");
+        });
+    </script>
+
+
+ <style>
+    .pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.pagination-controls .prev-page,
+.pagination-controls .next-page {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.pagination-controls .prev-page:disabled,
+.pagination-controls .next-page:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+}
+
+ </style>
 
     <!-- New Item Modal -->
     <div id="new-item-modal" class="modal">
@@ -882,7 +983,7 @@ if (!$result_tiktok) {
                     <td>${item.price}</td>
                     <td>${item.date_added}</td>
                     <td>${channelsText}</td>
-                    <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                    <td><img src="../../frontend/public/images/items/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                     <td>
                         <button class="action-button edit-inventory"><i class="fas fa-edit"></i> Edit</button>
                         <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
@@ -903,7 +1004,7 @@ if (!$result_tiktok) {
                         <td>${item.color}</td>
                         <td>${item.price}</td>
                         <td>${item.date_added}</td>
-                        <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                        <td><img src="../../frontend/public/images/items/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
                             <button class="action-button edit-inventory"><i class="fas fa-edit"></i> Edit</button>
                             <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
@@ -925,7 +1026,7 @@ if (!$result_tiktok) {
                         <td>${item.color}</td>
                         <td>${item.price}</td>
                         <td>${item.date_added}</td>
-                        <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                        <td><img src="../../frontend/public/images/items/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
                             <button class="action-button edit-inventory"><i class="fas fa-edit"></i> Edit</button>
                             <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
@@ -947,7 +1048,7 @@ if (!$result_tiktok) {
                         <td>${item.color}</td>
                         <td>${item.price}</td>
                         <td>${item.date_added}</td>
-                        <td><img src="../../frontend/public/images/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                        <td><img src="../../frontend/public/images/items/${item.image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
                             <button class="action-button edit-inventory"><i class="fas fa-edit"></i> Edit</button>
                             <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
@@ -1198,7 +1299,7 @@ if (!$result_tiktok) {
                         <td>${price}</td>
                         <td>${dateAdded}</td>
                         <td>${channels}</td>
-                        <td><img src="../../frontend/public/images/${image || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                        <td><img src="../../frontend/public/images/items/${image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
                             <button class="action-button edit-inventory"><i class="fas fa-edit"></i> Edit</button>
                             <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>
@@ -1217,7 +1318,7 @@ if (!$result_tiktok) {
                         <td>${color}</td>
                         <td>${price}</td>
                         <td>${dateAdded}</td>
-                        <td><img src="../../frontend/public/images/${image || 'image-placeholder.png'}" alt="Image" width="50"></td>
+                        <td><img src="../../frontend/public/images/items/${image || 'image-placeholder.png'}" alt="Image" width="50"></td>
                         <td>
                             <button class="action-button edit-inventory"><i class="fas fa-edit"></i> Edit</button>
                             <button class="action-button archive"><i class="fas fa-archive"></i> Archive</button>

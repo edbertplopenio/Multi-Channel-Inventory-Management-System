@@ -25,7 +25,7 @@ if (isset($_POST['variant_id'], $_POST['name'], $_POST['category'], $_POST['size
     // Image upload handling (if a new image is provided)
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $imageName = time() . '_' . basename($_FILES['image']['name']);
-        $imagePath = "../../frontend/public/images/" . $imageName;
+        $imagePath = "../../frontend/public/images/items/" . $imageName;
 
         // Move uploaded file to target directory and log outcome
         if (move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {

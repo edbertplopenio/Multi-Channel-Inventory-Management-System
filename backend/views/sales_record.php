@@ -32,6 +32,7 @@ if (!isset($_SESSION['user_email'])) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
 
 
 
@@ -64,310 +65,440 @@ if (!isset($_SESSION['user_email'])) {
             <div class="filter-input-container">
                 <input type="text" class="filter-input" placeholder="Type to filter sales">
                 <i class="fas fa-filter icon-filter"></i>
-
             </div>
         </div>
 
         <!-- All Orders Content -->
         <div id="all-orders" class="tab-content active">
-            <table class="sales-table">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" class="select-all"></th>
-                        <th>Variant ID</th>
-                        <th>Product Name</th>
-                        <th>Variant (Size/Color)</th>
-                        <th>Sale Date</th>
-                        <th>Quantity Sold</th>
-                        <th>Cost per Item</th>
-                        <th>Total Sales</th>
-                        <th>Sales Channel</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="sales-table-container">
+                <table class="sales-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" class="select-all"></th>
+                            <th>Variant ID</th>
+                            <th>Product Name</th>
+                            <th>Variant (Size/Color)</th>
+                            <th>Sale Date</th>
+                            <th>Quantity Sold</th>
+                            <th>Cost per Item</th>
+                            <th>Total Sales</th>
+                            <th>Sales Channel</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Physical Store Content -->
         <div id="physical_store" class="tab-content">
-            <table class="sales-table">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" class="select-all"></th>
-                        <th>Variant ID</th>
-                        <th>Product Name</th>
-                        <th>Variant (Size/Color)</th>
-                        <th>Sale Date</th>
-                        <th>Quantity Sold</th>
-                        <th>Cost per Item</th>
-                        <th>Total Sales</th>
-                        <th>Sales Channel</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="sales-table-container">
+                <table class="sales-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" class="select-all"></th>
+                            <th>Variant ID</th>
+                            <th>Product Name</th>
+                            <th>Variant (Size/Color)</th>
+                            <th>Sale Date</th>
+                            <th>Quantity Sold</th>
+                            <th>Cost per Item</th>
+                            <th>Total Sales</th>
+                            <th>Sales Channel</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Shopee Content -->
         <div id="shopee" class="tab-content">
-            <table class="sales-table">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" class="select-all"></th>
-                        <th>Variant ID</th>
-                        <th>Product Name</th>
-                        <th>Variant (Size/Color)</th>
-                        <th>Sale Date</th>
-                        <th>Quantity Sold</th>
-                        <th>Cost per Item</th>
-                        <th>Total Sales</th>
-                        <th>Sales Channel</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="sales-table-container">
+                <table class="sales-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" class="select-all"></th>
+                            <th>Variant ID</th>
+                            <th>Product Name</th>
+                            <th>Variant (Size/Color)</th>
+                            <th>Sale Date</th>
+                            <th>Quantity Sold</th>
+                            <th>Cost per Item</th>
+                            <th>Total Sales</th>
+                            <th>Sales Channel</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- TikTok Content -->
         <div id="tiktok" class="tab-content">
-            <table class="sales-table">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" class="select-all"></th>
-                        <th>Variant ID</th>
-                        <th>Product Name</th>
-                        <th>Variant (Size/Color)</th>
-                        <th>Sale Date</th>
-                        <th>Quantity Sold</th>
-                        <th>Cost per Item</th>
-                        <th>Total Sales</th>
-                        <th>Sales Channel</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="sales-table-container">
+                <table class="sales-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" class="select-all"></th>
+                            <th>Variant ID</th>
+                            <th>Product Name</th>
+                            <th>Variant (Size/Color)</th>
+                            <th>Sale Date</th>
+                            <th>Quantity Sold</th>
+                            <th>Cost per Item</th>
+                            <th>Total Sales</th>
+                            <th>Sales Channel</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Archived Sales Content -->
         <div id="archived-sales" class="tab-content">
-            <table class="sales-table">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox" class="select-all"></th>
-                        <th>Variant ID</th>
-                        <th>Product Name</th>
-                        <th>Variant (Size/Color)</th>
-                        <th>Sale Date</th>
-                        <th>Quantity Sold</th>
-                        <th>Cost per Item</th>
-                        <th>Total Sales</th>
-                        <th>Sales Channel</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-
-
-
-        <!-- New Sales Order Modal -->
-        <div id="new-order-modal" class="modal">
-            <div class="modal-content">
-                <div class="header">
-                    <h1>Add New Sales Order</h1>
-                    <div class="top-right-button">
-                        <button id="upload-excel-button" class="upload-excel-button">Upload Excel</button>
-                        <input type="file" id="excel-upload" name="excel-upload" accept=".xls,.xlsx" style="display: none;">
-                    </div>
-                </div>
-
-                <form id="new-order-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="name">Product Name:</label>
-                            <select id="name" name="name" required>
-                                <?php foreach ($products as $product): ?>
-                                    <option value="<?= $product['id'] ?>"
-                                        data-product-id="<?= $product['product_id'] ?>">
-                                        <?= $product['text'] ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                            <input type="hidden" id="product-id" name="product-id">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="sale-date">Sale Date:</label>
-                            <input type="date" id="sale-date" name="sale-date" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="quantity-sold">Quantity Sold:</label>
-                            <input type="number" id="quantity-sold" name="quantity-sold" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="cost">Cost per Unit:</label>
-                            <input type="number" id="cost" name="cost" required readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="total-price">Total Price:</label>
-                            <input type="number" id="total-price" name="total-price" required readonly>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="sales-channel">Sales Channel:</label>
-                            <select id="sales-channel" name="sales-channel" required>
-                                <option value="physical_store">Physical Store</option>
-                                <option value="shopee">Shopee</option>
-                                <option value="tiktok">TikTok</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row buttons-row">
-                        <button type="button" class="cancel-button">Cancel</button>
-                        <button type="submit" class="save-order-button">Save Order</button>
-                    </div>
-                </form>
-
-                <!-- Excel preview table -->
-                <div id="excel-preview" style="margin-top: 20px; display: none;">
-                    <h3>Excel Preview:</h3>
-                    <table id="preview-table" border="1" style="width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr id="preview-header"></tr>
-                        </thead>
-                        <tbody id="preview-body"></tbody>
-                    </table>
-                </div>
+            <div class="sales-table-container">
+                <table class="sales-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" class="select-all"></th>
+                            <th>Variant ID</th>
+                            <th>Product Name</th>
+                            <th>Variant (Size/Color)</th>
+                            <th>Sale Date</th>
+                            <th>Quantity Sold</th>
+                            <th>Cost per Item</th>
+                            <th>Total Sales</th>
+                            <th>Sales Channel</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
+    </div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        .sales-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            /* Ensures consistent column widths */
+        }
+
+        .sales-table thead {
+            position: sticky;
+            top: 0;
+            /* Keeps the header fixed at the top */
+            background-color: #f4f7fc;
+            /* Background color of the header */
+            z-index: 1;
+            /* Ensures it stays on top of table content */
+        }
+
+        .sales-table th,
+        .sales-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+            /* Prevents text from wrapping */
+            overflow: hidden;
+            /* Ensures content doesn't overflow */
+            text-overflow: ellipsis;
+            /* Adds "..." for overflowing text */
+        }
+
+        .sales-table th {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .sales-table td {
+            color: #555;
+        }
+
+        /* Enable scrolling for the table body */
+        .sales-table tbody {
+            display: block;
+            max-height: 66vh;
+            /* Adjust height as needed */
+            overflow-y: auto;
+            width: 100%;
+            /* Ensures the table maintains proper width */
+        }
+
+        .sales-table thead,
+        .sales-table tbody tr {
+            display: table;
+            width: 100%;
+            /* Ensures proper alignment of rows with the header */
+            table-layout: fixed;
+            /* Prevents column widths from changing */
+        }
+
+        /* Specific Column Widths */
+        .sales-table th:nth-child(1),
+        .sales-table td:nth-child(1) {
+            width: 50px;
+            /* Checkbox column */
+        }
+
+        .sales-table th:nth-child(2),
+        .sales-table td:nth-child(2) {
+            width: 80px;
+            /* Variant ID column */
+        }
+
+        .sales-table th:nth-child(3),
+        .sales-table td:nth-child(3) {
+            width: 150px;
+            /* Product Name column */
+        }
+
+        .sales-table th:nth-child(4),
+        .sales-table td:nth-child(4) {
+            width: 150px;
+            /* Variant (Size/Color) column */
+        }
+
+        .sales-table th:nth-child(5),
+        .sales-table td:nth-child(5) {
+            width: 120px;
+            /* Sale Date column */
+        }
+
+        .sales-table th:nth-child(6),
+        .sales-table td:nth-child(6) {
+            width: 100px;
+            /* Quantity Sold column */
+        }
+
+        .sales-table th:nth-child(7),
+        .sales-table td:nth-child(7) {
+            width: 120px;
+            /* Cost per Item column */
+        }
+
+        .sales-table th:nth-child(8),
+        .sales-table td:nth-child(8) {
+            width: 100px;
+            /* Total Sales column */
+        }
+
+        .sales-table th:nth-child(9),
+        .sales-table td:nth-child(9) {
+            width: 120px;
+            /* Sales Channel column */
+        }
+
+        .sales-table th:nth-child(10),
+        .sales-table td:nth-child(10) {
+            width: 150px;
+            /* Actions column */
+        }
+    </style>
+
+    <!-- New Sales Order Modal -->
+    <div id="new-order-modal" class="modal">
+        <div class="modal-content">
+            <div class="header">
+                <h1>Add New Sales Order</h1>
+                <div class="top-right-button">
+                    <button id="upload-excel-button" class="upload-excel-button">Upload Excel</button>
+                    <input type="file" id="excel-upload" name="excel-upload" accept=".xls,.xlsx" style="display: none;">
+                </div>
+            </div>
+
+            <form id="new-order-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Product Name:</label>
+                        <select id="name" name="name" required>
+                            <?php foreach ($products as $product): ?>
+                                <option value="<?= $product['id'] ?>"
+                                    data-product-id="<?= $product['product_id'] ?>">
+                                    <?= $product['text'] ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <input type="hidden" id="product-id" name="product-id">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sale-date">Sale Date:</label>
+                        <input type="date" id="sale-date" name="sale-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity-sold">Quantity Sold:</label>
+                        <input type="number" id="quantity-sold" name="quantity-sold" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cost">Cost per Unit:</label>
+                        <input type="number" id="cost" name="cost" required readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="total-price">Total Price:</label>
+                        <input type="number" id="total-price" name="total-price" required readonly>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sales-channel">Sales Channel:</label>
+                        <select id="sales-channel" name="sales-channel" required>
+                            <option value="physical_store">Physical Store</option>
+                            <option value="shopee">Shopee</option>
+                            <option value="tiktok">TikTok</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row buttons-row">
+                    <button type="button" class="cancel-button">Cancel</button>
+                    <button type="submit" class="save-order-button">Save Order</button>
+                </div>
+            </form>
+
+            <!-- Excel preview table -->
+            <div id="excel-preview" style="margin-top: 20px; display: none;">
+                <h3>Excel Preview:</h3>
+                <table id="preview-table" border="1" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr id="preview-header"></tr>
+                    </thead>
+                    <tbody id="preview-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 
-        <!-- Excel JS -->
-        <script>
-            // Select the button, file input, and preview table elements
-            const uploadButton = document.getElementById('upload-excel-button');
-            const excelUploadInput = document.getElementById('excel-upload');
-            const excelPreviewDiv = document.getElementById('excel-preview');
-            const previewTableHeader = document.getElementById('preview-header');
-            const previewTableBody = document.getElementById('preview-body');
+    <!-- Excel JS -->
+    <script>
+        // Select the button, file input, and preview table elements
+        const uploadButton = document.getElementById('upload-excel-button');
+        const excelUploadInput = document.getElementById('excel-upload');
+        const excelPreviewDiv = document.getElementById('excel-preview');
+        const previewTableHeader = document.getElementById('preview-header');
+        const previewTableBody = document.getElementById('preview-body');
 
-            // Trigger file input click when button is clicked
-            uploadButton.addEventListener('click', () => {
-                console.log('Upload button clicked'); // Debugging
-                excelUploadInput.click(); // Opens the file dialog
-            });
+        // Trigger file input click when button is clicked
+        uploadButton.addEventListener('click', () => {
+            console.log('Upload button clicked'); // Debugging
+            excelUploadInput.click(); // Opens the file dialog
+        });
 
-            // Listen for file selection
-            excelUploadInput.addEventListener('change', (event) => {
-                console.log('File selected:', event.target.files[0]); // Debugging
-                handleExcelUpload(event);
-            });
+        // Listen for file selection
+        excelUploadInput.addEventListener('change', (event) => {
+            console.log('File selected:', event.target.files[0]); // Debugging
+            handleExcelUpload(event);
+        });
 
-            function handleExcelUpload(event) {
-                const file = event.target.files[0]; // Get the uploaded file
+        function handleExcelUpload(event) {
+            const file = event.target.files[0]; // Get the uploaded file
 
-                if (!file) {
-                    alert('No file selected. Please upload an Excel file.');
-                    return;
-                }
-
-                console.log('Processing file:', file.name); // Debugging
-
-                // Check if the file is an Excel file
-                const validExtensions = ['xls', 'xlsx'];
-                const fileExtension = file.name.split('.').pop().toLowerCase();
-
-                if (!validExtensions.includes(fileExtension)) {
-                    alert('Invalid file type. Please upload an Excel file (.xls or .xlsx).');
-                    excelUploadInput.value = ''; // Clear the input
-                    return;
-                }
-
-                // Parse the Excel file
-                const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    console.log('File loaded successfully'); // Debugging
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, {
-                        type: 'array'
-                    });
-
-                    // Get the first sheet
-                    const sheetName = workbook.SheetNames[0];
-                    const sheet = workbook.Sheets[sheetName];
-
-                    // Convert sheet to JSON
-                    const sheetData = XLSX.utils.sheet_to_json(sheet, {
-                        header: 1
-                    });
-                    console.log('Sheet data:', sheetData); // Debugging
-
-                    // Display the data in a table
-                    displayExcelPreview(sheetData);
-                };
-
-                reader.onerror = function() {
-                    alert('Error reading the file. Please try again.');
-                };
-
-                reader.readAsArrayBuffer(file);
+            if (!file) {
+                alert('No file selected. Please upload an Excel file.');
+                return;
             }
 
-            function displayExcelPreview(data) {
-                // Clear previous table content
-                previewTableHeader.innerHTML = '';
-                previewTableBody.innerHTML = '';
+            console.log('Processing file:', file.name); // Debugging
 
-                // Ensure there's data in the Excel sheet
-                if (data.length === 0) {
-                    alert('The Excel file is empty.');
-                    return;
-                }
+            // Check if the file is an Excel file
+            const validExtensions = ['xls', 'xlsx'];
+            const fileExtension = file.name.split('.').pop().toLowerCase();
 
-                console.log('Displaying data in table'); // Debugging
+            if (!validExtensions.includes(fileExtension)) {
+                alert('Invalid file type. Please upload an Excel file (.xls or .xlsx).');
+                excelUploadInput.value = ''; // Clear the input
+                return;
+            }
 
-                // Display the header row
-                const headerRow = data[0];
-                headerRow.forEach(header => {
-                    const th = document.createElement('th');
-                    th.textContent = header;
-                    previewTableHeader.appendChild(th);
+            // Parse the Excel file
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                console.log('File loaded successfully'); // Debugging
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {
+                    type: 'array'
                 });
 
-                // Display the rest of the rows
-                for (let i = 1; i < data.length; i++) {
-                    const row = data[i];
-                    const tr = document.createElement('tr');
+                // Get the first sheet
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
 
-                    row.forEach(cell => {
-                        const td = document.createElement('td');
-                        td.textContent = cell || ''; // Display empty cells as blank
-                        tr.appendChild(td);
-                    });
+                // Convert sheet to JSON
+                const sheetData = XLSX.utils.sheet_to_json(sheet, {
+                    header: 1
+                });
+                console.log('Sheet data:', sheetData); // Debugging
 
-                    previewTableBody.appendChild(tr);
-                }
+                // Display the data in a table
+                displayExcelPreview(sheetData);
+            };
 
-                // Show the preview table
-                excelPreviewDiv.style.display = 'block';
+            reader.onerror = function() {
+                alert('Error reading the file. Please try again.');
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        function displayExcelPreview(data) {
+            // Clear previous table content
+            previewTableHeader.innerHTML = '';
+            previewTableBody.innerHTML = '';
+
+            // Ensure there's data in the Excel sheet
+            if (data.length === 0) {
+                alert('The Excel file is empty.');
+                return;
             }
-        </script>
+
+            console.log('Displaying data in table'); // Debugging
+
+            // Display the header row
+            const headerRow = data[0];
+            headerRow.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                previewTableHeader.appendChild(th);
+            });
+
+            // Display the rest of the rows
+            for (let i = 1; i < data.length; i++) {
+                const row = data[i];
+                const tr = document.createElement('tr');
+
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.textContent = cell || ''; // Display empty cells as blank
+                    tr.appendChild(td);
+                });
+
+                previewTableBody.appendChild(tr);
+            }
+
+            // Show the preview table
+            excelPreviewDiv.style.display = 'block';
+        }
+    </script>
 
 
 
@@ -377,63 +508,63 @@ if (!isset($_SESSION['user_email'])) {
 
 
 
-        <div id="edit-order-modal" class="modal">
-            <div class="modal-content">
-                <div class="header">
-                    <h1>Edit Sales Order</h1>
+    <div id="edit-order-modal" class="modal">
+        <div class="modal-content">
+            <div class="header">
+                <h1>Edit Sales Order</h1>
+            </div>
+
+            <form id="edit-order-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-name">Product Name:</label>
+                        <select id="edit-name" name="name" disabled>
+                            <!-- Dynamic product options will be loaded here -->
+                        </select>
+                        <input type="hidden" id="edit-product-id" name="product-id">
+                    </div>
                 </div>
 
-                <form id="edit-order-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="edit-name">Product Name:</label>
-                            <select id="edit-name" name="name" disabled>
-                                <!-- Dynamic product options will be loaded here -->
-                            </select>
-                            <input type="hidden" id="edit-product-id" name="product-id">
-                        </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-sale-date">Sale Date:</label>
+                        <input type="date" id="edit-sale-date" name="sale-date" required>
                     </div>
+                    <div class="form-group">
+                        <label for="edit-quantity-sold">Quantity Sold:</label>
+                        <input type="number" id="edit-quantity-sold" name="quantity-sold" required>
+                    </div>
+                </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="edit-sale-date">Sale Date:</label>
-                            <input type="date" id="edit-sale-date" name="sale-date" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-quantity-sold">Quantity Sold:</label>
-                            <input type="number" id="edit-quantity-sold" name="quantity-sold" required>
-                        </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-cost">Cost per Unit:</label>
+                        <input type="number" id="edit-cost" name="cost" readonly>
                     </div>
+                    <div class="form-group">
+                        <label for="edit-total-price">Total Price:</label>
+                        <input type="number" id="edit-total-price" name="total-price" readonly>
+                    </div>
+                </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="edit-cost">Cost per Unit:</label>
-                            <input type="number" id="edit-cost" name="cost" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-total-price">Total Price:</label>
-                            <input type="number" id="edit-total-price" name="total-price" readonly>
-                        </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-sales-channel">Sales Channel:</label>
+                        <select id="edit-sales-channel" name="sales-channel" required>
+                            <option value="physical_store">Physical Store</option>
+                            <option value="shopee">Shopee</option>
+                            <option value="tiktok">TikTok</option>
+                        </select>
                     </div>
+                </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="edit-sales-channel">Sales Channel:</label>
-                            <select id="edit-sales-channel" name="sales-channel" required>
-                                <option value="physical_store">Physical Store</option>
-                                <option value="shopee">Shopee</option>
-                                <option value="tiktok">TikTok</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row buttons-row">
-                        <button type="button" class="cancel-button">Cancel</button>
-                        <button type="submit" class="save-edit-button">Save Changes</button>
-                    </div>
-                </form>
-            </div>
+                <div class="form-row buttons-row">
+                    <button type="button" class="cancel-button">Cancel</button>
+                    <button type="submit" class="save-edit-button">Save Changes</button>
+                </div>
+            </form>
         </div>
+    </div>
 
 
 
@@ -443,548 +574,805 @@ if (!isset($_SESSION['user_email'])) {
 
 
 
-        <style>
-            /* Basic Reset */
-            body {
-                margin: 0;
-                padding: 0;
-                font-family: Arial, sans-serif;
-            }
+    <style>
+        /* Basic Reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
-            /* Selection Bar Styling */
+        /* Selection Bar Styling */
+        #selection-bar {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #201F2B;
+            /* A more vibrant and professional green */
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            /* Increased border radius for more rounded corners */
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+            /* Softer and larger shadow for more depth */
+            font-size: 16px;
+            /* Increased font size for better readability */
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-width: 280px;
+            max-width: 450px;
+            transition: all 0.3s ease-in-out;
+            /* Smooth transition for display changes */
+        }
+
+        /* Text Styling */
+        #selected-count {
+            font-weight: 600;
+            /* Slightly bolder text for emphasis */
+            letter-spacing: 0.5px;
+        }
+
+        /* Button Styling */
+        #archive-button {
+            background-color: #3CAE85;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            /* Slightly larger border radius for a smoother button */
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow for the button */
+        }
+
+        /* Hover and Active Effects for the Button */
+        #archive-button:hover {
+            background-color: #287458;
+            transform: translateY(-2px);
+            /* Slight lift effect on hover */
+        }
+
+        #archive-button:active {
+            transform: translateY(1px);
+            /* Button "press" effect */
+        }
+
+        /* Small screens responsiveness */
+        @media (max-width: 480px) {
             #selection-bar {
-                display: none;
-                position: fixed;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: #201F2B;
-                /* A more vibrant and professional green */
-                color: white;
-                padding: 15px 25px;
-                border-radius: 12px;
-                /* Increased border radius for more rounded corners */
-                box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
-                /* Softer and larger shadow for more depth */
-                font-size: 16px;
-                /* Increased font size for better readability */
-                z-index: 1000;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                min-width: 280px;
-                max-width: 450px;
-                transition: all 0.3s ease-in-out;
-                /* Smooth transition for display changes */
+                min-width: 220px;
+                padding: 12px 18px;
+                font-size: 14px;
+                /* Adjust font size for smaller screens */
             }
 
-            /* Text Styling */
-            #selected-count {
-                font-weight: 600;
-                /* Slightly bolder text for emphasis */
-                letter-spacing: 0.5px;
-            }
-
-            /* Button Styling */
             #archive-button {
-                background-color: #3CAE85;
-                color: white;
-                border: none;
-                padding: 10px 18px;
-                border-radius: 8px;
-                /* Slightly larger border radius for a smoother button */
-                cursor: pointer;
-                font-size: 15px;
-                transition: background-color 0.3s ease, transform 0.2s ease;
-                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-                /* Subtle shadow for the button */
+                font-size: 13px;
+                padding: 8px 14px;
+            }
+        }
+    </style>
+
+
+    <div id="selection-bar">
+        <span id="selected-count">0 items selected</span>
+        <button id="archive-button" class="action-button" style="display: none;">Archive</button>
+        <button id="unarchive-button" class="action-button" style="display: none;">Unarchive</button>
+    </div>
+
+
+
+    <!-- JS for selection bar -->
+    <script>
+        $(document).ready(function() {
+            let activeTab = 'all-orders'; // Default active tab
+
+            /**
+             * Function to update the selection bar visibility and count based on the active tab.
+             */
+            function updateSelectionBar() {
+                const checkboxes = $(`#${activeTab} .row-select:checked`);
+                const selectedCount = checkboxes.length;
+
+                // Update the count in the selection bar
+                $('#selected-count').text(`${selectedCount} item${selectedCount === 1 ? '' : 's'} selected`);
+
+                // Show or hide the selection bar immediately
+                if (selectedCount > 0) {
+                    $('#selection-bar').css('display', 'flex'); // Ensure it's displayed
+                } else {
+                    $('#selection-bar').css('display', 'none'); // Ensure it's hidden
+                }
             }
 
-            /* Hover and Active Effects for the Button */
-            #archive-button:hover {
-                background-color: #287458;
-                transform: translateY(-2px);
-                /* Slight lift effect on hover */
+
+            /**
+             * Function to handle "Select All" functionality for the active tab.
+             */
+            function handleSelectAll() {
+                const selectAllCheckbox = $(`#${activeTab} .select-all`);
+                const checkboxes = $(`#${activeTab} .row-select`);
+
+                // Check or uncheck all rows based on the "Select All" checkbox
+                checkboxes.prop('checked', selectAllCheckbox.is(':checked'));
+                checkboxes.closest('tr').toggleClass('selected', selectAllCheckbox.is(':checked'));
+
+                updateSelectionBar();
             }
 
-            #archive-button:active {
-                transform: translateY(1px);
-                /* Button "press" effect */
+            /**
+             * Function to update the "Select All" checkbox state based on row selections.
+             */
+            function updateSelectAllCheckbox() {
+                const checkboxes = $(`#${activeTab} .row-select`);
+                const checkedCheckboxes = checkboxes.filter(':checked');
+                const selectAllCheckbox = $(`#${activeTab} .select-all`);
+
+                selectAllCheckbox.prop('checked', checkboxes.length === checkedCheckboxes.length);
+                selectAllCheckbox.prop('indeterminate', checkedCheckboxes.length > 0 && checkedCheckboxes.length < checkboxes.length);
             }
 
-            /* Small screens responsiveness */
-            @media (max-width: 480px) {
-                #selection-bar {
-                    min-width: 220px;
-                    padding: 12px 18px;
-                    font-size: 14px;
-                    /* Adjust font size for smaller screens */
-                }
-
-                #archive-button {
-                    font-size: 13px;
-                    padding: 8px 14px;
+            /**
+             * Function to dynamically update button visibility based on the active tab.
+             */
+            function updateButtonVisibility() {
+                if (activeTab === 'archived-sales') {
+                    $('#archive-button').hide();
+                    $('#unarchive-button').show();
+                } else {
+                    $('#archive-button').show();
+                    $('#unarchive-button').hide();
                 }
             }
-        </style>
 
+            /**
+             * Archive button functionality for active tab.
+             */
+            $('#archive-button').on('click', function() {
+                const selectedItems = $(`#${activeTab} .row-select:checked`).map(function() {
+                    return $(this).val(); // Assuming the checkbox value is the item ID
+                }).get();
 
-        <div id="selection-bar">
-            <span id="selected-count">0 items selected</span>
-            <button id="archive-button" class="action-button" style="display: none;">Archive</button>
-            <button id="unarchive-button" class="action-button" style="display: none;">Unarchive</button>
-        </div>
-
-
-
-            <!-- JS for selection bar -->
-        <script>
-            $(document).ready(function() {
-                let activeTab = 'all-orders'; // Default active tab
-
-                /**
-                 * Function to update the selection bar visibility and count based on the active tab.
-                 */
-                function updateSelectionBar() {
-                    const checkboxes = $(`#${activeTab} .row-select:checked`);
-                    const selectedCount = checkboxes.length;
-
-                    // Update the count in the selection bar
-                    $('#selected-count').text(`${selectedCount} item${selectedCount === 1 ? '' : 's'} selected`);
-
-                    // Show or hide the selection bar immediately
-                    if (selectedCount > 0) {
-                        $('#selection-bar').css('display', 'flex'); // Ensure it's displayed
-                    } else {
-                        $('#selection-bar').css('display', 'none'); // Ensure it's hidden
-                    }
-                }
-
-
-                /**
-                 * Function to handle "Select All" functionality for the active tab.
-                 */
-                function handleSelectAll() {
-                    const selectAllCheckbox = $(`#${activeTab} .select-all`);
-                    const checkboxes = $(`#${activeTab} .row-select`);
-
-                    // Check or uncheck all rows based on the "Select All" checkbox
-                    checkboxes.prop('checked', selectAllCheckbox.is(':checked'));
-                    checkboxes.closest('tr').toggleClass('selected', selectAllCheckbox.is(':checked'));
-
-                    updateSelectionBar();
-                }
-
-                /**
-                 * Function to update the "Select All" checkbox state based on row selections.
-                 */
-                function updateSelectAllCheckbox() {
-                    const checkboxes = $(`#${activeTab} .row-select`);
-                    const checkedCheckboxes = checkboxes.filter(':checked');
-                    const selectAllCheckbox = $(`#${activeTab} .select-all`);
-
-                    selectAllCheckbox.prop('checked', checkboxes.length === checkedCheckboxes.length);
-                    selectAllCheckbox.prop('indeterminate', checkedCheckboxes.length > 0 && checkedCheckboxes.length < checkboxes.length);
-                }
-
-                /**
-                 * Function to dynamically update button visibility based on the active tab.
-                 */
-                function updateButtonVisibility() {
-                    if (activeTab === 'archived-sales') {
-                        $('#archive-button').hide();
-                        $('#unarchive-button').show();
-                    } else {
-                        $('#archive-button').show();
-                        $('#unarchive-button').hide();
-                    }
-                }
-
-                /**
-                 * Archive button functionality for active tab.
-                 */
-                $('#archive-button').on('click', function() {
-                    const selectedItems = $(`#${activeTab} .row-select:checked`).map(function() {
-                        return $(this).val(); // Assuming the checkbox value is the item ID
-                    }).get();
-
-                    if (selectedItems.length === 0) {
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'No Items Selected',
-                            text: 'Please select items to archive.',
-                            confirmButtonText: 'OK'
-                        });
-                        return;
-                    }
-
+                if (selectedItems.length === 0) {
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'Archive Items',
-                        text: `Are you sure you want to archive ${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'}?`,
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, Archive',
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Perform archiving logic (e.g., AJAX request)
-                            console.log('Archiving items:', selectedItems);
-
-                            // Simulate successful archiving
-                            setTimeout(() => {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Archived',
-                                    text: `${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'} archived successfully.`,
-                                    confirmButtonText: 'OK'
-                                });
-
-                                // Remove archived rows
-                                selectedItems.forEach((id) => {
-                                    $(`#${activeTab} .row-select[value="${id}"]`).closest('tr').remove();
-                                });
-
-                                // Reset the selection bar
-                                updateSelectionBar();
-                            }, 1000);
-                        }
+                        icon: 'info',
+                        title: 'No Items Selected',
+                        text: 'Please select items to archive.',
+                        confirmButtonText: 'OK'
                     });
-                });
+                    return;
+                }
 
-                /**
-                 * Unarchive button functionality for archived-sales tab.
-                 */
-                $('#unarchive-button').on('click', function() {
-                    const selectedItems = $(`#archived-sales .row-select:checked`).map(function() {
-                        return $(this).val(); // Assuming the checkbox value is the item ID
-                    }).get();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Archive Items',
+                    text: `Are you sure you want to archive ${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'}?`,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Archive',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Perform archiving logic (e.g., AJAX request)
+                        console.log('Archiving items:', selectedItems);
 
-                    if (selectedItems.length === 0) {
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'No Items Selected',
-                            text: 'Please select items to unarchive.',
-                            confirmButtonText: 'OK'
-                        });
-                        return;
+                        // Simulate successful archiving
+                        setTimeout(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Archived',
+                                text: `${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'} archived successfully.`,
+                                confirmButtonText: 'OK'
+                            });
+
+                            // Remove archived rows
+                            selectedItems.forEach((id) => {
+                                $(`#${activeTab} .row-select[value="${id}"]`).closest('tr').remove();
+                            });
+
+                            // Reset the selection bar
+                            updateSelectionBar();
+                        }, 1000);
                     }
+                });
+            });
 
+            /**
+             * Unarchive button functionality for archived-sales tab.
+             */
+            $('#unarchive-button').on('click', function() {
+                const selectedItems = $(`#archived-sales .row-select:checked`).map(function() {
+                    return $(this).val(); // Assuming the checkbox value is the item ID
+                }).get();
+
+                if (selectedItems.length === 0) {
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'Unarchive Items',
-                        text: `Are you sure you want to unarchive ${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'}?`,
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, Unarchive',
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Perform unarchiving logic (e.g., AJAX request)
-                            console.log('Unarchiving items:', selectedItems);
-
-                            // Simulate successful unarchiving
-                            setTimeout(() => {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Unarchived',
-                                    text: `${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'} unarchived successfully.`,
-                                    confirmButtonText: 'OK'
-                                });
-
-                                // Remove unarchived rows
-                                selectedItems.forEach((id) => {
-                                    $(`#archived-sales .row-select[value="${id}"]`).closest('tr').remove();
-                                });
-
-                                // Reset the selection bar
-                                updateSelectionBar();
-                            }, 1000);
-                        }
+                        icon: 'info',
+                        title: 'No Items Selected',
+                        text: 'Please select items to unarchive.',
+                        confirmButtonText: 'OK'
                     });
+                    return;
+                }
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Unarchive Items',
+                    text: `Are you sure you want to unarchive ${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'}?`,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Unarchive',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Perform unarchiving logic (e.g., AJAX request)
+                        console.log('Unarchiving items:', selectedItems);
+
+                        // Simulate successful unarchiving
+                        setTimeout(() => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Unarchived',
+                                text: `${selectedItems.length} item${selectedItems.length === 1 ? '' : 's'} unarchived successfully.`,
+                                confirmButtonText: 'OK'
+                            });
+
+                            // Remove unarchived rows
+                            selectedItems.forEach((id) => {
+                                $(`#archived-sales .row-select[value="${id}"]`).closest('tr').remove();
+                            });
+
+                            // Reset the selection bar
+                            updateSelectionBar();
+                        }, 1000);
+                    }
                 });
+            });
 
-                /**
-                 * Tab switching logic.
-                 */
-                $('.tab').on('click', function() {
-                    $('.tab').removeClass('active');
-                    $(this).addClass('active');
-                    activeTab = $(this).data('tab');
+            /**
+             * Tab switching logic.
+             */
+            $('.tab').on('click', function() {
+                $('.tab').removeClass('active');
+                $(this).addClass('active');
+                activeTab = $(this).data('tab');
 
-                    $('.tab-content').removeClass('active');
-                    $(`#${activeTab}`).addClass('active');
+                $('.tab-content').removeClass('active');
+                $(`#${activeTab}`).addClass('active');
 
-                    updateButtonVisibility();
-                    updateSelectionBar(); // Reset selection bar for new tab
-                });
-
-                // Event delegation for row selection
-                $('.sales-table').on('change', '.row-select', function() {
-                    updateSelectAllCheckbox();
-                    updateSelectionBar();
-                });
-
-                // Event delegation for "Select All" checkbox
-                $('.sales-table').on('change', '.select-all', function() {
-                    handleSelectAll();
-                });
-
-                // Initialize selection bar and button visibility
                 updateButtonVisibility();
+                updateSelectionBar(); // Reset selection bar for new tab
+            });
+
+            // Event delegation for row selection
+            $('.sales-table').on('change', '.row-select', function() {
+                updateSelectAllCheckbox();
                 updateSelectionBar();
             });
-        </script>
 
-
-            <!-- Select All -->
-        <script>
-            $(document).ready(function() {
-                // Handle "Select All" checkbox
-                $('.sales-table').on('change', '.select-all', function() {
-                    const isChecked = $(this).is(':checked');
-                    const table = $(this).closest('table');
-                    table.find('tbody .row-select').prop('checked', isChecked);
-
-                    // Update row highlighting if required
-                    table.find('tbody tr').toggleClass('selected', isChecked);
-                });
-
-                // Handle individual row selection
-                $('.sales-table').on('change', '.row-select', function() {
-                    const table = $(this).closest('table');
-                    const allRows = table.find('tbody .row-select').length;
-                    const checkedRows = table.find('tbody .row-select:checked').length;
-
-                    // Update "Select All" checkbox state
-                    const selectAllCheckbox = table.find('.select-all');
-                    selectAllCheckbox.prop('checked', allRows === checkedRows);
-                    selectAllCheckbox.prop('indeterminate', checkedRows > 0 && checkedRows < allRows);
-
-                    // Update row highlighting if required
-                    $(this).closest('tr').toggleClass('selected', $(this).is(':checked'));
-                });
+            // Event delegation for "Select All" checkbox
+            $('.sales-table').on('change', '.select-all', function() {
+                handleSelectAll();
             });
-        </script>
+
+            // Initialize selection bar and button visibility
+            updateButtonVisibility();
+            updateSelectionBar();
+        });
+    </script>
+
+
+    <!-- Select All -->
+    <script>
+        $(document).ready(function() {
+            // Handle "Select All" checkbox
+            $('.sales-table').on('change', '.select-all', function() {
+                const isChecked = $(this).is(':checked');
+                const table = $(this).closest('table');
+                table.find('tbody .row-select').prop('checked', isChecked);
+
+                // Update row highlighting if required
+                table.find('tbody tr').toggleClass('selected', isChecked);
+            });
+
+            // Handle individual row selection
+            $('.sales-table').on('change', '.row-select', function() {
+                const table = $(this).closest('table');
+                const allRows = table.find('tbody .row-select').length;
+                const checkedRows = table.find('tbody .row-select:checked').length;
+
+                // Update "Select All" checkbox state
+                const selectAllCheckbox = table.find('.select-all');
+                selectAllCheckbox.prop('checked', allRows === checkedRows);
+                selectAllCheckbox.prop('indeterminate', checkedRows > 0 && checkedRows < allRows);
+
+                // Update row highlighting if required
+                $(this).closest('tr').toggleClass('selected', $(this).is(':checked'));
+            });
+        });
+    </script>
 
 
 
-            <!-- Bulk Archive and Unarchive -->
-        <script>
-            $(document).ready(function() {
-                function archiveItems(itemIds) {
-                    $.ajax({
-                        url: '../../backend/controllers/bulk_archive.php',
-                        type: 'POST',
-                        data: {
-                            sale_ids: itemIds
-                        },
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.success) {
-                                Swal.fire({
-                                    title: 'Success!',
-                                    text: response.message,
-                                    icon: 'success',
-                                    confirmButtonText: 'OK'
-                                });
+    <!-- Bulk Archive and Unarchive -->
+    <script>
+        $(document).ready(function() {
+            function archiveItems(itemIds) {
+                $.ajax({
+                    url: '../../backend/controllers/bulk_archive.php',
+                    type: 'POST',
+                    data: {
+                        sale_ids: itemIds
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            });
 
-                                // Remove archived items from the current table
-                                itemIds.forEach(id => {
-                                    $(`input[data-id="${id}"]`).closest('tr').remove();
-                                });
+                            // Remove archived items from the current table
+                            itemIds.forEach(id => {
+                                $(`input[data-id="${id}"]`).closest('tr').remove();
+                            });
 
-                                // Reset all checkboxes and hide selection bar
-                                resetSelectionState();
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: response.message || 'Failed to archive items.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
-                            }
-                        },
-                        error: function() {
+                            // Reset all checkboxes and hide selection bar
+                            resetSelectionState();
+                        } else {
                             Swal.fire({
                                 title: 'Error!',
-                                text: 'An unexpected error occurred while archiving items.',
+                                text: response.message || 'Failed to archive items.',
                                 icon: 'error',
                                 confirmButtonText: 'OK'
                             });
                         }
-                    });
-                }
-
-                function unarchiveItems(itemIds) {
-                    $.ajax({
-                        url: '../../backend/controllers/bulk_unarchive.php',
-                        type: 'POST',
-                        data: {
-                            sale_ids: itemIds
-                        },
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.success) {
-                                Swal.fire({
-                                    title: 'Success!',
-                                    text: response.message,
-                                    icon: 'success',
-                                    confirmButtonText: 'OK'
-                                });
-
-                                // Remove unarchived items from the archived table
-                                itemIds.forEach(id => {
-                                    $(`input[data-id="${id}"]`).closest('tr').remove();
-                                });
-
-                                // Reset all checkboxes and hide selection bar
-                                resetSelectionState();
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: response.message || 'Failed to unarchive items.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
-                            }
-                        },
-                        error: function() {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'An unexpected error occurred while unarchiving items.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    });
-                }
-
-                /**
-                 * Function to reset all checkboxes, row highlighting, and hide the selection bar.
-                 */
-                function resetSelectionState() {
-                    // Uncheck all checkboxes
-                    $('.row-select, .select-all').prop('checked', false);
-                    $('.select-all').prop('indeterminate', false);
-
-                    // Remove row highlighting
-                    $('.sales-table tbody tr').removeClass('selected');
-
-                    // Hide the selection bar
-                    $('#selection-bar').css('display', 'none');
-                }
-
-                // Archive button event
-                $('#archive-button').on('click', function() {
-                    const selectedItems = getSelectedItems('all-orders', 'physical_store', 'shopee', 'tiktok');
-                    if (selectedItems.length === 0) {
+                    },
+                    error: function() {
                         Swal.fire({
-                            title: 'No Items Selected',
-                            text: 'Please select items to archive.',
-                            icon: 'info',
+                            title: 'Error!',
+                            text: 'An unexpected error occurred while archiving items.',
+                            icon: 'error',
                             confirmButtonText: 'OK'
                         });
-                        return;
                     }
-
-                    Swal.fire({
-                        title: 'Archive Items',
-                        text: `Are you sure you want to archive ${selectedItems.length} item(s)?`,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, Archive',
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            archiveItems(selectedItems);
-                        }
-                    });
                 });
-
-                // Unarchive button event
-                $('#unarchive-button').on('click', function() {
-                    const selectedItems = getSelectedItems('archived-sales');
-                    if (selectedItems.length === 0) {
-                        Swal.fire({
-                            title: 'No Items Selected',
-                            text: 'Please select items to unarchive.',
-                            icon: 'info',
-                            confirmButtonText: 'OK'
-                        });
-                        return;
-                    }
-
-                    Swal.fire({
-                        title: 'Unarchive Items',
-                        text: `Are you sure you want to unarchive ${selectedItems.length} item(s)?`,
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, Unarchive',
-                        cancelButtonText: 'Cancel'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            unarchiveItems(selectedItems);
-                        }
-                    });
-                });
-
-                // Helper function to get selected item IDs from a tab
-                function getSelectedItems(...tabIds) {
-                    let selectedItems = [];
-                    tabIds.forEach(tabId => {
-                        selectedItems = selectedItems.concat(
-                            $(`#${tabId} .row-select:checked`).map(function() {
-                                return $(this).data('id');
-                            }).get()
-                        );
-                    });
-                    return selectedItems;
-                }
-            });
-        </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <!-- Reload tabs -->
-        <script>
-            function reloadAllTabs() {
-                const tabs = ['all-orders', 'physical_store', 'shopee', 'tiktok']; // Add all your tab IDs here
-                tabs.forEach((tab) => loadSalesData(tab));
             }
 
+            function unarchiveItems(itemIds) {
+                $.ajax({
+                    url: '../../backend/controllers/bulk_unarchive.php',
+                    type: 'POST',
+                    data: {
+                        sale_ids: itemIds
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            });
 
-            $('#edit-order-form').on('submit', function(e) {
-                e.preventDefault();
+                            // Remove unarchived items from the archived table
+                            itemIds.forEach(id => {
+                                $(`input[data-id="${id}"]`).closest('tr').remove();
+                            });
+
+                            // Reset all checkboxes and hide selection bar
+                            resetSelectionState();
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.message || 'Failed to unarchive items.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An unexpected error occurred while unarchiving items.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            }
+
+            /**
+             * Function to reset all checkboxes, row highlighting, and hide the selection bar.
+             */
+            function resetSelectionState() {
+                // Uncheck all checkboxes
+                $('.row-select, .select-all').prop('checked', false);
+                $('.select-all').prop('indeterminate', false);
+
+                // Remove row highlighting
+                $('.sales-table tbody tr').removeClass('selected');
+
+                // Hide the selection bar
+                $('#selection-bar').css('display', 'none');
+            }
+
+            // Archive button event
+            $('#archive-button').on('click', function() {
+                const selectedItems = getSelectedItems('all-orders', 'physical_store', 'shopee', 'tiktok');
+                if (selectedItems.length === 0) {
+                    Swal.fire({
+                        title: 'No Items Selected',
+                        text: 'Please select items to archive.',
+                        icon: 'info',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Archive Items',
+                    text: `Are you sure you want to archive ${selectedItems.length} item(s)?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Archive',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        archiveItems(selectedItems);
+                    }
+                });
+            });
+
+            // Unarchive button event
+            $('#unarchive-button').on('click', function() {
+                const selectedItems = getSelectedItems('archived-sales');
+                if (selectedItems.length === 0) {
+                    Swal.fire({
+                        title: 'No Items Selected',
+                        text: 'Please select items to unarchive.',
+                        icon: 'info',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Unarchive Items',
+                    text: `Are you sure you want to unarchive ${selectedItems.length} item(s)?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Unarchive',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        unarchiveItems(selectedItems);
+                    }
+                });
+            });
+
+            // Helper function to get selected item IDs from a tab
+            function getSelectedItems(...tabIds) {
+                let selectedItems = [];
+                tabIds.forEach(tabId => {
+                    selectedItems = selectedItems.concat(
+                        $(`#${tabId} .row-select:checked`).map(function() {
+                            return $(this).data('id');
+                        }).get()
+                    );
+                });
+                return selectedItems;
+            }
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Reload tabs -->
+    <script>
+        function reloadAllTabs() {
+            const tabs = ['all-orders', 'physical_store', 'shopee', 'tiktok']; // Add all your tab IDs here
+            tabs.forEach((tab) => loadSalesData(tab));
+        }
+
+
+        $('#edit-order-form').on('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                sale_id: $('#edit-product-id').val(),
+                sale_date: $('#edit-sale-date').val(),
+                quantity: $('#edit-quantity-sold').val(),
+                total_price: $('#edit-total-price').val(),
+                channel: $('#edit-sales-channel').val(),
+            };
+
+            $.ajax({
+                url: '../../backend/controllers/update_sale.php',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    if (typeof response === 'string') {
+                        response = JSON.parse(response);
+                    }
+
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message || 'Sale updated successfully.',
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                        }).then(() => {
+                            $('#edit-order-modal').hide(); // Close the modal
+                            reloadAllTabs(); // Dynamically refresh all tabs
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.message || 'Failed to update the sale.',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", xhr.responseText);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while updating the sale.',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    });
+                },
+            });
+        });
+    </script>
+
+    <!-- Close button edit -->
+    <script>
+        $(document).ready(function() {
+            // Handle the Cancel button click to close the modal
+            $('.cancel-button').on('click', function() {
+                closeModalAndReset();
+            });
+
+            // Prevent modal from closing when clicking outside the modal content
+            $('#edit-order-modal').on('click', function(event) {
+                // If the click is outside the modal content, do nothing
+                if ($(event.target).closest('.modal-content').length === 0) {
+                    event.stopPropagation(); // Prevent the default click behavior
+                }
+            });
+
+            // Function to close the modal and reset the form
+            function closeModalAndReset() {
+                $('#edit-order-modal').hide(); // Hide modal
+                $('#edit-order-form')[0].reset(); // Reset form fields
+                $('#edit-name').empty(); // Clear Select2 dropdown
+            }
+        });
+    </script>
+
+    <!-- Reset modal -->
+    <script>
+        $(document).ready(function() {
+            function resetNewOrderModal() {
+                $('#new-order-form')[0].reset(); // Reset the form fields
+                $('#name').val(null).trigger('change'); // Clear Select2 dropdown
+                $('#product-id').val(''); // Reset hidden product-id field
+                $('#cost').val(''); // Reset cost field
+                $('#quantity-sold').val(''); // Reset quantity sold
+                $('#total-price').val(''); // Reset total price field
+            }
+
+            // Handle the Cancel button click
+            $('.cancel-button').on('click', function() {
+                resetNewOrderModal(); // Reset the modal fields
+                $('#new-order-modal').hide(); // Hide the modal
+            });
+
+            // Prevent the modal from closing when clicking outside of it
+            $('#new-order-modal').on('click', function(event) {
+                if ($(event.target).closest('.modal-content').length === 0) {
+                    // Do nothing if clicking outside modal content
+                    event.stopPropagation();
+                }
+            });
+        });
+    </script>
+
+
+    <!-- Open Edit modal and retrieve -->
+    <script>
+        $(document).on('click', '.edit', function() {
+            const saleId = $(this).data('id'); // Get sale_id from data-id attribute
+            console.log("Editing sale with ID:", saleId); // Debugging
+
+            // Fetch the sales record from the backend
+            $.ajax({
+                url: '../../backend/controllers/fetch_sale_details.php',
+                type: 'GET',
+                data: {
+                    sale_id: saleId
+                },
+                success: function(response) {
+                    console.log("Response from fetch_sale_details:", response); // Debugging
+
+                    if (typeof response === 'string') {
+                        response = JSON.parse(response);
+                    }
+
+                    if (response.success) {
+                        const sale = response.data;
+
+                        // Populate modal fields
+                        $('#edit-product-id').val(sale.sale_id); // Correct sale_id
+                        $('#edit-sale-date').val(new Date(sale.sale_date).toISOString().split('T')[0]);
+                        $('#edit-quantity-sold').val(sale.quantity);
+                        $('#edit-cost').val(sale.cost_per_item);
+                        $('#edit-total-price').val(sale.total_price);
+                        $('#edit-sales-channel').val(sale.channel);
+
+                        // Dynamically populate and select the product name in the dropdown
+                        const productOption = new Option(
+                            `${sale.product_name} - ${sale.size} ${sale.color}`,
+                            sale.variant_id,
+                            true, // Mark as selected
+                            true // Add to the dropdown
+                        );
+                        $('#edit-name').empty().append(productOption).trigger('change'); // Update and refresh Select2 dropdown
+
+                        // Show the modal
+                        $('#edit-order-modal').css('display', 'flex');
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: response.message || 'Failed to load sale data.',
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", xhr.responseText);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while fetching sale data.',
+                        icon: 'error',
+                        confirmButtonText: 'OK',
+                    });
+                },
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+    <!-- JS for fetching and Add in modal -->
+    <script>
+        $(document).ready(function() {
+            let productData = {}; // Store product details locally
+
+            // Initialize Select2 for product selection
+            $('#name').select2({
+                placeholder: 'Search for a product',
+                allowClear: true,
+                ajax: {
+                    url: '../../backend/controllers/fetch_products.php', // Adjust path to your PHP script
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term // Search term
+                        };
+                    },
+                    processResults: function(data) {
+                        // Cache product data locally
+                        productData = {};
+                        data.items.forEach(function(item) {
+                            productData[item.id] = item; // Store by variant_id
+                        });
+                        return {
+                            results: data.items
+                        };
+                    }
+                },
+                width: '100%',
+                dropdownParent: $('#new-order-modal') // Ensure dropdown stays within the modal
+            });
+
+            // Close dropdown after selection and update fields
+            $('#name').on('select2:select', function(e) {
+                const selectedVariantId = e.params.data.id; // Get selected variant_id
+                const selectedProduct = productData[selectedVariantId]; // Retrieve product details by variant_id
+
+                if (selectedProduct) {
+                    $('#product-id').val(selectedProduct.product_id); // Set the actual product_id
+                    $('#cost').val(selectedProduct.price); // Set the cost field
+                    $('#quantity-sold').val(''); // Clear quantity field
+                    $('#total-price').val(''); // Clear total price field
+                }
+
+                // Close the dropdown programmatically
+                $(this).select2('close');
+            });
+
+            // Calculate total price when quantity is entered
+            $('#quantity-sold').on('input', function() {
+                const quantity = $(this).val();
+                const cost = $('#cost').val();
+
+                if (quantity && cost) {
+                    $('#total-price').val((quantity * cost).toFixed(2)); // Calculate and display total price
+                } else {
+                    $('#total-price').val(''); // Clear total price if input is invalid
+                }
+            });
+
+
+
+            // Submit the form via AJAX
+            $('#new-order-form').on('submit', function(e) {
+                e.preventDefault(); // Prevent default form submission
+
+                // Disable submit button and form inputs to prevent double submission
+                $('#submit-btn').prop('disabled', true);
+                $('#new-order-form input, #new-order-form select').prop('disabled', true);
 
                 const formData = {
-                    sale_id: $('#edit-product-id').val(),
-                    sale_date: $('#edit-sale-date').val(),
-                    quantity: $('#edit-quantity-sold').val(),
-                    total_price: $('#edit-total-price').val(),
-                    channel: $('#edit-sales-channel').val(),
+                    variant_id: $('#name').val(),
+                    product_id: $('#product-id').val(),
+                    sale_date: $('#sale-date').val(),
+                    quantity: $('#quantity-sold').val(),
+                    price: $('#cost').val(),
+                    total_price: $('#total-price').val(),
+                    channel: $('#sales-channel').val(),
                 };
 
+                console.log('Submitting Sales Data:', formData); // Debugging
+
+                // Send the data to the server
                 $.ajax({
-                    url: '../../backend/controllers/update_sale.php',
+                    url: '../../backend/controllers/add_sales.php',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(formData),
                     success: function(response) {
+                        console.log('Response:', response); // Debugging
+
+                        // Parse the response if it is a string
                         if (typeof response === 'string') {
                             response = JSON.parse(response);
                         }
@@ -992,362 +1380,105 @@ if (!isset($_SESSION['user_email'])) {
                         if (response.success) {
                             Swal.fire({
                                 title: 'Success!',
-                                text: response.message || 'Sale updated successfully.',
+                                text: response.message || 'Sales record added successfully!',
                                 icon: 'success',
                                 confirmButtonText: 'OK',
-                            }).then(() => {
-                                $('#edit-order-modal').hide(); // Close the modal
-                                reloadAllTabs(); // Dynamically refresh all tabs
+                            });
+
+                            $('#new-order-modal').hide(); // Close modal
+                            $('#new-order-form')[0].reset(); // Reset the form
+
+                            // Update all the tables dynamically for all tabs
+                            const tabs = ['all-orders', 'physical_store', 'shopee', 'tiktok']; // Add your tab IDs here
+                            tabs.forEach(function(tab) {
+                                loadSalesData(tab); // Reload data for each tab
                             });
                         } else {
                             Swal.fire({
                                 title: 'Error!',
-                                text: response.message || 'Failed to update the sale.',
+                                text: response.message || 'Failed to add sales record.',
                                 icon: 'error',
                                 confirmButtonText: 'OK',
                             });
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error("AJAX error:", xhr.responseText);
+                        console.error('AJAX error:', xhr.responseText);
+
+                        // Parse the error response if possible
+                        let errorMessage = 'An error occurred while adding the sales record.';
+                        if (xhr.responseText) {
+                            try {
+                                const errorResponse = JSON.parse(xhr.responseText);
+                                errorMessage = errorResponse.message || errorMessage;
+                            } catch (e) {
+                                console.error('Failed to parse error response:', e);
+                            }
+                        }
+
                         Swal.fire({
                             title: 'Error!',
-                            text: 'An error occurred while updating the sale.',
+                            text: errorMessage,
                             icon: 'error',
                             confirmButtonText: 'OK',
                         });
                     },
+                    complete: function() {
+                        // Re-enable submit button and form inputs after AJAX completion (success or error)
+                        $('#submit-btn').prop('disabled', false);
+                        $('#new-order-form input, #new-order-form select').prop('disabled', false);
+                    },
                 });
             });
-        </script>
 
-        <!-- Close button edit -->
-        <script>
-            $(document).ready(function() {
-                // Handle the Cancel button click to close the modal
-                $('.cancel-button').on('click', function() {
-                    closeModalAndReset();
-                });
 
-                // Prevent modal from closing when clicking outside the modal content
-                $('#edit-order-modal').on('click', function(event) {
-                    // If the click is outside the modal content, do nothing
-                    if ($(event.target).closest('.modal-content').length === 0) {
-                        event.stopPropagation(); // Prevent the default click behavior
-                    }
-                });
-
-                // Function to close the modal and reset the form
-                function closeModalAndReset() {
-                    $('#edit-order-modal').hide(); // Hide modal
-                    $('#edit-order-form')[0].reset(); // Reset form fields
-                    $('#edit-name').empty(); // Clear Select2 dropdown
+            // Function to format currency (PHP format)
+            function formatCurrency(amount) {
+                if (amount) {
+                    return '₱' + parseFloat(amount).toLocaleString('en-PH', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
                 }
-            });
-        </script>
+                return '₱0.00';
+            }
 
-        <!-- Reset modal -->
-        <script>
-            $(document).ready(function() {
-                function resetNewOrderModal() {
-                    $('#new-order-form')[0].reset(); // Reset the form fields
-                    $('#name').val(null).trigger('change'); // Clear Select2 dropdown
-                    $('#product-id').val(''); // Reset hidden product-id field
-                    $('#cost').val(''); // Reset cost field
-                    $('#quantity-sold').val(''); // Reset quantity sold
-                    $('#total-price').val(''); // Reset total price field
+            // Function to format date (MM/DD/YYYY)
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const day = ('0' + date.getDate()).slice(-2); // Ensure two digits for day
+                const month = ('0' + (date.getMonth() + 1)).slice(-2); // Ensure two digits for month
+                const year = date.getFullYear();
+                return `${month}/${day}/${year}`;
+            }
+
+            // Function to format sales channel (remove underscores and capitalize each word)
+            function formatChannel(channel) {
+                if (channel) {
+                    // Replace underscores with spaces and capitalize first letter of each word
+                    return channel.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
                 }
+                return 'N/A';
+            }
 
-                // Handle the Cancel button click
-                $('.cancel-button').on('click', function() {
-                    resetNewOrderModal(); // Reset the modal fields
-                    $('#new-order-modal').hide(); // Hide the modal
-                });
-
-                // Prevent the modal from closing when clicking outside of it
-                $('#new-order-modal').on('click', function(event) {
-                    if ($(event.target).closest('.modal-content').length === 0) {
-                        // Do nothing if clicking outside modal content
-                        event.stopPropagation();
-                    }
-                });
-            });
-        </script>
-
-
-        <!-- Open Edit modal and retrieve -->
-        <script>
-            $(document).on('click', '.edit', function() {
-                const saleId = $(this).data('id'); // Get sale_id from data-id attribute
-                console.log("Editing sale with ID:", saleId); // Debugging
-
-                // Fetch the sales record from the backend
+            // Function to load sales data for a specific tab
+            // Function to load sales data for a specific tab
+            // Function to load sales data for a specific tab
+            function loadSalesData(tab) {
                 $.ajax({
-                    url: '../../backend/controllers/fetch_sale_details.php',
+                    url: '../../backend/controllers/fetch_sales.php',
                     type: 'GET',
                     data: {
-                        sale_id: saleId
+                        tab: tab
                     },
                     success: function(response) {
-                        console.log("Response from fetch_sale_details:", response); // Debugging
-
-                        if (typeof response === 'string') {
-                            response = JSON.parse(response);
-                        }
-
                         if (response.success) {
-                            const sale = response.data;
+                            const tbody = $(`#${tab} .sales-table tbody`);
+                            tbody.empty(); // Clear existing rows
 
-                            // Populate modal fields
-                            $('#edit-product-id').val(sale.sale_id); // Correct sale_id
-                            $('#edit-sale-date').val(new Date(sale.sale_date).toISOString().split('T')[0]);
-                            $('#edit-quantity-sold').val(sale.quantity);
-                            $('#edit-cost').val(sale.cost_per_item);
-                            $('#edit-total-price').val(sale.total_price);
-                            $('#edit-sales-channel').val(sale.channel);
-
-                            // Dynamically populate and select the product name in the dropdown
-                            const productOption = new Option(
-                                `${sale.product_name} - ${sale.size} ${sale.color}`,
-                                sale.variant_id,
-                                true, // Mark as selected
-                                true // Add to the dropdown
-                            );
-                            $('#edit-name').empty().append(productOption).trigger('change'); // Update and refresh Select2 dropdown
-
-                            // Show the modal
-                            $('#edit-order-modal').css('display', 'flex');
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message || 'Failed to load sale data.',
-                                icon: 'error',
-                                confirmButtonText: 'OK',
-                            });
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("AJAX error:", xhr.responseText);
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'An error occurred while fetching sale data.',
-                            icon: 'error',
-                            confirmButtonText: 'OK',
-                        });
-                    },
-                });
-            });
-        </script>
-
-
-
-
-
-
-
-
-
-
-
-        <!-- JS for fetching and Add in modal -->
-        <script>
-            $(document).ready(function() {
-                let productData = {}; // Store product details locally
-
-                // Initialize Select2 for product selection
-                $('#name').select2({
-                    placeholder: 'Search for a product',
-                    allowClear: true,
-                    ajax: {
-                        url: '../../backend/controllers/fetch_products.php', // Adjust path to your PHP script
-                        dataType: 'json',
-                        delay: 250,
-                        data: function(params) {
-                            return {
-                                q: params.term // Search term
-                            };
-                        },
-                        processResults: function(data) {
-                            // Cache product data locally
-                            productData = {};
-                            data.items.forEach(function(item) {
-                                productData[item.id] = item; // Store by variant_id
-                            });
-                            return {
-                                results: data.items
-                            };
-                        }
-                    },
-                    width: '100%',
-                    dropdownParent: $('#new-order-modal') // Ensure dropdown stays within the modal
-                });
-
-                // Close dropdown after selection and update fields
-                $('#name').on('select2:select', function(e) {
-                    const selectedVariantId = e.params.data.id; // Get selected variant_id
-                    const selectedProduct = productData[selectedVariantId]; // Retrieve product details by variant_id
-
-                    if (selectedProduct) {
-                        $('#product-id').val(selectedProduct.product_id); // Set the actual product_id
-                        $('#cost').val(selectedProduct.price); // Set the cost field
-                        $('#quantity-sold').val(''); // Clear quantity field
-                        $('#total-price').val(''); // Clear total price field
-                    }
-
-                    // Close the dropdown programmatically
-                    $(this).select2('close');
-                });
-
-                // Calculate total price when quantity is entered
-                $('#quantity-sold').on('input', function() {
-                    const quantity = $(this).val();
-                    const cost = $('#cost').val();
-
-                    if (quantity && cost) {
-                        $('#total-price').val((quantity * cost).toFixed(2)); // Calculate and display total price
-                    } else {
-                        $('#total-price').val(''); // Clear total price if input is invalid
-                    }
-                });
-
-
-
-                // Submit the form via AJAX
-                $('#new-order-form').on('submit', function(e) {
-                    e.preventDefault(); // Prevent default form submission
-
-                    // Disable submit button and form inputs to prevent double submission
-                    $('#submit-btn').prop('disabled', true);
-                    $('#new-order-form input, #new-order-form select').prop('disabled', true);
-
-                    const formData = {
-                        variant_id: $('#name').val(),
-                        product_id: $('#product-id').val(),
-                        sale_date: $('#sale-date').val(),
-                        quantity: $('#quantity-sold').val(),
-                        price: $('#cost').val(),
-                        total_price: $('#total-price').val(),
-                        channel: $('#sales-channel').val(),
-                    };
-
-                    console.log('Submitting Sales Data:', formData); // Debugging
-
-                    // Send the data to the server
-                    $.ajax({
-                        url: '../../backend/controllers/add_sales.php',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(formData),
-                        success: function(response) {
-                            console.log('Response:', response); // Debugging
-
-                            // Parse the response if it is a string
-                            if (typeof response === 'string') {
-                                response = JSON.parse(response);
-                            }
-
-                            if (response.success) {
-                                Swal.fire({
-                                    title: 'Success!',
-                                    text: response.message || 'Sales record added successfully!',
-                                    icon: 'success',
-                                    confirmButtonText: 'OK',
-                                });
-
-                                $('#new-order-modal').hide(); // Close modal
-                                $('#new-order-form')[0].reset(); // Reset the form
-
-                                // Update all the tables dynamically for all tabs
-                                const tabs = ['all-orders', 'physical_store', 'shopee', 'tiktok']; // Add your tab IDs here
-                                tabs.forEach(function(tab) {
-                                    loadSalesData(tab); // Reload data for each tab
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: response.message || 'Failed to add sales record.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK',
-                                });
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('AJAX error:', xhr.responseText);
-
-                            // Parse the error response if possible
-                            let errorMessage = 'An error occurred while adding the sales record.';
-                            if (xhr.responseText) {
-                                try {
-                                    const errorResponse = JSON.parse(xhr.responseText);
-                                    errorMessage = errorResponse.message || errorMessage;
-                                } catch (e) {
-                                    console.error('Failed to parse error response:', e);
-                                }
-                            }
-
-                            Swal.fire({
-                                title: 'Error!',
-                                text: errorMessage,
-                                icon: 'error',
-                                confirmButtonText: 'OK',
-                            });
-                        },
-                        complete: function() {
-                            // Re-enable submit button and form inputs after AJAX completion (success or error)
-                            $('#submit-btn').prop('disabled', false);
-                            $('#new-order-form input, #new-order-form select').prop('disabled', false);
-                        },
-                    });
-                });
-
-
-                // Function to format currency (PHP format)
-                function formatCurrency(amount) {
-                    if (amount) {
-                        return '₱' + parseFloat(amount).toLocaleString('en-PH', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        });
-                    }
-                    return '₱0.00';
-                }
-
-                // Function to format date (MM/DD/YYYY)
-                function formatDate(dateString) {
-                    const date = new Date(dateString);
-                    const day = ('0' + date.getDate()).slice(-2); // Ensure two digits for day
-                    const month = ('0' + (date.getMonth() + 1)).slice(-2); // Ensure two digits for month
-                    const year = date.getFullYear();
-                    return `${month}/${day}/${year}`;
-                }
-
-                // Function to format sales channel (remove underscores and capitalize each word)
-                function formatChannel(channel) {
-                    if (channel) {
-                        // Replace underscores with spaces and capitalize first letter of each word
-                        return channel.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
-                    }
-                    return 'N/A';
-                }
-
-                // Function to load sales data for a specific tab
-                // Function to load sales data for a specific tab
-                // Function to load sales data for a specific tab
-                function loadSalesData(tab) {
-                    $.ajax({
-                        url: '../../backend/controllers/fetch_sales.php',
-                        type: 'GET',
-                        data: {
-                            tab: tab
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                const tbody = $(`#${tab} .sales-table tbody`);
-                                tbody.empty(); // Clear existing rows
-
-                                // Populate table rows
-                                response.data.forEach((sale) => {
-                                    tbody.append(`
+                            // Populate table rows
+                            response.data.forEach((sale) => {
+                                tbody.append(`
                         <tr>
                         <td><input type="checkbox" class="row-select" data-id="${sale.sale_id}"></td>
                             <td>${sale.variant_id}</td>
@@ -1364,167 +1495,167 @@ if (!isset($_SESSION['user_email'])) {
                             </td>
                         </tr>
                     `);
-                                });
+                            });
 
-                                console.log(`Data refreshed for tab: ${tab}`);
-                                reinitializeActions(); // Reinitialize event listeners
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: response.message || 'Failed to fetch sales data.',
-                                    icon: 'error',
-                                });
-                            }
-                        },
-                        error: function() {
+                            console.log(`Data refreshed for tab: ${tab}`);
+                            reinitializeActions(); // Reinitialize event listeners
+                        } else {
                             Swal.fire({
                                 title: 'Error!',
-                                text: 'An error occurred while fetching sales data.',
+                                text: response.message || 'Failed to fetch sales data.',
                                 icon: 'error',
                             });
-                        },
-                    });
-                }
-
-                // Specify only the tabs to be loaded (exclude 'archived-sales')
-                const tabsToLoad = ['all-orders', 'physical_store', 'shopee', 'tiktok'];
-
-                // Initial loading of sales data for the specified tabs
-                tabsToLoad.forEach((tab) => {
-                    loadSalesData(tab); // Load sales data for each specified tab on page load
-                });
-
-                // Event listener for tab switching
-                $('.tab').on('click', function() {
-                    const tab = $(this).data('tab'); // Get the tab name (e.g., "physical_store")
-
-                    // Ensure the tab being switched to is one of the specified tabs
-                    if (tabsToLoad.includes(tab)) {
-                        // Highlight active tab
-                        $('.tab').removeClass('active');
-                        $(this).addClass('active');
-
-                        // Show selected tab content and hide others
-                        $('.tab-content').removeClass('active');
-                        $(`#${tab}`).addClass('active');
-
-                        // Load sales data for the selected tab
-                        loadSalesData(tab);
-                    } else {
-                        console.log(`Tab "${tab}" is excluded from data loading.`);
-                    }
-                });
-
-            });
-        </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <!-- Js for archiving -->
-        <script>
-            function reinitializeActions() {
-                $(document).ready(function() {
-                    // Archive button functionality
-                    $(document).on('click', '.archive', function() {
-                        const saleId = $(this).data('id'); // Get the sale ID from the data-id attribute
-
-                        // Show confirmation popup using SweetAlert2
+                        }
+                    },
+                    error: function() {
                         Swal.fire({
-                            title: 'Are you sure?',
-                            text: 'You are about to archive this sales record.',
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Yes, archive it!',
-                            cancelButtonText: 'Cancel',
-                            reverseButtons: true // Make the Cancel button on the right side
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Send the archive request to the backend
-                                $.ajax({
-                                    url: '../../backend/controllers/archive_sale.php', // URL of the PHP script handling archiving
-                                    type: 'POST',
-                                    data: {
-                                        sale_id: saleId
-                                    },
-                                    dataType: 'json', // Ensure the response is parsed as JSON
-                                    success: function(response) {
-                                        console.log("Response from server:", response); // Debugging
+                            title: 'Error!',
+                            text: 'An error occurred while fetching sales data.',
+                            icon: 'error',
+                        });
+                    },
+                });
+            }
 
-                                        if (response.success) {
-                                            // Show success message using SweetAlert2
-                                            Swal.fire({
-                                                title: 'Success!',
-                                                text: 'Sales record archived successfully.',
-                                                icon: 'success',
-                                                confirmButtonText: 'OK'
-                                            });
+            // Specify only the tabs to be loaded (exclude 'archived-sales')
+            const tabsToLoad = ['all-orders', 'physical_store', 'shopee', 'tiktok'];
 
-                                            // Reload the sales data for all tabs after archiving
-                                            loadSalesDataForAllTabs();
-                                        } else {
-                                            // Show error message using SweetAlert2
-                                            Swal.fire({
-                                                title: 'Error!',
-                                                text: response.message || 'Failed to archive sales record.',
-                                                icon: 'error',
-                                                confirmButtonText: 'OK'
-                                            });
-                                        }
-                                    },
-                                    error: function() {
-                                        // Show error message if the AJAX request fails
+            // Initial loading of sales data for the specified tabs
+            tabsToLoad.forEach((tab) => {
+                loadSalesData(tab); // Load sales data for each specified tab on page load
+            });
+
+            // Event listener for tab switching
+            $('.tab').on('click', function() {
+                const tab = $(this).data('tab'); // Get the tab name (e.g., "physical_store")
+
+                // Ensure the tab being switched to is one of the specified tabs
+                if (tabsToLoad.includes(tab)) {
+                    // Highlight active tab
+                    $('.tab').removeClass('active');
+                    $(this).addClass('active');
+
+                    // Show selected tab content and hide others
+                    $('.tab-content').removeClass('active');
+                    $(`#${tab}`).addClass('active');
+
+                    // Load sales data for the selected tab
+                    loadSalesData(tab);
+                } else {
+                    console.log(`Tab "${tab}" is excluded from data loading.`);
+                }
+            });
+
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Js for archiving -->
+    <script>
+        function reinitializeActions() {
+            $(document).ready(function() {
+                // Archive button functionality
+                $(document).on('click', '.archive', function() {
+                    const saleId = $(this).data('id'); // Get the sale ID from the data-id attribute
+
+                    // Show confirmation popup using SweetAlert2
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You are about to archive this sales record.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, archive it!',
+                        cancelButtonText: 'Cancel',
+                        reverseButtons: true // Make the Cancel button on the right side
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Send the archive request to the backend
+                            $.ajax({
+                                url: '../../backend/controllers/archive_sale.php', // URL of the PHP script handling archiving
+                                type: 'POST',
+                                data: {
+                                    sale_id: saleId
+                                },
+                                dataType: 'json', // Ensure the response is parsed as JSON
+                                success: function(response) {
+                                    console.log("Response from server:", response); // Debugging
+
+                                    if (response.success) {
+                                        // Show success message using SweetAlert2
+                                        Swal.fire({
+                                            title: 'Success!',
+                                            text: 'Sales record archived successfully.',
+                                            icon: 'success',
+                                            confirmButtonText: 'OK'
+                                        });
+
+                                        // Reload the sales data for all tabs after archiving
+                                        loadSalesDataForAllTabs();
+                                    } else {
+                                        // Show error message using SweetAlert2
                                         Swal.fire({
                                             title: 'Error!',
-                                            text: 'An error occurred while archiving the sales record.',
+                                            text: response.message || 'Failed to archive sales record.',
                                             icon: 'error',
                                             confirmButtonText: 'OK'
                                         });
                                     }
-                                });
-                            }
-                        });
+                                },
+                                error: function() {
+                                    // Show error message if the AJAX request fails
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'An error occurred while archiving the sales record.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            });
+                        }
                     });
-
-                    // Function to reload data for all tabs
-                    function loadSalesDataForAllTabs() {
-                        const tabs = ['all-orders', 'physical_store', 'shopee', 'tiktok']; // List of all tab types
-                        tabs.forEach(function(tab) {
-                            loadSalesData(tab); // Reload sales data for each tab
-                        });
-                    }
                 });
 
-                // Function to load sales data for a specific tab
-                function loadSalesData(tab, limit = 50, offset = 0) {
-                    $.ajax({
-                        url: '../../backend/controllers/fetch_sales.php',
-                        type: 'GET',
-                        data: {
-                            tab: tab,
-                            limit: limit,
-                            offset: offset
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                const tbody = $(`#${tab} .sales-table tbody`);
-                                tbody.empty(); // Clear existing rows
+                // Function to reload data for all tabs
+                function loadSalesDataForAllTabs() {
+                    const tabs = ['all-orders', 'physical_store', 'shopee', 'tiktok']; // List of all tab types
+                    tabs.forEach(function(tab) {
+                        loadSalesData(tab); // Reload sales data for each tab
+                    });
+                }
+            });
 
-                                response.data.forEach((sale) => {
-                                    tbody.append(`
+            // Function to load sales data for a specific tab
+            function loadSalesData(tab, limit = 50, offset = 0) {
+                $.ajax({
+                    url: '../../backend/controllers/fetch_sales.php',
+                    type: 'GET',
+                    data: {
+                        tab: tab,
+                        limit: limit,
+                        offset: offset
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            const tbody = $(`#${tab} .sales-table tbody`);
+                            tbody.empty(); // Clear existing rows
+
+                            response.data.forEach((sale) => {
+                                tbody.append(`
                         <tr>
                         
                             <td>${sale.variant_id}</td>
@@ -1541,71 +1672,71 @@ if (!isset($_SESSION['user_email'])) {
                             </td>
                         </tr>
                     `);
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: response.message || 'Failed to fetch sales data.',
-                                    icon: 'error',
-                                });
-                            }
-                        },
-                        error: function() {
+                            });
+                        } else {
                             Swal.fire({
                                 title: 'Error!',
-                                text: 'An error occurred while fetching sales data.',
+                                text: response.message || 'Failed to fetch sales data.',
                                 icon: 'error',
                             });
-                        },
-                    });
-                }
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while fetching sales data.',
+                            icon: 'error',
+                        });
+                    },
+                });
+            }
 
 
-                // Helper functions to format data
-                function formatDate(dateStr) {
-                    const date = new Date(dateStr);
-                    return date.toLocaleDateString(); // Format date to 'MM/DD/YYYY'
-                }
+            // Helper functions to format data
+            function formatDate(dateStr) {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString(); // Format date to 'MM/DD/YYYY'
+            }
 
-                function formatCurrency(value) {
-                    return '$' + parseFloat(value).toFixed(2); // Format as currency
-                }
+            function formatCurrency(value) {
+                return '$' + parseFloat(value).toFixed(2); // Format as currency
+            }
 
-                function formatChannel(channel) {
-                    switch (channel) {
-                        case 'physical_store':
-                            return 'Physical Store';
-                        case 'shopee':
-                            return 'Shopee';
-                        case 'tiktok':
-                            return 'TikTok';
-                        default:
-                            return channel;
-                    }
+            function formatChannel(channel) {
+                switch (channel) {
+                    case 'physical_store':
+                        return 'Physical Store';
+                    case 'shopee':
+                        return 'Shopee';
+                    case 'tiktok':
+                        return 'TikTok';
+                    default:
+                        return channel;
                 }
             }
-        </script>
+        }
+    </script>
 
 
 
 
-        <!-- JS for restoring tab -->
-        <script>
-            $(document).ready(function() {
-                // Function to load archived sales data
-                function loadArchivedSalesData() {
-                    $.ajax({
-                        url: '../../backend/controllers/fetch_archived_sales.php', // Path to the new fetch_archived_sales.php
-                        type: 'GET',
-                        dataType: 'json', // Ensure we expect JSON in response
-                        success: function(response) {
-                            if (response.success) {
-                                const tbody = $('#archived-sales .sales-table tbody'); // Table for the archived sales tab
-                                tbody.empty(); // Clear existing rows
+    <!-- JS for restoring tab -->
+    <script>
+        $(document).ready(function() {
+            // Function to load archived sales data
+            function loadArchivedSalesData() {
+                $.ajax({
+                    url: '../../backend/controllers/fetch_archived_sales.php', // Path to the new fetch_archived_sales.php
+                    type: 'GET',
+                    dataType: 'json', // Ensure we expect JSON in response
+                    success: function(response) {
+                        if (response.success) {
+                            const tbody = $('#archived-sales .sales-table tbody'); // Table for the archived sales tab
+                            tbody.empty(); // Clear existing rows
 
-                                // Populate table rows with formatted values
-                                response.data.forEach((sale) => {
-                                    tbody.append(`
+                            // Populate table rows with formatted values
+                            response.data.forEach((sale) => {
+                                tbody.append(`
                             <tr>
                             <td><input type="checkbox" class="row-select" data-id="${sale.sale_id}"></td>
                                 <td>${sale.variant_id}</td>
@@ -1621,298 +1752,299 @@ if (!isset($_SESSION['user_email'])) {
                                 </td>
                             </tr>
                         `);
-                                });
+                            });
 
-                                // Add event listener for the "Restore" button
-                                $('.restore').on('click', function() {
-                                    const saleId = $(this).data('id');
-                                    restoreSale(saleId);
-                                });
+                            // Add event listener for the "Restore" button
+                            $('.restore').on('click', function() {
+                                const saleId = $(this).data('id');
+                                restoreSale(saleId);
+                            });
 
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: 'Failed to fetch archived sales data: ' + response.message,
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
-                            }
-                        },
-                        error: function() {
+                        } else {
                             Swal.fire({
                                 title: 'Error!',
-                                text: 'An error occurred while fetching archived sales data.',
+                                text: 'Failed to fetch archived sales data: ' + response.message,
                                 icon: 'error',
                                 confirmButtonText: 'OK'
                             });
                         }
-                    });
-                }
-
-                // Function to restore the sale
-                function restoreSale(saleId) {
-                    $.ajax({
-                        url: '../../backend/controllers/restore_sale.php', // PHP script for restoring the sale
-                        type: 'POST',
-                        data: {
-                            sale_id: saleId
-                        },
-                        dataType: 'json', // Ensure we expect JSON in response
-                        success: function(response) {
-                            console.log(response); // Log the response for debugging
-
-                            if (response.success) {
-                                // Show success message
-                                Swal.fire({
-                                    title: 'Success!',
-                                    text: response.message, // Display the success message
-                                    icon: 'success',
-                                    confirmButtonText: 'OK'
-                                });
-
-                                // Remove the restored sale from the archived sales table
-                                $(`button[data-id="${saleId}"]`).closest('tr').remove();
-
-                                // Optionally, reload the sales data in the "all-orders" tab or any other relevant tab
-                                loadSalesData('all-orders'); // Reload the "all-orders" tab or any other tab where the sale should appear
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: response.message || 'Failed to restore sale.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
-                            }
-                        },
-                        error: function() {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'An error occurred while restoring the sale.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    });
-                }
-
-                // Initial call to load the archived sales data
-                loadArchivedSalesData();
-
-                // Helper functions to format data
-                function formatDate(dateStr) {
-                    const date = new Date(dateStr);
-                    return date.toLocaleDateString(); // Format date to 'MM/DD/YYYY'
-                }
-
-                function formatCurrency(value) {
-                    return '$' + parseFloat(value).toFixed(2); // Format as currency
-                }
-
-                function formatChannel(channel) {
-                    switch (channel) {
-                        case 'physical_store':
-                            return 'Physical Store';
-                        case 'shopee':
-                            return 'Shopee';
-                        case 'tiktok':
-                            return 'TikTok';
-                        default:
-                            return channel;
-                    }
-                }
-            });
-        </script>
-
-
-        <!-- Main JS -->
-        <script>
-            function initializeSalesRecord() {
-                // Handle tab switching
-                document.querySelector('.tabs-container').addEventListener('click', function(event) {
-                    if (event.target.classList.contains('tab')) {
-                        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-                        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                        event.target.classList.add('active');
-                        document.getElementById(event.target.getAttribute('data-tab')).classList.add('active');
-                    }
-                });
-
-                // Get modal and buttons
-                const modal = document.getElementById("new-order-modal");
-                const newOrderButton = document.querySelector(".new-order-button");
-                const closeButton = document.querySelector(".close-button");
-                const cancelButton = document.querySelector(".cancel-button");
-                const form = document.getElementById("new-order-form"); // Get the form element
-                const productIdInput = document.getElementById("product-id");
-                const costInput = document.getElementById("cost");
-                const totalPriceInput = document.getElementById("total-price");
-
-                // Show the modal when the "New Sales Order" button is clicked
-                newOrderButton.addEventListener('click', function() {
-                    modal.style.display = "flex"; // Display modal
-                });
-
-                // Close the modal when the close button (x) is clicked
-                closeButton.addEventListener('click', function() {
-                    closeModalAndReset();
-                });
-
-                // Close the modal when the cancel button is clicked
-                cancelButton.addEventListener('click', function() {
-                    closeModalAndReset();
-                });
-
-                // Function to close modal and reset the form
-                function closeModalAndReset() {
-                    modal.style.display = "none"; // Hide modal
-                    form.reset(); // Reset the form fields
-
-                    // Manually reset dynamically updated fields (like readonly inputs)
-                    productIdInput.value = ""; // Reset hidden product id field
-                    costInput.value = ""; // Reset cost per unit
-                    totalPriceInput.value = ""; // Reset total price
-                }
-
-                // Prevent modal from closing when clicking outside of it
-                window.addEventListener('click', function(event) {
-                    // Do nothing if clicked inside the modal content
-                    if (event.target === modal && !event.target.closest(".modal-content")) {
-                        return; // Don't close the modal if clicked outside
+                    },
+                    error: function() {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while fetching archived sales data.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
                     }
                 });
             }
 
-            // Call the initialization function when the page loads or when entering the section
-            initializeSalesRecord();
-        </script>
+            // Function to restore the sale
+            function restoreSale(saleId) {
+                $.ajax({
+                    url: '../../backend/controllers/restore_sale.php', // PHP script for restoring the sale
+                    type: 'POST',
+                    data: {
+                        sale_id: saleId
+                    },
+                    dataType: 'json', // Ensure we expect JSON in response
+                    success: function(response) {
+                        console.log(response); // Log the response for debugging
+
+                        if (response.success) {
+                            // Show success message
+                            Swal.fire({
+                                title: 'Success!',
+                                text: response.message, // Display the success message
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            });
+
+                            // Remove the restored sale from the archived sales table
+                            $(`button[data-id="${saleId}"]`).closest('tr').remove();
+
+                            // Optionally, reload the sales data in the "all-orders" tab or any other relevant tab
+                            loadSalesData('all-orders'); // Reload the "all-orders" tab or any other tab where the sale should appear
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.message || 'Failed to restore sale.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while restoring the sale.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            }
+
+            // Initial call to load the archived sales data
+            loadArchivedSalesData();
+
+            // Helper functions to format data
+            function formatDate(dateStr) {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString(); // Format date to 'MM/DD/YYYY'
+            }
+
+            function formatCurrency(value) {
+                return '$' + parseFloat(value).toFixed(2); // Format as currency
+            }
+
+            function formatChannel(channel) {
+                switch (channel) {
+                    case 'physical_store':
+                        return 'Physical Store';
+                    case 'shopee':
+                        return 'Shopee';
+                    case 'tiktok':
+                        return 'TikTok';
+                    default:
+                        return channel;
+                }
+            }
+        });
+    </script>
+
+
+    <!-- Main JS -->
+    <script>
+        function initializeSalesRecord() {
+            // Handle tab switching
+            document.querySelector('.tabs-container').addEventListener('click', function(event) {
+                if (event.target.classList.contains('tab')) {
+                    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    event.target.classList.add('active');
+                    document.getElementById(event.target.getAttribute('data-tab')).classList.add('active');
+                }
+            });
+
+            // Get modal and buttons
+            const modal = document.getElementById("new-order-modal");
+            const newOrderButton = document.querySelector(".new-order-button");
+            const closeButton = document.querySelector(".close-button");
+            const cancelButton = document.querySelector(".cancel-button");
+            const form = document.getElementById("new-order-form"); // Get the form element
+            const productIdInput = document.getElementById("product-id");
+            const costInput = document.getElementById("cost");
+            const totalPriceInput = document.getElementById("total-price");
+
+            // Show the modal when the "New Sales Order" button is clicked
+            newOrderButton.addEventListener('click', function() {
+                modal.style.display = "flex"; // Display modal
+            });
+
+            // Close the modal when the close button (x) is clicked
+            closeButton.addEventListener('click', function() {
+                closeModalAndReset();
+            });
+
+            // Close the modal when the cancel button is clicked
+            cancelButton.addEventListener('click', function() {
+                closeModalAndReset();
+            });
+
+            // Function to close modal and reset the form
+            function closeModalAndReset() {
+                modal.style.display = "none"; // Hide modal
+                form.reset(); // Reset the form fields
+
+                // Manually reset dynamically updated fields (like readonly inputs)
+                productIdInput.value = ""; // Reset hidden product id field
+                costInput.value = ""; // Reset cost per unit
+                totalPriceInput.value = ""; // Reset total price
+            }
+
+            // Prevent modal from closing when clicking outside of it
+            window.addEventListener('click', function(event) {
+                // Do nothing if clicked inside the modal content
+                if (event.target === modal && !event.target.closest(".modal-content")) {
+                    return; // Don't close the modal if clicked outside
+                }
+            });
+        }
+
+        // Call the initialization function when the page loads or when entering the section
+        initializeSalesRecord();
+    </script>
 
 
 
-<style>
-    /* Add CSS for hiding rows and highlighting matches */
-    .hidden-row {
-        display: none;
-    }
-    mark {
-        background-color: yellow;
-        color: black;
-    }
+    <style>
+        /* Add CSS for hiding rows and highlighting matches */
+        .hidden-row {
+            display: none;
+        }
+
+        mark {
+            background-color: yellow;
+            color: black;
+        }
 
         /* Filter input styling */
         .filter-input-container {
-        position: relative;
-        display: inline-block;
-        margin-bottom: 10px;
-    }
-
-    .filter-input {
-        padding: 6px 10px;
-        font-size: 12px;
-        border: 1px solid #ccc;
-        border-radius: 18px;
-        width: 220px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-    }
-
-    .filter-input:focus {
-        border-color: #0056b3;
-        box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
-    }
-
-    .icon-filter {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 14px;
-        color: #888;
-        cursor: pointer;
-        transition: color 0.3s ease;
-    }
-
-    .icon-filter:hover {
-        color: #0056b3;
-    }
-</style>
-
-<script>
-    // Utility function for debouncing
-    function debounce(func, delay) {
-        let timer;
-        return function (...args) {
-            clearTimeout(timer);
-            timer = setTimeout(() => func.apply(this, args), delay);
-        };
-    }
-
-    // Function to apply filters to a given container
-    function filterTableRows(event) {
-        const keyword = event.target.value.toLowerCase().trim();
-        const container = event.target.closest('.sales-record-container') || document.querySelector('.inventory-container');
-        const allTabContents = container.querySelectorAll('.tab-content');
-
-        allTabContents.forEach(tabContent => {
-            const rows = tabContent.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                const cells = Array.from(row.querySelectorAll('td:not(:has(img, input, button))')); // Exclude cells with non-text content
-                let rowMatches = false;
-
-                // Check if any cell matches the keyword and highlight
-                cells.forEach(cell => {
-                    const originalText = cell.getAttribute('data-original-text') || cell.textContent;
-                    if (!cell.hasAttribute('data-original-text')) {
-                        cell.setAttribute('data-original-text', originalText); // Save the original content
-                    }
-
-                    const cellText = originalText.toLowerCase();
-                    if (cellText.includes(keyword)) {
-                        rowMatches = true;
-                        // Highlight the matching text
-                        const regex = new RegExp(`(${keyword})`, 'gi');
-                        cell.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
-                    } else {
-                        cell.innerHTML = originalText; // Reset to original content
-                    }
-                });
-
-                // Toggle row visibility
-                row.style.display = rowMatches ? '' : 'none';
-            });
-        });
-
-        // Reset rows when keyword is empty
-        if (!keyword) {
-            resetTableFilters(container);
+            position: relative;
+            display: inline-block;
+            margin-bottom: 10px;
         }
-    }
 
-    // Function to reset all rows and remove highlights
-    function resetTableFilters(container) {
-        const allTabContents = container.querySelectorAll('.tab-content');
-        allTabContents.forEach(tabContent => {
-            const rows = tabContent.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                row.style.display = ''; // Reset visibility
-                const cells = row.querySelectorAll('td');
-                cells.forEach(cell => {
-                    const originalText = cell.getAttribute('data-original-text');
-                    if (originalText) {
-                        cell.innerHTML = originalText; // Restore original content
-                    }
+        .filter-input {
+            padding: 6px 10px;
+            font-size: 12px;
+            border: 1px solid #ccc;
+            border-radius: 18px;
+            width: 220px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus {
+            border-color: #0056b3;
+            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+        }
+
+        .icon-filter {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: #888;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .icon-filter:hover {
+            color: #0056b3;
+        }
+    </style>
+
+    <script>
+        // Utility function for debouncing
+        function debounce(func, delay) {
+            let timer;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        // Function to apply filters to a given container
+        function filterTableRows(event) {
+            const keyword = event.target.value.toLowerCase().trim();
+            const container = event.target.closest('.sales-record-container') || document.querySelector('.inventory-container');
+            const allTabContents = container.querySelectorAll('.tab-content');
+
+            allTabContents.forEach(tabContent => {
+                const rows = tabContent.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const cells = Array.from(row.querySelectorAll('td:not(:has(img, input, button))')); // Exclude cells with non-text content
+                    let rowMatches = false;
+
+                    // Check if any cell matches the keyword and highlight
+                    cells.forEach(cell => {
+                        const originalText = cell.getAttribute('data-original-text') || cell.textContent;
+                        if (!cell.hasAttribute('data-original-text')) {
+                            cell.setAttribute('data-original-text', originalText); // Save the original content
+                        }
+
+                        const cellText = originalText.toLowerCase();
+                        if (cellText.includes(keyword)) {
+                            rowMatches = true;
+                            // Highlight the matching text
+                            const regex = new RegExp(`(${keyword})`, 'gi');
+                            cell.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+                        } else {
+                            cell.innerHTML = originalText; // Reset to original content
+                        }
+                    });
+
+                    // Toggle row visibility
+                    row.style.display = rowMatches ? '' : 'none';
                 });
             });
-        });
-    }
 
-    // Attach input event listeners to all filter inputs
-    document.querySelectorAll('.filter-input').forEach(filterInput => {
-        filterInput.addEventListener(
-            'input',
-            debounce(filterTableRows, 300)
-        );
-    });
-</script>
+            // Reset rows when keyword is empty
+            if (!keyword) {
+                resetTableFilters(container);
+            }
+        }
+
+        // Function to reset all rows and remove highlights
+        function resetTableFilters(container) {
+            const allTabContents = container.querySelectorAll('.tab-content');
+            allTabContents.forEach(tabContent => {
+                const rows = tabContent.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    row.style.display = ''; // Reset visibility
+                    const cells = row.querySelectorAll('td');
+                    cells.forEach(cell => {
+                        const originalText = cell.getAttribute('data-original-text');
+                        if (originalText) {
+                            cell.innerHTML = originalText; // Restore original content
+                        }
+                    });
+                });
+            });
+        }
+
+        // Attach input event listeners to all filter inputs
+        document.querySelectorAll('.filter-input').forEach(filterInput => {
+            filterInput.addEventListener(
+                'input',
+                debounce(filterTableRows, 300)
+            );
+        });
+    </script>
 
 
 

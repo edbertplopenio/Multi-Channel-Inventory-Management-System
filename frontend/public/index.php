@@ -68,6 +68,7 @@ mysqli_close($conn);
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js"></script> <!-- Include jQuery -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
@@ -76,14 +77,14 @@ mysqli_close($conn);
         <div class="sidebar">
             <div class="head">
                 <div class="user-img">
-                <div class="user-img">
-    <img src="../../frontend/public/images/users/<?php echo htmlspecialchars($_SESSION['user_image']); ?>" alt="User Image" />
-</div>
+                    <div class="user-img">
+                        <img src="../../frontend/public/images/users/<?php echo htmlspecialchars($_SESSION['user_image']); ?>" alt="User Image" />
+                    </div>
                 </div>
                 <div class="user-details">
-    <p class="title"><?php echo htmlspecialchars($_SESSION['user_role']); ?></p>
-    <p class="name"><?php echo htmlspecialchars($_SESSION['user_name']); ?></p>
-</div>
+                    <p class="title"><?php echo htmlspecialchars($_SESSION['user_role']); ?></p>
+                    <p class="name"><?php echo htmlspecialchars($_SESSION['user_name']); ?></p>
+                </div>
             </div>
             <div class="nav">
                 <div class="menu">
@@ -224,30 +225,166 @@ mysqli_close($conn);
                 }
             });
 
-// Account section links (example for logout link)
-$('.account-section').on('click', '#logout-link', function(e) {
-    e.preventDefault();  // Prevent the default logout behavior
+            // Account section links (example for logout link)
+            $('.account-section').on('click', '#logout-link', function(e) {
+                e.preventDefault(); // Prevent the default logout behavior
 
-    // Show SweetAlert confirmation dialog
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "Do you really want to logout?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, logout!',
-        cancelButtonText: 'Cancel'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Redirect to logout.php
-            window.location.href = '../../backend/views/logout.php';
-        }
-    });
-});
+                // Show SweetAlert confirmation dialog
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you really want to logout?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, logout!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirect to logout.php
+                        window.location.href = '../../backend/views/logout.php';
+                    }
+                });
+            });
 
         });
     </script>
+
+
+
+
+    <script>
+        // Function to initialize charts
+        function initializeSalesChart() {
+            const ctx = document.getElementById('salesDynamicChart')?.getContext('2d');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                        datasets: [{
+                            label: 'Sales Revenue ($)',
+                            data: [12000, 15000, 13000, 16000, 17000, 14500, 18000],
+                            borderColor: '#5bc0f8',
+                            backgroundColor: 'rgba(91, 192, 248, 0.2)',
+                            borderWidth: 2,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            } else {
+                console.warn('Canvas for sales chart not found.');
+            }
+        }
+
+        // Function to load content dynamically
+        function loadPage(contentUrl, initFunction = null) {
+            $('#main-content').load(contentUrl, function(response, status, xhr) {
+                if (status === "error") {
+                    console.error(`Error loading content: ${xhr.statusText}`);
+                } else if (typeof initFunction === 'function') {
+                    initFunction();
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            // Load dashboard content by default
+            loadPage('../../backend/views/dashboard.php', initializeSalesChart);
+
+            // Handle menu clicks
+            $('.menu').on('click', 'a', function(e) {
+                e.preventDefault();
+                const linkId = $(this).attr('id');
+                let contentUrl = '';
+                let initFunction = null;
+
+                if (linkId === 'dashboard-link') {
+                    contentUrl = '../../backend/views/dashboard.php';
+                    initFunction = initializeSalesChart;
+                }
+                // Add cases for other links...
+
+                if (contentUrl) {
+                    loadPage(contentUrl, initFunction);
+                }
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+
 </body>
 
 </html>
+
+<style>
+    /* Sales Dynamics Chart Styling */
+    .card-sales-dynamic {
+        position: relative;
+        /* Ensure proper positioning for the chart */
+        overflow: hidden;
+        /* Prevent content overflow */
+        padding: 15px;
+        /* Add padding to prevent the chart from touching the edges */
+    }
+
+    .card-sales-dynamic canvas {
+        display: block;
+        /* Ensure the canvas is treated as a block element */
+        width: 100% !important;
+        /* Make the chart take the full width of the container */
+        height: 80% !important;
+        /* Make the chart take the full height of the container */
+        max-height: 100%;
+        /* Prevent the chart from exceeding the container height */
+        max-width: 100%;
+        /* Prevent the chart from exceeding the container width */
+    }
+</style>
+
+
+<style>
+    .card-sales-by-category {
+        position: relative;
+        padding: 10px;
+        /* Add some padding inside the card */
+        overflow: hidden;
+        height: 245px;
+        /* Reduced height for a smaller card */
+    }
+
+    .card-sales-by-category canvas {
+        width: 80% !important;
+        /* Reduce the chart width */
+        height: 80% !important;
+        /* Reduce the chart height */
+        max-height: 100%;
+        /* Prevent overflow */
+    }
+</style>
+
+
+<style>
+    .card-channels {
+        position: relative;
+        /* Padding inside the card */
+        overflow: hidden;
+
+    }
+
+    .card-channels canvas {
+        width: 100% !important;
+        /* Ensure the canvas spans the width of the container */
+        height: 90% !important;
+        /* Ensure the canvas spans the height of the container */
+        max-height: 90%;
+        /* Prevent overflow */
+    }
+</style>

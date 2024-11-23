@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
         $image = $_FILES['image'];
         $image_name = time() . '_' . basename($image['name']);
-        $upload_dir = '../../frontend/public/images/';
+        $upload_dir = '../../frontend/public/images/items/';
         $image_path = $upload_dir . $image_name;
         if (!move_uploaded_file($image['tmp_name'], $image_path)) {
             echo json_encode(['success' => false, 'message' => 'Failed to upload image.']);

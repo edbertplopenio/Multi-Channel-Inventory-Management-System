@@ -27,118 +27,22 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700');
+    @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
 
-        body {
-            background-color: #f4f7fc;
-            height: 100vh;
-            overflow: hidden;
-        }
+    body {
+        background-color: #f4f7fc;
+        height: 100vh;
+        overflow: hidden;
+    }
 
-        .inventory-container {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
-            border-radius: 10px;
-            height: 95vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            font-size: 22px;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .tabs-container {
-            display: flex;
-            align-items: flex-end;
-            gap: 5px;
-        }
-
-        .tab {
-            padding: 8px 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 10px 10px 0 0;
-            cursor: pointer;
-            font-size: 12px;
-            transition: background-color 0.3s, color 0.3s;
-            font-weight: 500;
-            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1;
-            position: relative;
-        }
-
-        .tab.active {
-            background-color: white;
-            color: #007bff;
-            z-index: 2;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-        }
-
-        .inventory-table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #fff;
-            border-radius: 10px;
-            overflow-y: auto;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            max-height: 100%;
-            table-layout: fixed;
-        }
-
-        .inventory-table th,
-        .inventory-table td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-            font-size: 12px;
-        }
-
-        .inventory-table th {
-            background-color: #f4f7fc;
-            color: #555;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-
-        .inventory-table img {
-            border-radius: 5px;
-        }
-
-        .tab-content {
-            display: none;
-            padding-top: 20px;
-            height: calc(100vh - 280px);
-            overflow-y: auto;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .unarchive-button {
+    .unarchive-button {
             background-color: #28a745;
             color: white;
             padding: 5px 10px;
@@ -153,120 +57,218 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
             background-color: #218838;
         }
 
+    .inventory-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+        border-radius: 10px;
+        height: 95vh;
+        display: flex;
+        flex-direction: column;
+    }
 
-        /* Checkbox column styling */
-        .inventory-table td.checkbox-column {
-            width: 50px;
-            padding: 0;
-            text-align: center;
-            vertical-align: middle;
-        }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
 
-        /* Styling for checkboxes */
-        input[type="checkbox"] {
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            background-color: #ffffff;
-            border: 2px solid #007bff;
-            border-radius: 3px;
-            position: relative;
-            cursor: pointer;
-            outline: none;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
+    .header h1 {
+        font-size: 22px;
+        color: #333;
+        font-weight: 600;
+    }
 
-        input[type="checkbox"]:checked {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
+    .tabs-container {
+        display: flex;
+        align-items: flex-end;
+        gap: 5px;
+    }
 
-        input[type="checkbox"]:checked::after {
-            content: "";
-            position: absolute;
-            left: 4px;
-            top: 2px;
-            width: 4px;
-            height: 8px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
+    .tab {
+        padding: 8px 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 10px 10px 0 0;
+        cursor: pointer;
+        font-size: 12px;
+        transition: background-color 0.3s, color 0.3s;
+        font-weight: 500;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        position: relative;
+    }
 
-        input[type="checkbox"]:hover {
-            border-color: #0056b3;
-        }
+    .tab.active {
+        background-color: white;
+        color: #007bff;
+        z-index: 2;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }
 
-        input[type="checkbox"]:checked:hover {
-            background-color: #0056b3;
-        }
+    /* Apply the same styling to the inventory table */
+    .inventory-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        /* Ensures consistent column widths */
+    }
 
-        /* For when you want to add a hover effect on checkboxes in a table */
-        .inventory-table td.checkbox-column input[type="checkbox"]:hover {
-            background-color: #f0f0f0;
-        }
+    .inventory-table thead {
+        position: sticky;
+        top: 0;
+        background-color: #f4f7fc;
+        z-index: 1;
+        font-weight: 600;
+        color: #555;
+    }
 
-        /* Column width adjustments for different inventory tabs */
-        .inventory-table th:nth-child(1),
-        .inventory-table td:nth-child(1) {
-            width: 50px;
-        }
+    .inventory-table th,
+    .inventory-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 12px;
+    }
 
-        .inventory-table th:nth-child(2),
-        .inventory-table td:nth-child(2) {
-            width: 100px;
-        }
+    .inventory-table th {
+        background-color: #f4f7fc;
+    }
 
-        .inventory-table th:nth-child(3),
-        .inventory-table td:nth-child(3) {
-            width: 120px;
-        }
+    .inventory-table td {
+        color: #555;
+    }
 
-        .inventory-table th:nth-child(4),
-        .inventory-table td:nth-child(4) {
-            width: 90px;
-        }
+    .inventory-table img {
+        border-radius: 5px;
+    }
 
-        .inventory-table th:nth-child(5),
-        .inventory-table td:nth-child(5) {
-            width: 80px;
-        }
+    /* Scrollable tbody */
+    .inventory-table tbody {
+        display: block;
+        max-height: 66vh;
+        overflow-y: auto;
+        width: 100%;
+    }
 
-        .inventory-table th:nth-child(6),
-        .inventory-table td:nth-child(6) {
-            width: 100px;
-        }
+    .inventory-table thead,
+    .inventory-table tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
 
-        .inventory-table th:nth-child(7),
-        .inventory-table td:nth-child(7) {
-            width: 80px;
-        }
+    /* Specific column widths for inventory */
+    .inventory-table th:nth-child(1),
+    .inventory-table td:nth-child(1) {
+        width: 50px; /* Checkbox column */
+    }
 
-        .inventory-table th:nth-child(8),
-        .inventory-table td:nth-child(8) {
-            width: 90px;
-        }
+    .inventory-table th:nth-child(2),
+    .inventory-table td:nth-child(2) {
+        width: 80px; /* Variant ID column */
+    }
 
-        .inventory-table th:nth-child(9),
-        .inventory-table td:nth-child(9) {
-            width: 100px;
-        }
+    .inventory-table th:nth-child(3),
+    .inventory-table td:nth-child(3) {
+        width: 150px; /* Product Name column */
+    }
 
-        .inventory-table th:nth-child(10),
-        .inventory-table td:nth-child(10) {
-            width: 90px;
-        }
+    .inventory-table th:nth-child(4),
+    .inventory-table td:nth-child(4) {
+        width: 150px; /* Variant (Size/Color) column */
+    }
 
-        .inventory-table th:nth-child(11),
-        .inventory-table td:nth-child(11) {
-            width: 90px;
-        }
+    .inventory-table th:nth-child(5),
+    .inventory-table td:nth-child(5) {
+        width: 120px; /* Sale Date column */
+    }
 
-        .inventory-table th:nth-child(12),
-        .inventory-table td:nth-child(12) {
-            width: 150px;
-        }
-    </style>
+    .inventory-table th:nth-child(6),
+    .inventory-table td:nth-child(6) {
+        width: 100px; /* Quantity Sold column */
+    }
+
+    .inventory-table th:nth-child(7),
+    .inventory-table td:nth-child(7) {
+        width: 120px; /* Cost per Item column */
+    }
+
+    .inventory-table th:nth-child(8),
+    .inventory-table td:nth-child(8) {
+        width: 100px; /* Total Sales column */
+    }
+
+    .inventory-table th:nth-child(9),
+    .inventory-table td:nth-child(9) {
+        width: 120px; /* Sales Channel column */
+    }
+
+    .inventory-table th:nth-child(10),
+    .inventory-table td:nth-child(10) {
+        width: 150px; /* Actions column */
+    }
+
+    /* Checkbox column styling */
+    .inventory-table td.checkbox-column {
+        width: 50px;
+        padding: 0;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* Styling for checkboxes */
+    input[type="checkbox"] {
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        background-color: #ffffff;
+        border: 2px solid #007bff;
+        border-radius: 3px;
+        position: relative;
+        cursor: pointer;
+        outline: none;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    input[type="checkbox"]:checked {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 2px;
+        width: 4px;
+        height: 8px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+
+    input[type="checkbox"]:hover {
+        border-color: #0056b3;
+    }
+
+    input[type="checkbox"]:checked:hover {
+        background-color: #0056b3;
+    }
+
+    /* Hover effect on checkboxes in a table */
+    .inventory-table td.checkbox-column input[type="checkbox"]:hover {
+        background-color: #f0f0f0;
+    }
+</style>
+
 </head>
 
 <body>
@@ -282,51 +284,6 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
                 <input type="text" class="filter-input" placeholder="Type to filter archived items">
                 <i class="fas fa-filter icon-filter"></i>
             </div>
-            <style>
-       /* Filter input styling */
-       .filters {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .filter-input-container {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 10px;
-            margin-left: auto; /* This pushes it to the right */
-        }
-
-        .filter-input {
-            padding: 6px 10px;
-            font-size: 12px;
-            border: 1px solid #ccc;
-            border-radius: 18px;
-            width: 220px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .filter-input:focus {
-            border-color: #0056b3;
-            box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
-        }
-
-        .icon-filter {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 14px;
-            color: #888;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .icon-filter:hover {
-            color: #0056b3;
-        }
-</style>
         </div>
 
         <!-- All Inventory Tab -->
@@ -488,201 +445,162 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
         });
     }
 
-// Batch Unarchive button functionality
-document.getElementById('unarchive-button').addEventListener('click', function() {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
-    const selectedIds = new Set(
-        Array.from(checkboxes)
-        .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude "Select All" checkboxes
-        .map(checkbox => checkbox.value) // Get the variant IDs
-    );
+    // Batch Unarchive button functionality
+    document.getElementById('unarchive-button').addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedIds = new Set(
+            Array.from(checkboxes)
+            .filter(checkbox => !checkbox.id.includes('select-all')) // Exclude "Select All" checkboxes
+            .map(checkbox => checkbox.value) // Get the variant IDs
+        );
 
-    let unarchivedItemCount = 0;
+        let unarchivedItemCount = 0;
 
-    if (selectedIds.size === 0) {
+        if (selectedIds.size === 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'No Items Selected',
+                text: 'Please select items to unarchive.',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
         Swal.fire({
-            icon: 'info',
-            title: 'No Items Selected',
-            text: 'Please select items to unarchive.',
-            confirmButtonText: 'OK'
-        });
-        return;
-    }
-
-    Swal.fire({
-        title: 'Are you sure?',
-        text: `Are you sure you want to unarchive ${selectedIds.size} item(s)?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#28a745',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, unarchive them!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            let unarchivePromises = Array.from(selectedIds).map(itemId => {
-                return fetch('../../backend/controllers/unarchive_item.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            variant_id: itemId
+            title: 'Are you sure?',
+            text: `Are you sure you want to unarchive ${selectedIds.size} item(s)?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, unarchive them!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let unarchivePromises = Array.from(selectedIds).map(itemId => {
+                    return fetch('../../backend/controllers/unarchive_item.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                variant_id: itemId
+                            })
                         })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Item successfully unarchived, remove the row from the table
-                            const row = document.querySelector(`tr[data-id="${itemId}"]`);
-                            if (row) {
-                                row.remove(); // Remove the row from the table
-                            }
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Item successfully unarchived, remove the row from the table
+                                const row = document.querySelector(`tr[data-id="${itemId}"]`);
+                                if (row) {
+                                    row.remove(); // Remove the row from the table
+                                }
 
-                            unarchivedItemCount++; // Increment the count of successfully unarchived items
-                        } else {
+                                unarchivedItemCount++; // Increment the count of successfully unarchived items
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: `Error unarchiving item ${itemId}: ${data.message || 'Unknown error'}`,
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Error',
-                                text: `Error unarchiving item ${itemId}: ${data.message || 'Unknown error'}`,
+                                title: 'Unexpected Error',
+                                text: `An unexpected error occurred for item ${itemId}. Please try again later.`,
                                 confirmButtonText: 'OK'
                             });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
+                        });
+                });
+
+                // Wait for all unarchive promises to complete
+                Promise.all(unarchivePromises).then(() => {
+                    if (unarchivedItemCount > 0) {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Unexpected Error',
-                            text: `An unexpected error occurred for item ${itemId}. Please try again later.`,
+                            icon: 'success',
+                            title: 'Unarchiving Completed',
+                            text: `${unarchivedItemCount} item(s) have been successfully unarchived.`,
                             confirmButtonText: 'OK'
                         });
-                    });
-            });
+                    } else {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'No Items Unarchived',
+                            text: 'No items were unarchived.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
 
-            // Wait for all unarchive promises to complete
-            Promise.all(unarchivePromises).then(() => {
-                if (unarchivedItemCount > 0) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Unarchiving Completed',
-                        text: `${unarchivedItemCount} item(s) have been successfully unarchived.`,
-                        confirmButtonText: 'OK'
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'No Items Unarchived',
-                        text: 'No items were unarchived.',
-                        confirmButtonText: 'OK'
-                    });
-                }
+                    // Update the selection bar after unarchiving
+                    selectedItems = []; // Clear the selected items array
+                    updateSelectionBar(); // Ensure the selection bar is hidden if no items are selected
 
-                // Update the selection bar after unarchiving
-                selectedItems = []; // Clear the selected items array
-                updateSelectionBar(); // Ensure the selection bar is hidden if no items are selected
-
-                // After unarchiving, ensure the "Select All" checkbox is unchecked if no items are selected
-                updateSelectAll('.select-item-all', 'select-all-all');
-                updateSelectAll('.select-item-physical', 'select-all-physical');
-                updateSelectAll('.select-item-shopee', 'select-all-shopee');
-                updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
-            });
-        }
+                    // After unarchiving, ensure the "Select All" checkbox is unchecked if no items are selected
+                    updateSelectAll('.select-item-all', 'select-all-all');
+                    updateSelectAll('.select-item-physical', 'select-all-physical');
+                    updateSelectAll('.select-item-shopee', 'select-all-shopee');
+                    updateSelectAll('.select-item-tiktok', 'select-all-tiktok');
+                });
+            }
+        });
     });
-});
 
-// Function to update the selection bar visibility and count
-function updateSelectionBar() {
-    const selectedCountText = `${selectedItems.length} items selected`;
-    selectedCount.textContent = selectedCountText;
+    // Function to update the selection bar visibility and count
+    function updateSelectionBar() {
+        const selectedCountText = `${selectedItems.length} items selected`;
+        selectedCount.textContent = selectedCountText;
 
-    // Show the selection bar if items are selected, else hide it
-    if (selectedItems.length > 0) {
-        selectionBar.style.display = 'block';
-    } else {
-        selectionBar.style.display = 'none';
-    }
-
-    // Check or uncheck the "select all" checkbox based on individual selections
-    if (selectedItems.length === individualCheckboxes.length) {
-        selectAllCheckbox.checked = true;
-    } else {
-        selectAllCheckbox.checked = false;
-    }
-}
-
-// Add listeners for checkbox changes (including individual item checkboxes)
-individualCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', function() {
-        toggleItemSelection(checkbox); // Toggle item selection
-    });
-});
-
-// Update item selection and the selection bar
-function toggleItemSelection(checkbox) {
-    const itemId = checkbox.value;
-
-    if (checkbox.checked) {
-        if (!selectedItems.includes(itemId)) {
-            selectedItems.push(itemId); // Add item to selection
+        // Show the selection bar if items are selected, else hide it
+        if (selectedItems.length > 0) {
+            selectionBar.style.display = 'block';
+        } else {
+            selectionBar.style.display = 'none';
         }
-    } else {
-        selectedItems = selectedItems.filter(id => id !== itemId); // Remove item from selection
+
+        // Check or uncheck the "select all" checkbox based on individual selections
+        if (selectedItems.length === individualCheckboxes.length) {
+            selectAllCheckbox.checked = true;
+        } else {
+            selectAllCheckbox.checked = false;
+        }
     }
 
-    updateSelectionBar(); // Update the selection bar visibility and count
-}
+    // Add listeners for checkbox changes (including individual item checkboxes)
+    individualCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            toggleItemSelection(checkbox); // Toggle item selection
+        });
+    });
 
+    // Update item selection and the selection bar
+    function toggleItemSelection(checkbox) {
+        const itemId = checkbox.value;
+
+        if (checkbox.checked) {
+            if (!selectedItems.includes(itemId)) {
+                selectedItems.push(itemId); // Add item to selection
+            }
+        } else {
+            selectedItems = selectedItems.filter(id => id !== itemId); // Remove item from selection
+        }
+
+        updateSelectionBar(); // Update the selection bar visibility and count
+    }
 </script>
 
 
 
 
-<style>
-        /* Filter input styling */
-        .filter-input-container {
-        position: relative;
-        display: inline-block;
-        margin-bottom: 10px;
-    }
-
-    .filter-input {
-        padding: 6px 10px;
-        font-size: 12px;
-        border: 1px solid #ccc;
-        border-radius: 18px;
-        width: 220px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-    }
-
-    .filter-input:focus {
-        border-color: #0056b3;
-        box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
-    }
-
-    .icon-filter {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 14px;
-        color: #888;
-        cursor: pointer;
-        transition: color 0.3s ease;
-    }
-
-    .icon-filter:hover {
-        color: #0056b3;
-    }
-</style>
 
 
 <script>
     // Utility function for debouncing
     function debounce(func, delay) {
         let timer;
-        return function (...args) {
+        return function(...args) {
             clearTimeout(timer);
             timer = setTimeout(() => func.apply(this, args), delay);
         };
@@ -775,7 +693,7 @@ function toggleItemSelection(checkbox) {
     document.getElementById('select-all-all').addEventListener('change', handleSelectAll);
 
     // jQuery way to ensure only visible rows are considered when filtering
-    (function($){
+    (function($) {
         $.fn.extend({
             visible: function() {
                 return this.filter(function() {
@@ -787,7 +705,7 @@ function toggleItemSelection(checkbox) {
 </script>
 
 
-
+<!-- Selection bar css -->
 <style>
     /* Basic Reset */
     body {
@@ -870,7 +788,53 @@ function toggleItemSelection(checkbox) {
 </style>
 
 
+            <!-- CSS filter -->
+            <style>
+                /* Filter input styling */
+                .filters {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
 
+                .filter-input-container {
+                    position: relative;
+                    display: inline-block;
+                    margin-bottom: 10px;
+                    margin-left: auto;
+                    /* This pushes it to the right */
+                }
+
+                .filter-input {
+                    padding: 6px 10px;
+                    font-size: 12px;
+                    border: 1px solid #ccc;
+                    border-radius: 18px;
+                    width: 220px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    transition: all 0.3s ease;
+                }
+
+                .filter-input:focus {
+                    border-color: #0056b3;
+                    box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+                }
+
+                .icon-filter {
+                    position: absolute;
+                    right: 12px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-size: 14px;
+                    color: #888;
+                    cursor: pointer;
+                    transition: color 0.3s ease;
+                }
+
+                .icon-filter:hover {
+                    color: #0056b3;
+                }
+            </style>
 
 
 
@@ -963,7 +927,3 @@ function toggleItemSelection(checkbox) {
 </body>
 
 </html>
-
-
-
-
