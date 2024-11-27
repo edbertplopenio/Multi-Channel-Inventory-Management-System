@@ -3197,3 +3197,109 @@ if (!$result_tiktok) {
         color: white;
     }
 </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <!-- Dropdown with filter options -->
+                <div class="filter-dropdown" id="filter-dropdown">
+                    <div class="filter-section">
+                        <label for="filter-size">Filter by Size:</label>
+                        <select id="filter-size">
+                            <option value="">All Sizes</option>
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                            <option value="3XL">3XL</option>
+                            <option value="4XL">4XL</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-section">
+                        <label for="filter-color">Filter by Color:</label>
+                        <select id="filter-color">
+                            <option value="">All Colors</option>
+                            <option value="White">White</option>
+                            <option value="Beige">Beige</option>
+                            <option value="Dark Choco">Dark Choco</option>
+                            <option value="Fushia Pink">Fushia Pink</option>
+                            <option value="Royal Blue">Royal Blue</option>
+                            <option value="Black">Black</option>
+                            <option value="Tan">Tan</option>
+                            <option value="Raw Umber">Raw Umber</option>
+                            <option value="Gray">Gray</option>
+                            <option value="Pale Mauve">Pale Mauve</option>
+                            <option value="Pantone Simply Taupe">Pantone Simply Taupe</option>
+                            <option value="Salmon Pink">Salmon Pink</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-section">
+                        <label for="filter-category">Filter by Category:</label>
+                        <select id="filter-category">
+                            <option value="">All Categories</option>
+                            <option value="Pants">Pants</option>
+                            <option value="Jackets & Outerwear">Jackets & Outerwear</option>
+                            <option value="Tops">Tops</option>
+                            <option value="Sets">Sets</option>
+                            <option value="Shorts">Shorts</option>
+                            <option value="Dresses">Dresses</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-section">
+                        <label for="filter-date">Filter by Date Added:</label>
+                        <input type="date" id="filter-date">
+                    </div>
+
+                    <div class="filter-section">
+                        <label for="filter-channel">Filter by Channel:</label>
+                        <select id="filter-channel">
+                            <option value="">All Channels</option>
+                            <option value="Physical Store">Physical Store</option>
+                            <option value="Shopee">Shopee</option>
+                            <option value="TikTok">TikTok</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-section">
+                        <button id="apply-filters">Apply Filters</button>
+                        <button id="reset-filters">Reset Filters</button>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+                <!-- nilagay ko filter sa inventory -->

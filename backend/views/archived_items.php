@@ -27,22 +27,22 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
-    @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700');
+        @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700');
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Inter', sans-serif;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-    body {
-        background-color: #f4f7fc;
-        height: 100vh;
-        overflow: hidden;
-    }
+        body {
+            background-color: #f4f7fc;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-    .unarchive-button {
+        .unarchive-button {
             background-color: #28a745;
             color: white;
             padding: 5px 10px;
@@ -57,217 +57,227 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
             background-color: #218838;
         }
 
-    .inventory-container {
-        padding: 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-        background-color: #ffffff;
-        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
-        border-radius: 10px;
-        height: 95vh;
-        display: flex;
-        flex-direction: column;
-    }
+        .inventory-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            height: 95vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
 
-    .header h1 {
-        font-size: 22px;
-        color: #333;
-        font-weight: 600;
-    }
+        .header h1 {
+            font-size: 22px;
+            color: #333;
+            font-weight: 600;
+        }
 
-    .tabs-container {
-        display: flex;
-        align-items: flex-end;
-        gap: 5px;
-    }
+        .tabs-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+        }
 
-    .tab {
-        padding: 8px 12px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 10px 10px 0 0;
-        cursor: pointer;
-        font-size: 12px;
-        transition: background-color 0.3s, color 0.3s;
-        font-weight: 500;
-        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-        z-index: 1;
-        position: relative;
-    }
+        .tab {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 10px 10px 0 0;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s, color 0.3s;
+            font-weight: 500;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            position: relative;
+        }
 
-    .tab.active {
-        background-color: white;
-        color: #007bff;
-        z-index: 2;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-    }
+        .tab.active {
+            background-color: white;
+            color: #007bff;
+            z-index: 2;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        }
 
-    /* Apply the same styling to the inventory table */
-    .inventory-table {
-        width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
-        /* Ensures consistent column widths */
-    }
+        /* Apply the same styling to the inventory table */
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            /* Ensures consistent column widths */
+        }
 
-    .inventory-table thead {
-        position: sticky;
-        top: 0;
-        background-color: #f4f7fc;
-        z-index: 1;
-        font-weight: 600;
-        color: #555;
-    }
+        .inventory-table thead {
+            position: sticky;
+            top: 0;
+            background-color: #f4f7fc;
+            z-index: 1;
+            font-weight: 600;
+            color: #555;
+        }
 
-    .inventory-table th,
-    .inventory-table td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #eee;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 12px;
-    }
+        .inventory-table th,
+        .inventory-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 12px;
+        }
 
-    .inventory-table th {
-        background-color: #f4f7fc;
-    }
+        .inventory-table th {
+            background-color: #f4f7fc;
+        }
 
-    .inventory-table td {
-        color: #555;
-    }
+        .inventory-table td {
+            color: #555;
+        }
 
-    .inventory-table img {
-        border-radius: 5px;
-    }
+        .inventory-table img {
+            border-radius: 5px;
+        }
 
-    /* Scrollable tbody */
-    .inventory-table tbody {
-        display: block;
-        max-height: 66vh;
-        overflow-y: auto;
-        width: 100%;
-    }
+        /* Scrollable tbody */
+        .inventory-table tbody {
+            display: block;
+            max-height: 66vh;
+            overflow-y: auto;
+            width: 100%;
+        }
 
-    .inventory-table thead,
-    .inventory-table tbody tr {
-        display: table;
-        width: 100%;
-        table-layout: fixed;
-    }
+        .inventory-table thead,
+        .inventory-table tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
 
-    /* Specific column widths for inventory */
-    .inventory-table th:nth-child(1),
-    .inventory-table td:nth-child(1) {
-        width: 50px; /* Checkbox column */
-    }
+        /* Specific column widths for inventory */
+        .inventory-table th:nth-child(1),
+        .inventory-table td:nth-child(1) {
+            width: 50px;
+            /* Checkbox column */
+        }
 
-    .inventory-table th:nth-child(2),
-    .inventory-table td:nth-child(2) {
-        width: 80px; /* Variant ID column */
-    }
+        .inventory-table th:nth-child(2),
+        .inventory-table td:nth-child(2) {
+            width: 80px;
+            /* Variant ID column */
+        }
 
-    .inventory-table th:nth-child(3),
-    .inventory-table td:nth-child(3) {
-        width: 150px; /* Product Name column */
-    }
+        .inventory-table th:nth-child(3),
+        .inventory-table td:nth-child(3) {
+            width: 150px;
+            /* Product Name column */
+        }
 
-    .inventory-table th:nth-child(4),
-    .inventory-table td:nth-child(4) {
-        width: 150px; /* Variant (Size/Color) column */
-    }
+        .inventory-table th:nth-child(4),
+        .inventory-table td:nth-child(4) {
+            width: 150px;
+            /* Variant (Size/Color) column */
+        }
 
-    .inventory-table th:nth-child(5),
-    .inventory-table td:nth-child(5) {
-        width: 120px; /* Sale Date column */
-    }
+        .inventory-table th:nth-child(5),
+        .inventory-table td:nth-child(5) {
+            width: 120px;
+            /* Sale Date column */
+        }
 
-    .inventory-table th:nth-child(6),
-    .inventory-table td:nth-child(6) {
-        width: 100px; /* Quantity Sold column */
-    }
+        .inventory-table th:nth-child(6),
+        .inventory-table td:nth-child(6) {
+            width: 100px;
+            /* Quantity Sold column */
+        }
 
-    .inventory-table th:nth-child(7),
-    .inventory-table td:nth-child(7) {
-        width: 120px; /* Cost per Item column */
-    }
+        .inventory-table th:nth-child(7),
+        .inventory-table td:nth-child(7) {
+            width: 120px;
+            /* Cost per Item column */
+        }
 
-    .inventory-table th:nth-child(8),
-    .inventory-table td:nth-child(8) {
-        width: 100px; /* Total Sales column */
-    }
+        .inventory-table th:nth-child(8),
+        .inventory-table td:nth-child(8) {
+            width: 100px;
+            /* Total Sales column */
+        }
 
-    .inventory-table th:nth-child(9),
-    .inventory-table td:nth-child(9) {
-        width: 120px; /* Sales Channel column */
-    }
+        .inventory-table th:nth-child(9),
+        .inventory-table td:nth-child(9) {
+            width: 120px;
+            /* Sales Channel column */
+        }
 
-    .inventory-table th:nth-child(10),
-    .inventory-table td:nth-child(10) {
-        width: 150px; /* Actions column */
-    }
+        .inventory-table th:nth-child(10),
+        .inventory-table td:nth-child(10) {
+            width: 150px;
+            /* Actions column */
+        }
 
-    /* Checkbox column styling */
-    .inventory-table td.checkbox-column {
-        width: 50px;
-        padding: 0;
-        text-align: center;
-        vertical-align: middle;
-    }
+        /* Checkbox column styling */
+        .inventory-table td.checkbox-column {
+            width: 50px;
+            padding: 0;
+            text-align: center;
+            vertical-align: middle;
+        }
 
-    /* Styling for checkboxes */
-    input[type="checkbox"] {
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        background-color: #ffffff;
-        border: 2px solid #007bff;
-        border-radius: 3px;
-        position: relative;
-        cursor: pointer;
-        outline: none;
-        transition: background-color 0.3s, border-color 0.3s;
-    }
+        /* Styling for checkboxes */
+        input[type="checkbox"] {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background-color: #ffffff;
+            border: 2px solid #007bff;
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
 
-    input[type="checkbox"]:checked {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
+        input[type="checkbox"]:checked {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
 
-    input[type="checkbox"]:checked::after {
-        content: "";
-        position: absolute;
-        left: 4px;
-        top: 2px;
-        width: 4px;
-        height: 8px;
-        border: solid white;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-    }
+        input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 2px;
+            width: 4px;
+            height: 8px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
 
-    input[type="checkbox"]:hover {
-        border-color: #0056b3;
-    }
+        input[type="checkbox"]:hover {
+            border-color: #0056b3;
+        }
 
-    input[type="checkbox"]:checked:hover {
-        background-color: #0056b3;
-    }
+        input[type="checkbox"]:checked:hover {
+            background-color: #0056b3;
+        }
 
-    /* Hover effect on checkboxes in a table */
-    .inventory-table td.checkbox-column input[type="checkbox"]:hover {
-        background-color: #f0f0f0;
-    }
-</style>
+        /* Hover effect on checkboxes in a table */
+        .inventory-table td.checkbox-column input[type="checkbox"]:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
 
 </head>
 
@@ -331,9 +341,7 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
         </div>
     </div>
 
-</body>
 
-</html>
 
 
 
@@ -788,53 +796,53 @@ $result_all_inventory = mysqli_query($conn, $sql_all_inventory);
 </style>
 
 
-            <!-- CSS filter -->
-            <style>
-                /* Filter input styling */
-                .filters {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
+<!-- CSS filter -->
+<style>
+    /* Filter input styling */
+    .filters {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-                .filter-input-container {
-                    position: relative;
-                    display: inline-block;
-                    margin-bottom: 10px;
-                    margin-left: auto;
-                    /* This pushes it to the right */
-                }
+    .filter-input-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 10px;
+        margin-left: auto;
+        /* This pushes it to the right */
+    }
 
-                .filter-input {
-                    padding: 6px 10px;
-                    font-size: 12px;
-                    border: 1px solid #ccc;
-                    border-radius: 18px;
-                    width: 220px;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                    transition: all 0.3s ease;
-                }
+    .filter-input {
+        padding: 6px 10px;
+        font-size: 12px;
+        border: 1px solid #ccc;
+        border-radius: 18px;
+        width: 220px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
 
-                .filter-input:focus {
-                    border-color: #0056b3;
-                    box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
-                }
+    .filter-input:focus {
+        border-color: #0056b3;
+        box-shadow: 0 4px 8px rgba(0, 86, 179, 0.3);
+    }
 
-                .icon-filter {
-                    position: absolute;
-                    right: 12px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    font-size: 14px;
-                    color: #888;
-                    cursor: pointer;
-                    transition: color 0.3s ease;
-                }
+    .icon-filter {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px;
+        color: #888;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
 
-                .icon-filter:hover {
-                    color: #0056b3;
-                }
-            </style>
+    .icon-filter:hover {
+        color: #0056b3;
+    }
+</style>
 
 
 

@@ -25,11 +25,46 @@ if (!in_array($tab, $validTabs)) {
     exit();
 }
 
-// Optional pagination (default: first 50 records)
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
-$offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+// Optional pagination parameters
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // Default records per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $limit;
 
-// Base SQL query
+// Base WHERE clause
+$whereClause = "WHERE s.is_archived = 0";
+$params = [];
+$types = '';
+
+// Add filter for specific channels
+if ($tab !== 'all-orders') {
+    $whereClause .= " AND s.channel = ?";
+    $params[] = $tab;
+    $types .= 's';
+}
+
+// Prepare count query to get total records
+$count_query = "
+    SELECT COUNT(*) as total_records
+    FROM 
+        sales s
+    JOIN 
+        product_variants pv ON s.variant_id = pv.variant_id
+    JOIN 
+        products p ON pv.product_id = p.product_id
+    $whereClause
+";
+
+$stmt = $conn->prepare($count_query);
+if ($types) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$total_records = $row['total_records'];
+$stmt->close();
+
+// Now, prepare the main data query with LIMIT and OFFSET
 $query = "
     SELECT 
         s.variant_id,
@@ -48,17 +83,16 @@ $query = "
         product_variants pv ON s.variant_id = pv.variant_id
     JOIN 
         products p ON pv.product_id = p.product_id
-    WHERE 
-        s.is_archived = 0"; // Exclude archived sales
+    $whereClause
+    ORDER BY s.sale_date DESC
+    LIMIT ? OFFSET ?
+";
 
-// Add filter for specific channels
-if ($tab !== 'all-orders') {
-    $query .= " AND s.channel = ?";
-}
+// Add limit and offset to parameters
+$params[] = $limit;
+$params[] = $offset;
+$types .= 'ii';
 
-$query .= " LIMIT ? OFFSET ?"; // Add pagination
-
-// Prepare the SQL statement
 $stmt = $conn->prepare($query);
 if (!$stmt) {
     echo json_encode(['success' => false, 'message' => 'Failed to prepare SQL statement: ' . $conn->error]);
@@ -66,11 +100,7 @@ if (!$stmt) {
 }
 
 // Bind parameters
-if ($tab !== 'all-orders') {
-    $stmt->bind_param('sii', $tab, $limit, $offset);
-} else {
-    $stmt->bind_param('ii', $limit, $offset);
-}
+$stmt->bind_param($types, ...$params);
 
 // Execute the statement
 if (!$stmt->execute()) {
@@ -96,9 +126,15 @@ while ($row = $result->fetch_assoc()) {
     ];
 }
 
-// Set content type to JSON and return the data
+// Set content type to JSON and return the data along with total records
 header('Content-Type: application/json');
-echo json_encode(['success' => true, 'data' => $sales]);
+echo json_encode([
+    'success' => true,
+    'data' => $sales,
+    'total_records' => $total_records,
+    'records_per_page' => $limit,
+    'current_page' => $page,
+]);
 
 // Close resources
 $stmt->close();

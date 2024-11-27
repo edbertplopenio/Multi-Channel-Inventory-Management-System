@@ -39,150 +39,231 @@ if (!isset($_SESSION['user_email'])) {
 </head>
 
 <body>
-    <div class="sales-record-container">
-        <div class="header">
-            <h1>Sales Record</h1>
-            <button class="new-order-button">+ New Sales Order</button>
+<div class="sales-record-container">
+    <div class="header">
+        <h1>Sales Record</h1>
+        <button class="new-order-button">+ New Sales Order</button>
+    </div>
+    <div class="filters">
+        <div class="tabs-container">
+            <button class="tab active" data-tab="all-orders">
+                <i class="fas fa-list"></i> All Orders
+            </button>
+            <button class="tab" data-tab="physical_store">
+                <i class="fas fa-store"></i> Physical Store
+            </button>
+            <button class="tab" data-tab="shopee">
+                <i class="fas fa-shopping-bag"></i> Shopee
+            </button>
+            <button class="tab" data-tab="tiktok">
+                <i class="fas fa-music"></i> TikTok
+            </button>
+            <button class="tab" data-tab="archived-sales">
+                <i class="fas fa-archive"></i> Archived Sales
+            </button>
         </div>
-        <div class="filters">
-            <div class="tabs-container">
-                <button class="tab active" data-tab="all-orders">
-                    <i class="fas fa-list"></i> All Orders
-                </button>
-                <button class="tab" data-tab="physical_store">
-                    <i class="fas fa-store"></i> Physical Store
-                </button>
-                <button class="tab" data-tab="shopee">
-                    <i class="fas fa-shopping-bag"></i> Shopee
-                </button>
-                <button class="tab" data-tab="tiktok">
-                    <i class="fas fa-music"></i> TikTok
-                </button>
-                <button class="tab" data-tab="archived-sales">
-                    <i class="fas fa-archive"></i> Archived Sales
-                </button>
-            </div>
-            <div class="filter-input-container">
-                <input type="text" class="filter-input" placeholder="Type to filter sales">
-                <i class="fas fa-filter icon-filter"></i>
-            </div>
-        </div>
-
-        <!-- All Orders Content -->
-        <div id="all-orders" class="tab-content active">
-            <div class="sales-table-container">
-                <table class="sales-table">
-                    <thead>
-                        <tr>
-                            <th><input type="checkbox" class="select-all"></th>
-                            <th>Variant ID</th>
-                            <th>Product Name</th>
-                            <th>Variant (Size/Color)</th>
-                            <th>Sale Date</th>
-                            <th>Quantity Sold</th>
-                            <th>Cost per Item</th>
-                            <th>Total Sales</th>
-                            <th>Sales Channel</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Physical Store Content -->
-        <div id="physical_store" class="tab-content">
-            <div class="sales-table-container">
-                <table class="sales-table">
-                    <thead>
-                        <tr>
-                            <th><input type="checkbox" class="select-all"></th>
-                            <th>Variant ID</th>
-                            <th>Product Name</th>
-                            <th>Variant (Size/Color)</th>
-                            <th>Sale Date</th>
-                            <th>Quantity Sold</th>
-                            <th>Cost per Item</th>
-                            <th>Total Sales</th>
-                            <th>Sales Channel</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Shopee Content -->
-        <div id="shopee" class="tab-content">
-            <div class="sales-table-container">
-                <table class="sales-table">
-                    <thead>
-                        <tr>
-                            <th><input type="checkbox" class="select-all"></th>
-                            <th>Variant ID</th>
-                            <th>Product Name</th>
-                            <th>Variant (Size/Color)</th>
-                            <th>Sale Date</th>
-                            <th>Quantity Sold</th>
-                            <th>Cost per Item</th>
-                            <th>Total Sales</th>
-                            <th>Sales Channel</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- TikTok Content -->
-        <div id="tiktok" class="tab-content">
-            <div class="sales-table-container">
-                <table class="sales-table">
-                    <thead>
-                        <tr>
-                            <th><input type="checkbox" class="select-all"></th>
-                            <th>Variant ID</th>
-                            <th>Product Name</th>
-                            <th>Variant (Size/Color)</th>
-                            <th>Sale Date</th>
-                            <th>Quantity Sold</th>
-                            <th>Cost per Item</th>
-                            <th>Total Sales</th>
-                            <th>Sales Channel</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Archived Sales Content -->
-        <div id="archived-sales" class="tab-content">
-            <div class="sales-table-container">
-                <table class="sales-table">
-                    <thead>
-                        <tr>
-                            <th><input type="checkbox" class="select-all"></th>
-                            <th>Variant ID</th>
-                            <th>Product Name</th>
-                            <th>Variant (Size/Color)</th>
-                            <th>Sale Date</th>
-                            <th>Quantity Sold</th>
-                            <th>Cost per Item</th>
-                            <th>Total Sales</th>
-                            <th>Sales Channel</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+        <div class="filter-input-container">
+            <input type="text" class="filter-input" placeholder="Type to filter sales">
+            <i class="fas fa-filter icon-filter"></i>
         </div>
     </div>
+
+    <!-- All Orders Content -->
+    <div id="all-orders" class="tab-content active">
+        <div class="sales-table-container">
+            <table class="sales-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" class="select-all"></th>
+                        <th>Variant ID</th>
+                        <th>Product Name</th>
+                        <th>Variant (Size/Color)</th>
+                        <th>Sale Date</th>
+                        <th>Quantity Sold</th>
+                        <th>Cost per Item</th>
+                        <th>Total Sales</th>
+                        <th>Sales Channel</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <!-- Pagination Controls -->
+            <div class="pagination-container"></div>
+        </div>
+    </div>
+
+    <!-- Physical Store Content -->
+    <div id="physical_store" class="tab-content">
+        <div class="sales-table-container">
+            <table class="sales-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" class="select-all"></th>
+                        <th>Variant ID</th>
+                        <th>Product Name</th>
+                        <th>Variant (Size/Color)</th>
+                        <th>Sale Date</th>
+                        <th>Quantity Sold</th>
+                        <th>Cost per Item</th>
+                        <th>Total Sales</th>
+                        <th>Sales Channel</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <!-- Pagination Controls -->
+            <div class="pagination-container"></div>
+        </div>
+    </div>
+
+    <!-- Shopee Content -->
+    <div id="shopee" class="tab-content">
+        <div class="sales-table-container">
+            <table class="sales-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" class="select-all"></th>
+                        <th>Variant ID</th>
+                        <th>Product Name</th>
+                        <th>Variant (Size/Color)</th>
+                        <th>Sale Date</th>
+                        <th>Quantity Sold</th>
+                        <th>Cost per Item</th>
+                        <th>Total Sales</th>
+                        <th>Sales Channel</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <!-- Pagination Controls -->
+            <div class="pagination-container"></div>
+        </div>
+    </div>
+
+    <!-- TikTok Content -->
+    <div id="tiktok" class="tab-content">
+        <div class="sales-table-container">
+            <table class="sales-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" class="select-all"></th>
+                        <th>Variant ID</th>
+                        <th>Product Name</th>
+                        <th>Variant (Size/Color)</th>
+                        <th>Sale Date</th>
+                        <th>Quantity Sold</th>
+                        <th>Cost per Item</th>
+                        <th>Total Sales</th>
+                        <th>Sales Channel</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <!-- Pagination Controls -->
+            <div class="pagination-container"></div>
+        </div>
+    </div>
+
+    <!-- Archived Sales Content -->
+    <div id="archived-sales" class="tab-content">
+        <div class="sales-table-container">
+            <table class="sales-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" class="select-all"></th>
+                        <th>Variant ID</th>
+                        <th>Product Name</th>
+                        <th>Variant (Size/Color)</th>
+                        <th>Sale Date</th>
+                        <th>Quantity Sold</th>
+                        <th>Cost per Item</th>
+                        <th>Total Sales</th>
+                        <th>Sales Channel</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <!-- Pagination Controls -->
+            <div class="pagination-container"></div>
+        </div>
+    </div>
+</div>
+
+
+
+    <style>
+    .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.pagination-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 35px;
+    margin: 0 5px;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #000;
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.pagination-link.active {
+    background-color: #657ed4; /* Blue color for the active state */
+    color: #fff;
+    font-weight: bold;
+    border-color: transparent;
+}
+
+.pagination-link:hover {
+    background-color: #ddd; /* Lighter gray for hover */
+    border-color: #ccc;
+}
+
+.pagination-link:first-child,
+.pagination-link:last-child {
+    width: auto;
+    height: auto;
+    padding: 0 10px;
+    border-radius: 20px; /* Rounded edges */
+    font-size: 14px;
+}
+
+.pagination-link:first-child:hover,
+.pagination-link:last-child:hover {
+    background-color: #ddd;
+}
+
+/* Optional: Style for disabled links */
+.pagination-link.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+</style>
+
+
+
+
+
+
+
+
+
+
 
 
     <style>
@@ -228,7 +309,7 @@ if (!isset($_SESSION['user_email'])) {
         /* Enable scrolling for the table body */
         .sales-table tbody {
             display: block;
-            max-height: 66vh;
+            max-height: 60vh;
             /* Adjust height as needed */
             overflow-y: auto;
             width: 100%;
@@ -259,7 +340,7 @@ if (!isset($_SESSION['user_email'])) {
 
         .sales-table th:nth-child(3),
         .sales-table td:nth-child(3) {
-            width: 150px;
+            width: 110px;
             /* Product Name column */
         }
 
@@ -277,7 +358,7 @@ if (!isset($_SESSION['user_email'])) {
 
         .sales-table th:nth-child(6),
         .sales-table td:nth-child(6) {
-            width: 100px;
+            width: 105px;
             /* Quantity Sold column */
         }
 
@@ -1464,87 +1545,136 @@ if (!isset($_SESSION['user_email'])) {
             // Function to load sales data for a specific tab
             // Function to load sales data for a specific tab
             // Function to load sales data for a specific tab
-            function loadSalesData(tab) {
-                $.ajax({
-                    url: '../../backend/controllers/fetch_sales.php',
-                    type: 'GET',
-                    data: {
-                        tab: tab
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            const tbody = $(`#${tab} .sales-table tbody`);
-                            tbody.empty(); // Clear existing rows
+            function loadSalesData(tab, page = 1) {
+            const recordsPerPage = 10; // You can adjust this value
 
-                            // Populate table rows
-                            response.data.forEach((sale) => {
-                                tbody.append(`
-                        <tr>
-                        <td><input type="checkbox" class="row-select" data-id="${sale.sale_id}"></td>
-                            <td>${sale.variant_id}</td>
-                            <td>${sale.product_name}</td>
-                            <td>${sale.variant}</td>
-                            <td>${new Date(sale.sale_date).toLocaleDateString()}</td>
-                            <td>${sale.quantity}</td>
-                            <td>₱${parseFloat(sale.cost_per_item).toFixed(2)}</td>
-                            <td>₱${parseFloat(sale.total_price).toFixed(2)}</td>
-                            <td>${sale.channel.replace('_', ' ').toUpperCase()}</td>
-                            <td>
-                                <button class="action-button edit" data-id="${sale.sale_id}">Edit</button>
-                                <button class="action-button archive" data-id="${sale.sale_id}">Archive</button>
-                            </td>
-                        </tr>
-                    `);
-                            });
+            $.ajax({
+                url: '../../backend/controllers/fetch_sales.php',
+                type: 'GET',
+                data: {
+                    tab: tab,
+                    limit: recordsPerPage,
+                    page: page
+                },
+                success: function(response) {
+                    if (response.success) {
+                        const tbody = $(`#${tab} .sales-table tbody`);
+                        tbody.empty(); // Clear existing rows
 
-                            console.log(`Data refreshed for tab: ${tab}`);
-                            reinitializeActions(); // Reinitialize event listeners
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message || 'Failed to fetch sales data.',
-                                icon: 'error',
-                            });
-                        }
-                    },
-                    error: function() {
+                        // Populate table rows
+                        response.data.forEach((sale) => {
+                            tbody.append(`
+                                <tr>
+                                    <td><input type="checkbox" class="row-select" data-id="${sale.sale_id}"></td>
+                                    <td>${sale.variant_id}</td>
+                                    <td>${sale.product_name}</td>
+                                    <td>${sale.variant}</td>
+                                    <td>${new Date(sale.sale_date).toLocaleDateString()}</td>
+                                    <td>${sale.quantity}</td>
+                                    <td>₱${parseFloat(sale.cost_per_item).toFixed(2)}</td>
+                                    <td>₱${parseFloat(sale.total_price).toFixed(2)}</td>
+                                    <td>${sale.channel.replace('_', ' ').toUpperCase()}</td>
+                                    <td>
+                                        <button class="action-button edit" data-id="${sale.sale_id}">Edit</button>
+                                        <button class="action-button archive" data-id="${sale.sale_id}">Archive</button>
+                                    </td>
+                                </tr>
+                            `);
+                        });
+
+                        // Generate pagination controls
+                        generatePagination(tab, response.total_records, response.records_per_page, response.current_page);
+
+                        console.log(`Data refreshed for tab: ${tab}, Page: ${page}`);
+                        reinitializeActions(); // Reinitialize event listeners
+                    } else {
                         Swal.fire({
                             title: 'Error!',
-                            text: 'An error occurred while fetching sales data.',
+                            text: response.message || 'Failed to fetch sales data.',
                             icon: 'error',
                         });
-                    },
-                });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while fetching sales data.',
+                        icon: 'error',
+                    });
+                },
+            });
+        }
+
+        // Function to generate pagination controls
+        function generatePagination(tab, totalRecords, recordsPerPage, currentPage) {
+    const totalPages = Math.ceil(totalRecords / recordsPerPage);
+    const paginationContainer = $(`#${tab} .sales-table-container .pagination-container`);
+    paginationContainer.empty(); // Clear existing pagination
+
+    if (totalPages <= 1) {
+        return; // No need to show pagination controls
+    }
+
+    const pagination = $('<div class="pagination"></div>');
+
+    // Previous Button
+    const prevClass = currentPage === 1 ? 'disabled' : '';
+    const prevPage = currentPage > 1 ? currentPage - 1 : 1;
+    pagination.append(`<a href="#" class="pagination-link ${prevClass}" data-page="${prevPage}">&laquo; Prev</a>`);
+
+    // Page Numbers
+    for (let i = 1; i <= totalPages; i++) {
+        const activeClass = currentPage === i ? 'active' : '';
+        pagination.append(`<a href="#" class="pagination-link ${activeClass}" data-page="${i}">${i}</a>`);
+    }
+
+    // Next Button
+    const nextClass = currentPage === totalPages ? 'disabled' : '';
+    const nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
+    pagination.append(`<a href="#" class="pagination-link ${nextClass}" data-page="${nextPage}">Next &raquo;</a>`);
+
+    paginationContainer.append(pagination);
+}
+
+
+        // Event listener for pagination links
+        $(document).on('click', '.pagination-link', function(e) {
+            e.preventDefault();
+            const page = $(this).data('page');
+            const tab = $('.tab.active').data('tab');
+            const isDisabled = $(this).hasClass('disabled');
+            if (!isDisabled) {
+                loadSalesData(tab, page);
             }
+        });
 
             // Specify only the tabs to be loaded (exclude 'archived-sales')
-            const tabsToLoad = ['all-orders', 'physical_store', 'shopee', 'tiktok'];
+         // Load initial data for tabs
+         const tabsToLoad = ['all-orders', 'physical_store', 'shopee', 'tiktok'];
 
-            // Initial loading of sales data for the specified tabs
-            tabsToLoad.forEach((tab) => {
-                loadSalesData(tab); // Load sales data for each specified tab on page load
-            });
+tabsToLoad.forEach((tab) => {
+    loadSalesData(tab); // Load sales data for each specified tab on page load
+});
 
-            // Event listener for tab switching
-            $('.tab').on('click', function() {
-                const tab = $(this).data('tab'); // Get the tab name (e.g., "physical_store")
+// Event listener for tab switching
+$('.tab').on('click', function() {
+    const tab = $(this).data('tab'); // Get the tab name (e.g., "physical_store")
 
-                // Ensure the tab being switched to is one of the specified tabs
-                if (tabsToLoad.includes(tab)) {
-                    // Highlight active tab
-                    $('.tab').removeClass('active');
-                    $(this).addClass('active');
+    if (tabsToLoad.includes(tab)) {
+        // Highlight active tab
+        $('.tab').removeClass('active');
+        $(this).addClass('active');
 
-                    // Show selected tab content and hide others
-                    $('.tab-content').removeClass('active');
-                    $(`#${tab}`).addClass('active');
+        // Show selected tab content and hide others
+        $('.tab-content').removeClass('active');
+        $(`#${tab}`).addClass('active');
 
-                    // Load sales data for the selected tab
-                    loadSalesData(tab);
-                } else {
-                    console.log(`Tab "${tab}" is excluded from data loading.`);
-                }
-            });
+        // Load sales data for the selected tab
+        loadSalesData(tab);
+    } else {
+        console.log(`Tab "${tab}" is excluded from data loading.`);
+    }
+});
 
         });
     </script>

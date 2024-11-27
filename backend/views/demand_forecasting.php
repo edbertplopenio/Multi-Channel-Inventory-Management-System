@@ -20,14 +20,18 @@ if (!isset($_SESSION['user_email'])) {
 
 <body>
 
-    <div class="demand-forecasting-container">
+<div class="demand-forecasting-container">
         <div class="header">
             <h1>Demand Forecasting</h1>
         </div>
 
         <div class="filters">
             <div class="tabs-container">
-                <button class="tab active" data-tab="physical-store">
+                <!-- New All Inventory Tab -->
+                <button class="tab active" data-tab="all-inventory">
+                    <i class="fas fa-boxes"></i> All Inventory
+                </button>
+                <button class="tab" data-tab="physical-store">
                     <i class="fas fa-store"></i> Physical Store
                 </button>
                 <button class="tab" data-tab="shopee">
@@ -44,12 +48,12 @@ if (!isset($_SESSION['user_email'])) {
         </div>
 
         <div class="forecast-content">
-            <!-- Physical Store Content -->
-            <div id="physical-store" class="tab-content active">
+            <!-- All Inventory Content -->
+            <div id="all-inventory" class="tab-content active">
                 <div class="forecast-details-container">
                     <div class="forecast-details">
-                        <h2>Forecast Details</h2>
-                        <p>Select a product to see detailed demand forecasting information here.</p>
+                        <h2>All Inventory Forecast</h2>
+                        <p>Select a product to see detailed demand forecasting information across all platforms.</p>
                     </div>
                 </div>
 
@@ -60,14 +64,40 @@ if (!isset($_SESSION['user_email'])) {
                                 <tr>
                                     <th>Product ID</th>
                                     <th>Product Name</th>
+                                    <th>Total Stock</th>
+                                    <th>Predicted Demand</th>
                                 </tr>
                             </thead>
                             <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Physical Store Content -->
+            <div id="physical-store" class="tab-content">
+                <div class="forecast-details-container">
+                    <div class="forecast-details">
+                        <h2>Physical Store Forecast</h2>
+                        <p>Select a product to see detailed demand forecasting information here.</p>
+                    </div>
+                </div>
+
+                <div class="forecast-table-container">
+                    <div class="forecast-table-wrapper">
+                        <table class="forecast-table">
+                            <thead>
                                 <tr>
-                                    <td>PID001</td>
-                                    <td>Product A</td>
+                                <th>Product ID</th>
+                                    <th>Product Name</th>
+                                    <th>Total Stock</th>
+                                    <th>Predicted Demand</th>
                                 </tr>
-                                <!-- More rows as needed -->
+                            </thead>
+                            <tbody>
+
                             </tbody>
                         </table>
                     </div>
@@ -78,7 +108,7 @@ if (!isset($_SESSION['user_email'])) {
             <div id="shopee" class="tab-content">
                 <div class="forecast-details-container">
                     <div class="forecast-details">
-                        <h2>Forecast Details</h2>
+                        <h2>Shopee Forecast</h2>
                         <p>Select a product to see detailed demand forecasting information here.</p>
                     </div>
                 </div>
@@ -87,15 +117,14 @@ if (!isset($_SESSION['user_email'])) {
                         <table class="forecast-table">
                             <thead>
                                 <tr>
-                                    <th>Product ID</th>
+                                <th>Product ID</th>
                                     <th>Product Name</th>
+                                    <th>Total Stock</th>
+                                    <th>Predicted Demand</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>PID002</td>
-                                    <td>Product B</td>
-                                </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -106,7 +135,7 @@ if (!isset($_SESSION['user_email'])) {
             <div id="tiktok" class="tab-content">
                 <div class="forecast-details-container">
                     <div class="forecast-details">
-                        <h2>Forecast Details</h2>
+                        <h2>TikTok Forecast</h2>
                         <p>Select a product to see detailed demand forecasting information here.</p>
                     </div>
                 </div>
@@ -115,15 +144,14 @@ if (!isset($_SESSION['user_email'])) {
                         <table class="forecast-table">
                             <thead>
                                 <tr>
-                                    <th>Product ID</th>
+                                <th>Product ID</th>
                                     <th>Product Name</th>
+                                    <th>Total Stock</th>
+                                    <th>Predicted Demand</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>PID003</td>
-                                    <td>Product C</td>
-                                </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -132,22 +160,70 @@ if (!isset($_SESSION['user_email'])) {
         </div>
     </div>
 
+
+
+
+
+
     <script>
-        // Handle tab switching
-        document.querySelectorAll('.tab').forEach(button => {
-            button.addEventListener('click', () => {
-                // Remove active class from all tabs
-                document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    // Function to load demand data for a specific tab
+    function loadDemandData(tab) {
+        $.ajax({
+            url: '../../backend/controllers/fetch_demand_forecasting_table.php',
+            type: 'GET',
+            data: {
+                tab: tab
+            },
+            success: function(response) {
+                const tbody = $(`#${tab} .forecast-table tbody`);
+                tbody.empty(); // Clear existing rows
 
-                // Hide all content sections
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-                // Add active class to clicked tab and corresponding content
-                button.classList.add('active');
-                document.getElementById(button.getAttribute('data-tab')).classList.add('active');
-            });
+                response.forEach((item) => {
+                    tbody.append(`
+                        <tr>
+                            <td>${item.product_id}</td>
+                            <td>${item.product_name}</td>
+                            <td>${item.total_stock}</td>
+                            <td>${item.predicted_demand}</td>
+                        </tr>
+                    `);
+                });
+            },
+            error: function() {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while fetching demand data.',
+                    icon: 'error',
+                });
+            },
         });
-    </script>
+    }
+
+    // Handle tab switching
+    $(document).ready(function() {
+        $('.tab').on('click', function() {
+            const tab = $(this).data('tab');
+
+            // Remove active class from all tabs and contents
+            $('.tab').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            // Add active class to the clicked tab and the corresponding content
+            $(this).addClass('active');
+            $(`#${tab}`).addClass('active');
+
+            // Load data for the selected tab
+            loadDemandData(tab);
+        });
+
+        // Load data for the default active tab on page load
+        const defaultTab = 'all-inventory';
+        loadDemandData(defaultTab);
+    });
+</script>
+
+
+
 
 </body>
 
@@ -289,7 +365,7 @@ body {
 }
 
 .forecast-table-container {
-  width: 25%;
+  width: 30%;
   padding: 0;
   margin: 0;
   display: flex;
