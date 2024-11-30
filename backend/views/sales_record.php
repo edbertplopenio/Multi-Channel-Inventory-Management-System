@@ -58,9 +58,9 @@ if (!isset($_SESSION['user_email'])) {
             <button class="tab" data-tab="tiktok">
                 <i class="fas fa-music"></i> TikTok
             </button>
-            <button class="tab" data-tab="archived-sales">
+            <!-- <button class="tab" data-tab="archived-sales">
                 <i class="fas fa-archive"></i> Archived Sales
-            </button>
+            </button> -->
         </div>
         <div class="filter-input-container">
             <input type="text" class="filter-input" placeholder="Type to filter sales">
@@ -74,7 +74,7 @@ if (!isset($_SESSION['user_email'])) {
             <table class="sales-table">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" class="select-all"></th>
+                        <!-- <th><input type="checkbox" class="select-all"></th> -->
                         <th>Variant ID</th>
                         <th>Product Name</th>
                         <th>Variant (Size/Color)</th>
@@ -99,7 +99,7 @@ if (!isset($_SESSION['user_email'])) {
             <table class="sales-table">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" class="select-all"></th>
+                        <!-- <th><input type="checkbox" class="select-all"></th> -->
                         <th>Variant ID</th>
                         <th>Product Name</th>
                         <th>Variant (Size/Color)</th>
@@ -124,7 +124,7 @@ if (!isset($_SESSION['user_email'])) {
             <table class="sales-table">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" class="select-all"></th>
+                        <!-- <th><input type="checkbox" class="select-all"></th> -->
                         <th>Variant ID</th>
                         <th>Product Name</th>
                         <th>Variant (Size/Color)</th>
@@ -149,7 +149,7 @@ if (!isset($_SESSION['user_email'])) {
             <table class="sales-table">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" class="select-all"></th>
+                        <!-- <th><input type="checkbox" class="select-all"></th> -->
                         <th>Variant ID</th>
                         <th>Product Name</th>
                         <th>Variant (Size/Color)</th>
@@ -325,66 +325,62 @@ if (!isset($_SESSION['user_email'])) {
             /* Prevents column widths from changing */
         }
 
-        /* Specific Column Widths */
-        .sales-table th:nth-child(1),
-        .sales-table td:nth-child(1) {
-            width: 50px;
-            /* Checkbox column */
-        }
+ /* Specific Column Widths */
 
-        .sales-table th:nth-child(2),
-        .sales-table td:nth-child(2) {
-            width: 80px;
-            /* Variant ID column */
-        }
+.sales-table th:nth-child(1),
+.sales-table td:nth-child(1) {
+    width: 85px; /* Adjusted width for Variant ID column */
+    text-align: center;
+}
 
-        .sales-table th:nth-child(3),
-        .sales-table td:nth-child(3) {
-            width: 110px;
-            /* Product Name column */
-        }
+.sales-table th:nth-child(2),
+.sales-table td:nth-child(2) {
+    width: 120px; /* Adjusted width for Product Name column */
+    text-align: center;
+}
 
-        .sales-table th:nth-child(4),
-        .sales-table td:nth-child(4) {
-            width: 150px;
-            /* Variant (Size/Color) column */
-        }
+.sales-table th:nth-child(3),
+.sales-table td:nth-child(3) {
+    width: 140px; /* Adjusted width for Variant (Size/Color) column */
+    text-align: center;
+}
 
-        .sales-table th:nth-child(5),
-        .sales-table td:nth-child(5) {
-            width: 120px;
-            /* Sale Date column */
-        }
+.sales-table th:nth-child(4),
+.sales-table td:nth-child(4) {
+    width: 120px; /* Sale Date column */
+    text-align: center;
+}
 
-        .sales-table th:nth-child(6),
-        .sales-table td:nth-child(6) {
-            width: 105px;
-            /* Quantity Sold column */
-        }
+.sales-table th:nth-child(5),
+.sales-table td:nth-child(5) {
+    width: 120px; /* Adjusted width for Quantity Sold column */
+    text-align: center;
+}
 
-        .sales-table th:nth-child(7),
-        .sales-table td:nth-child(7) {
-            width: 120px;
-            /* Cost per Item column */
-        }
+.sales-table th:nth-child(6),
+.sales-table td:nth-child(6) {
+    width: 120px; /* Adjusted width for Cost per Item column */
+    text-align: center;
+}
 
-        .sales-table th:nth-child(8),
-        .sales-table td:nth-child(8) {
-            width: 100px;
-            /* Total Sales column */
-        }
+.sales-table th:nth-child(7),
+.sales-table td:nth-child(7) {
+    width: 120px; /* Adjusted width for Total Sales column */
+    text-align: center;
+}
 
-        .sales-table th:nth-child(9),
-        .sales-table td:nth-child(9) {
-            width: 120px;
-            /* Sales Channel column */
-        }
+.sales-table th:nth-child(8),
+.sales-table td:nth-child(8) {
+    width: 120px; /* Adjusted width for Sales Channel column */
+    text-align: center;
+}
 
-        .sales-table th:nth-child(10),
-        .sales-table td:nth-child(10) {
-            width: 150px;
-            /* Actions column */
-        }
+.sales-table th:nth-child(9),
+.sales-table td:nth-child(9) {
+    width: 150px; /* Adjusted width for Actions column */
+    text-align: center;
+}
+
     </style>
 
     <!-- New Sales Order Modal -->
@@ -392,10 +388,10 @@ if (!isset($_SESSION['user_email'])) {
         <div class="modal-content">
             <div class="header">
                 <h1>Add New Sales Order</h1>
-                <div class="top-right-button">
+                <!-- <div class="top-right-button">
                     <button id="upload-excel-button" class="upload-excel-button">Upload Excel</button>
                     <input type="file" id="excel-upload" name="excel-upload" accept=".xls,.xlsx" style="display: none;">
-                </div>
+                </div> -->
             </div>
 
             <form id="new-order-form">
@@ -1546,7 +1542,7 @@ if (!isset($_SESSION['user_email'])) {
             // Function to load sales data for a specific tab
             // Function to load sales data for a specific tab
             function loadSalesData(tab, page = 1) {
-            const recordsPerPage = 10; // You can adjust this value
+            const recordsPerPage = 100; // You can adjust this value
 
             $.ajax({
                 url: '../../backend/controllers/fetch_sales.php',
@@ -1565,7 +1561,7 @@ if (!isset($_SESSION['user_email'])) {
                         response.data.forEach((sale) => {
                             tbody.append(`
                                 <tr>
-                                    <td><input type="checkbox" class="row-select" data-id="${sale.sale_id}"></td>
+
                                     <td>${sale.variant_id}</td>
                                     <td>${sale.product_name}</td>
                                     <td>${sale.variant}</td>
@@ -1576,7 +1572,7 @@ if (!isset($_SESSION['user_email'])) {
                                     <td>${sale.channel.replace('_', ' ').toUpperCase()}</td>
                                     <td>
                                         <button class="action-button edit" data-id="${sale.sale_id}">Edit</button>
-                                        <button class="action-button archive" data-id="${sale.sale_id}">Archive</button>
+                                        
                                     </td>
                                 </tr>
                             `);
@@ -1868,7 +1864,7 @@ $('.tab').on('click', function() {
                             response.data.forEach((sale) => {
                                 tbody.append(`
                             <tr>
-                            <td><input type="checkbox" class="row-select" data-id="${sale.sale_id}"></td>
+
                                 <td>${sale.variant_id}</td>
                                 <td>${sale.product_name}</td>
                                 <td>${sale.variant}</td>
@@ -2254,6 +2250,7 @@ $('.tab').on('click', function() {
 
     .action-button.edit {
         background-color: #ffc107;
+        width: 100px;
     }
 
     .action-button.delete {

@@ -1,0 +1,30 @@
+<?php
+
+// Include the database connection file (if it's in a separate file)
+require_once 'backend/config/db_connection.php';
+
+// Using the environment variables directly in the script (if you have the .env loaded)
+$servername = getenv('DB_HOST') ?: 'localhost';  // Default: localhost
+$username = getenv('DB_USERNAME') ?: 'edbert24'; // Default: your username
+$password = getenv('DB_PASSWORD') ?: 'edbertplopenio'; // Default: your password
+$dbname = getenv('DB_NAME') ?: 'bmsuitph_mios'; // Default: your database name
+
+// Test database connection
+try {
+    // Attempt to create a PDO database connection
+    $dsn = "mysql:host=$servername;dbname=$dbname;charset=utf8mb4";
+    $conn = new PDO($dsn, $username, $password);
+
+    // Set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    echo "Database connection successful!";
+} catch (PDOException $e) {
+    // Log the error message to a file
+    error_log("Connection failed: " . $e->getMessage(), 3, "error_log.txt");
+
+    // Display a message for the user (without revealing the actual error)
+    echo "Connection failed. Please try again later.";
+}
+
+?>

@@ -1005,6 +1005,7 @@ function initializeEditAndDeleteButtons() {
         /* Adds ellipsis for truncated text */
         white-space: nowrap;
         /* Prevents text wrapping */
+        text-align: center;
     }
 
     .user-table th {

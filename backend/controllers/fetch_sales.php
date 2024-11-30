@@ -26,7 +26,7 @@ if (!in_array($tab, $validTabs)) {
 }
 
 // Optional pagination parameters
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // Default records per page
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 100; // Default records per page
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 

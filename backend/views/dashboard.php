@@ -18,14 +18,14 @@
         <div class="header">
             <h1>Dashboard Overview</h1>
             <!-- Date Filter -->
-            <div class="filter">
+            <!-- <div class="filter">
                 <label for="start-date">Start Date: </label>
                 <input type="date" id="start-date">
                 <label for="end-date">End Date: </label>
                 <input type="date" id="end-date">
                 <button onclick="applyFilter()">Apply Filter</button>
                 <button onclick="clearFilter()">Clear</button>
-            </div>
+            </div> -->
 
         </div>
 
@@ -33,35 +33,39 @@
         <div class="card top-selling">
             <div class="icon">📦</div>
             <h2>Top Selling</h2>
-            <p class="metric">Product A</p>
+            <p class="metric"></p> <!-- Empty initially, will be populated by JS -->
             <div class="trend">
-                <span>+10% ↑</span> increase
+                <span></span> <!-- Empty initially, will be populated by JS -->
             </div>
         </div>
+
         <div class="card low-stock">
             <div class="icon">⚠️</div>
             <h2>Low Stock</h2>
-            <p class="metric">Product B</p>
+            <p class="metric"></p> <!-- Empty initially, will be populated by JS -->
             <div class="trend">
-                <span>-50% ↓</span> remaining
+                <span></span> <!-- Empty initially, will be populated by JS -->
             </div>
         </div>
+
         <div class="card slow-moving">
             <div class="icon">🐢</div>
             <h2>Slow Moving</h2>
-            <p class="metric">Product C</p>
+            <p class="metric"></p> <!-- Empty initially, will be populated by JS -->
             <div class="trend">
-                <span>-5% ↓</span> this month
+                <span></span> <!-- Empty initially, will be populated by JS -->
             </div>
         </div>
+
         <div class="card total-sales">
             <div class="icon">💵</div>
             <h2>Total Sales</h2>
-            <p class="metric">$15,000</p>
+            <p class="metric"></p> <!-- Empty initially, will be populated by JS -->
             <div class="trend">
-                <span>+20% ↑</span> growth
+                <span></span> <!-- Empty initially, will be populated by JS -->
             </div>
         </div>
+
 
         <!-- Other Cards -->
         <div class="card card-sales-dynamic">
@@ -76,76 +80,163 @@
             <h2>Sales by Channel</h2>
             <canvas id="salesByChannelChart"></canvas>
         </div>
+
         <div class="card card-top-selling">
-    <h2>Top Selling Products</h2>
-    <div class="table-container">
-        <table class="orders-table">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Units Sold</th>
-                    <th>Revenue</th>
-                </tr>
-            </thead>
-            <tbody id="top-selling-products">
-                <!-- Data will be inserted dynamically here -->
-            </tbody>
-        </table>
-    </div>
-</div>
+            <h2>Top Selling Products</h2>
+            <div class="table-container">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Units Sold</th>
+                        </tr>
+                    </thead>
+                    <tbody id="top-selling-products">
+                        <!-- Data will be inserted dynamically here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-<script>
-    // Function to fetch top selling products from the backend
-    function fetchTopSellingProducts() {
-        // Example of a PHP endpoint that returns the top-selling products data
-        $.ajax({
-            url: '../../backend/controllers/fetch_top_selling.php', // Change this to your PHP endpoint
-            method: 'GET',
-            success: function(data) {
-                const products = JSON.parse(data); // Assuming the response is in JSON format
-                const tbody = document.getElementById('top-selling-products');
-                tbody.innerHTML = ''; // Clear existing rows
 
-                if (products.length > 0) {
-                    // Loop through the products data and create table rows
-                    products.forEach(product => {
-                        const row = document.createElement('tr');
-                        const productCell = document.createElement('td');
-                        productCell.textContent = product.product_name || 'No name'; // Debug check for product name
+        <script>
+            // Apply Filter Function
+function applyFilter() {
+    const startDate = document.getElementById('start-date').value;
+    const endDate = document.getElementById('end-date').value;
 
-                        const unitsSoldCell = document.createElement('td');
-                        unitsSoldCell.textContent = product.units_sold;
-
-                        const revenueCell = document.createElement('td');
-                        revenueCell.textContent = `₱${product.revenue.toLocaleString()}`; // Format revenue with PHP currency
-
-                        row.appendChild(productCell);
-                        row.appendChild(unitsSoldCell);
-                        row.appendChild(revenueCell);
-                        tbody.appendChild(row);
-                    });
-                } else {
-                    const row = document.createElement('tr');
-                    const noDataCell = document.createElement('td');
-                    noDataCell.colSpan = 3;
-                    noDataCell.textContent = "No data available";
-                    row.appendChild(noDataCell);
-                    tbody.appendChild(row);
-                }
-            },
-            error: function(error) {
-                console.error('Error fetching top selling products:', error);
-            }
-        });
+    // Validate the date range
+    if (!startDate || !endDate) {
+        alert("Please select both start and end dates.");
+        return;
     }
 
-    // Fetch top selling products when the page is ready
-    $(document).ready(function() {
-        fetchTopSellingProducts();
-    });
-</script>
+    // Call the functions to fetch the data based on the filter
+    fetchMetrics(startDate, endDate);
+    fetchTopSellingProducts(startDate, endDate);
+    fetchSalesByCategory(startDate, endDate);
+    fetchSalesByChannel(startDate, endDate);
+}
+
+// Clear Filter Function
+function clearFilter() {
+    // Clear the filter inputs
+    document.getElementById('start-date').value = '';
+    document.getElementById('end-date').value = '';
+
+    // Call the functions to fetch data without the filter
+    fetchMetrics();
+    fetchTopSellingProducts();
+    fetchSalesByCategory();
+    fetchSalesByChannel();
+}
+
+        </script>
 
 
+        <script>
+            // Function to fetch product metrics (Top Selling, Low Stock, Slow Moving, Total Sales)
+            function fetchMetrics() {
+                // Make AJAX call to PHP script that fetches the product metrics data
+                $.ajax({
+                    url: '../../backend/controllers/fetch_metrics.php', // Change this path if needed
+                    method: 'GET',
+                    success: function(data) {
+                        // Handle top-selling data
+                        if (data.top_selling && data.top_selling.length > 0) {
+                            const topSellingProduct = data.top_selling[0]; // Get the top-selling product
+                            $('.top-selling .metric').text(topSellingProduct.name);
+                            $('.top-selling .trend span').text(`+${topSellingProduct.total_sales} ↑ increase`);
+                        }
+
+                        // Handle low-stock data
+                        if (data.low_stock && data.low_stock.length > 0) {
+                            const lowStockProduct = data.low_stock[0]; // Get the low-stock product
+                            $('.low-stock .metric').text(lowStockProduct.name);
+                            $('.low-stock .trend span').text(`${lowStockProduct.total_quantity} remaining`);
+                        } else {
+                            // Handle case when there are no low-stock products
+                            $('.low-stock .metric').text('No low-stock products');
+                            $('.low-stock .trend span').text('N/A');
+                        }
+
+                        // Handle slow-moving data
+                        if (data.slow_moving && data.slow_moving.length > 0) {
+                            const slowMovingProduct = data.slow_moving[0]; // Get the slow-moving product
+                            $('.slow-moving .metric').text(slowMovingProduct.name);
+                            $('.slow-moving .trend span').text(`${slowMovingProduct.total_sales} sold this month`);
+                        }
+
+                        // Handle total sales data
+                        if (data.total_sales !== undefined) {
+                            $('.total-sales .metric').text(`₱${parseFloat(data.total_sales).toLocaleString()}`);
+                            $('.total-sales .trend span').text(`+20% ↑ growth`); // Adjust growth as needed
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error fetching metrics data:', error);
+                    }
+                });
+            }
+
+            // Fetch metrics when the page is ready
+            $(document).ready(function() {
+                fetchMetrics();
+            });
+        </script>
+
+
+
+
+        <script>
+            // Function to fetch top selling products from the backend
+            function fetchTopSellingProducts() {
+                // Example of a PHP endpoint that returns the top-selling products data
+                $.ajax({
+                    url: '../../backend/controllers/fetch_top_selling.php', // Change this to your PHP endpoint
+                    method: 'GET',
+                    success: function(data) {
+                        const products = JSON.parse(data); // Assuming the response is in JSON format
+                        const tbody = document.getElementById('top-selling-products');
+                        tbody.innerHTML = ''; // Clear existing rows
+
+                        // Limit to 5 products
+                        const top5Products = products.slice(0, 5);
+
+                        if (top5Products.length > 0) {
+                            // Loop through the top 5 products data and create table rows
+                            top5Products.forEach(product => {
+                                const row = document.createElement('tr');
+                                const productCell = document.createElement('td');
+                                productCell.textContent = product.product_name || 'No name'; // Debug check for product name
+
+                                const unitsSoldCell = document.createElement('td');
+                                unitsSoldCell.textContent = product.units_sold;
+
+                                row.appendChild(productCell);
+                                row.appendChild(unitsSoldCell);
+                                tbody.appendChild(row);
+                            });
+                        } else {
+                            const row = document.createElement('tr');
+                            const noDataCell = document.createElement('td');
+                            noDataCell.colSpan = 2; // Adjust colspan to match the new number of columns
+                            noDataCell.textContent = "No data available";
+                            row.appendChild(noDataCell);
+                            tbody.appendChild(row);
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error fetching top selling products:', error);
+                    }
+                });
+            }
+
+            // Fetch top selling products when the page is ready
+            $(document).ready(function() {
+                fetchTopSellingProducts();
+            });
+        </script>
 
 
 
@@ -279,7 +370,7 @@
                                                 generateLabels: function(chart) {
                                                     const data = chart.data;
                                                     return data.labels.map((label, index) => ({
-                                                        text: `${label} (₱${data.datasets[0].data[index].toLocaleString()})`,
+                                                        text: label, // Only show the channel name, no sales amount
                                                         fillStyle: data.datasets[0].backgroundColor[index],
                                                         hidden: chart.getDatasetMeta(0).data[index].hidden,
                                                         lineWidth: 1,
@@ -349,6 +440,7 @@
                 initializeChannelChart();
             });
         </script>
+
 
 </body>
 
@@ -482,10 +574,10 @@
 
     .card .icon {
         position: absolute;
-        top: 20px;
+        top: 5px;
         right: 20px;
         font-size: 40px;
-        opacity: 0.5;
+        opacity: 0.8;
     }
 
     /* Individual Backgrounds for Small Cards */

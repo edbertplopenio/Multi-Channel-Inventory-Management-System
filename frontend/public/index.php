@@ -8,6 +8,9 @@ if (!isset($_SESSION['user_email']) || !isset($_SESSION['user_id'])) {
     exit();
 }
 
+
+
+
 // Include the database connection file
 require_once '../../backend/config/db_connection.php';
 
@@ -220,6 +223,13 @@ mysqli_close($conn);
                             console.error(`Error loading content: ${xhr.statusText}`);
                         } else {
                             console.log(`Loaded content from ${contentUrl}`);
+
+                            // Re-initialize charts after loading new content
+                    initializeCharts();  // This will ensure charts are reinitialized after each content load
+
+                                        // Re-initialize checkboxes after loading new content
+                                        initializeCheckboxes();
+
                         }
                     });
                 }
@@ -253,68 +263,101 @@ mysqli_close($conn);
 
 
 
-    <script>
-        // Function to initialize charts
-        function initializeSalesChart() {
-            const ctx = document.getElementById('salesDynamicChart')?.getContext('2d');
-            if (ctx) {
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                        datasets: [{
-                            label: 'Sales Revenue ($)',
-                            data: [12000, 15000, 13000, 16000, 17000, 14500, 18000],
-                            borderColor: '#5bc0f8',
-                            backgroundColor: 'rgba(91, 192, 248, 0.2)',
-                            borderWidth: 2,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false
-                    }
-                });
+ <script>
+// Global variable to hold the chart instance
+let salesChart = null;
+
+// Function to fetch sales data and initialize the sales chart
+function fetchSalesData() {
+    $.ajax({
+        url: '../../backend/controllers/fetch_sales_data.php', // Adjust the path to your PHP script
+        method: 'GET',
+        success: function(data) {
+            if (data && Array.isArray(data) && data.length > 0) {
+                // Extract the months and sales revenues from the fetched data
+                const months = data.map(item => item.month);
+                const salesRevenue = data.map(item => parseFloat(item.sales_revenue));
+
+                // Initialize the sales chart with the fetched data
+                initializeSalesChart(months, salesRevenue);
             } else {
-                console.warn('Canvas for sales chart not found.');
+                console.warn('No sales data available.');
             }
+        },
+        error: function(error) {
+            console.error('Error fetching sales data:', error);
+        }
+    });
+}
+
+// Function to initialize the sales chart
+function initializeSalesChart(months, salesRevenue) {
+    const ctx = document.getElementById('salesDynamicChart')?.getContext('2d');
+    if (ctx) {
+        // Destroy any existing chart instance to avoid multiple charts on the same canvas
+        if (salesChart) {
+            salesChart.destroy();
         }
 
-        // Function to load content dynamically
-        function loadPage(contentUrl, initFunction = null) {
-            $('#main-content').load(contentUrl, function(response, status, xhr) {
-                if (status === "error") {
-                    console.error(`Error loading content: ${xhr.statusText}`);
-                } else if (typeof initFunction === 'function') {
-                    initFunction();
-                }
-            });
-        }
-
-        $(document).ready(function() {
-            // Load dashboard content by default
-            loadPage('../../backend/views/dashboard.php', initializeSalesChart);
-
-            // Handle menu clicks
-            $('.menu').on('click', 'a', function(e) {
-                e.preventDefault();
-                const linkId = $(this).attr('id');
-                let contentUrl = '';
-                let initFunction = null;
-
-                if (linkId === 'dashboard-link') {
-                    contentUrl = '../../backend/views/dashboard.php';
-                    initFunction = initializeSalesChart;
-                }
-                // Add cases for other links...
-
-                if (contentUrl) {
-                    loadPage(contentUrl, initFunction);
-                }
-            });
+        // Create a new chart instance
+        salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: months,  // Labels are the months fetched from the database
+                datasets: [{
+                    label: 'Sales Revenue (₱)',  // Change to currency if needed
+                    data: salesRevenue,  // Data is the sales revenue for each month
+                    borderColor: '#5bc0f8',
+                    backgroundColor: 'rgba(91, 192, 248, 0.2)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
         });
-    </script>
+    } else {
+        console.warn('Canvas for sales chart not found.');
+    }
+}
+
+// Function to load content dynamically
+function loadPage(contentUrl, initFunction = null) {
+    $('#main-content').load(contentUrl, function(response, status, xhr) {
+        if (status === "error") {
+            console.error(`Error loading content: ${xhr.statusText}`);
+        } else if (typeof initFunction === 'function') {
+            initFunction();
+        }
+    });
+}
+
+$(document).ready(function() {
+    // Load dashboard content by default
+    loadPage('../../backend/views/dashboard.php', fetchSalesData); // Changed to call fetchSalesData directly
+
+    // Handle menu clicks
+    $('.menu').on('click', 'a', function(e) {
+        e.preventDefault();
+        const linkId = $(this).attr('id');
+        let contentUrl = '';
+        let initFunction = null;
+
+        if (linkId === 'dashboard-link') {
+            contentUrl = '../../backend/views/dashboard.php';
+            initFunction = fetchSalesData; // Fetch data again when navigating to dashboard
+        }
+        // Add cases for other links...
+
+        if (contentUrl) {
+            loadPage(contentUrl, initFunction);
+        }
+    });
+});
+</script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 

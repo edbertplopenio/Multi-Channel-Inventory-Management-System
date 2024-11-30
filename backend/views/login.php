@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check if email or password is empty
     if (empty($email) || empty($password)) {
-        echo "Both email and password are required.";
+        echo json_encode(['status' => 'error', 'message' => 'Both email and password are required.']);
         exit();
     }
 
@@ -41,23 +41,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Set a cookie to indicate splash screen has been shown
                 setcookie('splashScreenShown', 'true', time() + 86400, '/'); // Cookie lasts for 1 day
 
-                // Redirect to the main page (index.php)
-                header("Location: ../../frontend/public/index.php");
+                // Respond with a success status
+                echo json_encode(['status' => 'success', 'redirect' => '../../frontend/public/index.php']);
                 exit();
             } else {
-                // If the password is incorrect, show an error message
-                echo "Invalid credentials. Please try again.";
+                // Password is incorrect
+                echo json_encode(['status' => 'error', 'message' => 'Invalid password. Please try again.']);
             }
         } else {
-            // If no user is found with the provided email, show an error message
-            echo "Invalid credentials. Please try again.";
+            // No user found
+            echo json_encode(['status' => 'error', 'message' => 'Invalid email address. Please try again.']);
         }
 
         // Close the statement
         mysqli_stmt_close($stmt);
     } else {
         // Handle SQL preparation errors
-        echo "An error occurred while processing your request.";
+        echo json_encode(['status' => 'error', 'message' => 'An error occurred while processing your request.']);
     }
 } else {
     // If accessed without POST request, redirect to the login page

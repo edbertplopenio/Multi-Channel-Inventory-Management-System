@@ -500,59 +500,60 @@ $total_pages_tiktok = ceil($total_records_tiktok / $records_per_page);
 
 
 
-<style>
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 0;
-}
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
 
-.pagination a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 35px;
-    height: 35px;
-    margin: 0 5px;
-    text-decoration: none;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    color: #000;
-    background-color: #f2f2f2;
-    border: 1px solid #ddd;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-}
+        .pagination a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 35px;
+            height: 35px;
+            margin: 0 5px;
+            text-decoration: none;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #000;
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
 
-.pagination a.active {
-    background-color: #657ed4; /* Blue color for the active state */
-    color: #fff;
-    font-weight: bold;
-    border-color: transparent;
-}
+        .pagination a.active {
+            background-color: #657ed4;
+            /* Blue color for the active state */
+            color: #fff;
+            font-weight: bold;
+            border-color: transparent;
+        }
 
-.pagination a:hover {
-    background-color: #ddd; /* Lighter gray for hover */
-    border-color: #ccc;
-}
+        .pagination a:hover {
+            background-color: #ddd;
+            /* Lighter gray for hover */
+            border-color: #ccc;
+        }
 
-.pagination a.prev,
-.pagination a.next {
-    width: auto;
-    height: auto;
-    padding: 0 10px;
-    border-radius: 20px; /* Rounded edges */
-    font-size: 14px;
-}
+        .pagination a.prev,
+        .pagination a.next {
+            width: auto;
+            height: auto;
+            padding: 0 10px;
+            border-radius: 20px;
+            /* Rounded edges */
+            font-size: 14px;
+        }
 
-.pagination a.prev:hover,
-.pagination a.next:hover {
-    background-color: #ddd;
-}
-
-
-</style>
+        .pagination a.prev:hover,
+        .pagination a.next:hover {
+            background-color: #ddd;
+        }
+    </style>
 
 
 
@@ -1075,9 +1076,9 @@ $total_pages_tiktok = ceil($total_records_tiktok / $records_per_page);
                 items.forEach(item => {
                     let row;
                     if (tab === 'all-inventory') {
-                        const totalQuantity = Number(item.quantity_physical_store) 
-                   + Number(item.quantity_shopee) 
-                   + Number(item.quantity_tiktok);
+                        const totalQuantity = Number(item.quantity_physical_store) +
+                            Number(item.quantity_shopee) +
+                            Number(item.quantity_tiktok);
 
                         const channels = [];
                         if (item.quantity_physical_store > 0) channels.push('Physical Store');
@@ -2962,248 +2963,296 @@ $total_pages_tiktok = ceil($total_records_tiktok / $records_per_page);
     .inventory-table-all th:nth-child(1),
     .inventory-table-all td:nth-child(1) {
         width: 50px;
+        text-align: center;
     }
 
     .inventory-table-all th:nth-child(2),
     .inventory-table-all td:nth-child(2) {
         width: 100px;
+        text-align: center;
     }
 
     .inventory-table-all th:nth-child(3),
     .inventory-table-all td:nth-child(3) {
         width: 120px;
+        text-align: center;
     }
 
     .inventory-table-all th:nth-child(4),
     .inventory-table-all td:nth-child(4) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-all th:nth-child(5),
     .inventory-table-all td:nth-child(5) {
         width: 80px;
+        text-align: center;
     }
 
     .inventory-table-all th:nth-child(6),
     .inventory-table-all td:nth-child(6) {
         width: 100px;
+        text-align: center;
     }
 
     .inventory-table-all th:nth-child(7),
     .inventory-table-all td:nth-child(7) {
         width: 80px;
+        text-align: center;
     }
 
     .inventory-table-all th:nth-child(8),
     .inventory-table-all td:nth-child(8) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-all th:nth-child(9),
     .inventory-table-all td:nth-child(9) {
         width: 100px;
+        text-align: center;
     }
 
     .inventory-table-all th:nth-child(10),
     .inventory-table-all td:nth-child(10) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-all th:nth-child(11),
     .inventory-table-all td:nth-child(11) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-all th:nth-child(12),
     .inventory-table-all td:nth-child(12) {
         width: 150px;
         white-space: nowrap;
+        text-align: center;
     }
 
     /* Column width adjustments for Physical Store tab */
     .inventory-table-physical th:nth-child(1),
     .inventory-table-physical td:nth-child(1) {
         width: 40px;
+        text-align: center;
     }
 
     .inventory-table-physical th:nth-child(2),
     .inventory-table-physical td:nth-child(2) {
         width: 80px;
+        text-align: center;
     }
 
     .inventory-table-physical th:nth-child(3),
     .inventory-table-physical td:nth-child(3) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-physical th:nth-child(4),
     .inventory-table-physical td:nth-child(4) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-physical th:nth-child(5),
     .inventory-table-physical td:nth-child(5) {
         width: 50px;
+        text-align: center;
     }
 
     .inventory-table-physical th:nth-child(6),
     .inventory-table-physical td:nth-child(6) {
         width: 60px;
+        text-align: center;
     }
 
     .inventory-table-physical th:nth-child(7),
     .inventory-table-physical td:nth-child(7) {
         width: 70px;
+        text-align: center;
     }
 
     .inventory-table-physical th:nth-child(8),
     .inventory-table-physical td:nth-child(8) {
         width: 80px;
+        text-align: center;
     }
 
     .inventory-table-physical th:nth-child(9),
     .inventory-table-physical td:nth-child(9) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-physical th:nth-child(10),
     .inventory-table-physical td:nth-child(10) {
         width: 80px;
+        text-align: center;
     }
 
     .inventory-table-physical th:nth-child(11),
     .inventory-table-physical td:nth-child(11) {
         width: 150px;
+        text-align: center;
     }
 
     .inventory-table-physical th:nth-child(12),
     .inventory-table-physical td:nth-child(12) {
         width: 120px;
         white-space: nowrap;
+        text-align: center;
     }
 
     /* Column width adjustments for Shopee tab */
     .inventory-table-shopee th:nth-child(1),
     .inventory-table-shopee td:nth-child(1) {
         width: 40px;
+        text-align: center;
     }
 
     .inventory-table-shopee th:nth-child(2),
     .inventory-table-shopee td:nth-child(2) {
         width: 80px;
+        text-align: center;
     }
 
     .inventory-table-shopee th:nth-child(3),
     .inventory-table-shopee td:nth-child(3) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-shopee th:nth-child(4),
     .inventory-table-shopee td:nth-child(4) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-shopee th:nth-child(5),
     .inventory-table-shopee td:nth-child(5) {
         width: 50px;
+        text-align: center;
     }
 
     .inventory-table-shopee th:nth-child(6),
     .inventory-table-shopee td:nth-child(6) {
         width: 60px;
+        text-align: center;
     }
 
     .inventory-table-shopee th:nth-child(7),
     .inventory-table-shopee td:nth-child(7) {
         width: 70px;
+        text-align: center;
     }
 
     .inventory-table-shopee th:nth-child(8),
     .inventory-table-shopee td:nth-child(8) {
         width: 80px;
+        text-align: center;
     }
 
     .inventory-table-shopee th:nth-child(9),
     .inventory-table-shopee td:nth-child(9) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-shopee th:nth-child(10),
     .inventory-table-shopee td:nth-child(10) {
         width: 80px;
+        text-align: center;
     }
 
     .inventory-table-shopee th:nth-child(11),
     .inventory-table-shopee td:nth-child(11) {
         width: 150px;
+        text-align: center;
     }
 
     .inventory-table-shopee th:nth-child(12),
     .inventory-table-shopee td:nth-child(12) {
         width: 120px;
         white-space: nowrap;
+        text-align: center;
     }
 
     /* Column width adjustments for TikTok tab */
     .inventory-table-tiktok th:nth-child(1),
     .inventory-table-tiktok td:nth-child(1) {
         width: 40px;
+        text-align: center;
     }
 
     .inventory-table-tiktok th:nth-child(2),
     .inventory-table-tiktok td:nth-child(2) {
         width: 80px;
+        text-align: center;
     }
 
     .inventory-table-tiktok th:nth-child(3),
     .inventory-table-tiktok td:nth-child(3) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-tiktok th:nth-child(4),
     .inventory-table-tiktok td:nth-child(4) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-tiktok th:nth-child(5),
     .inventory-table-tiktok td:nth-child(5) {
         width: 50px;
+        text-align: center;
     }
 
     .inventory-table-tiktok th:nth-child(6),
     .inventory-table-tiktok td:nth-child(6) {
         width: 60px;
+        text-align: center;
     }
 
     .inventory-table-tiktok th:nth-child(7),
     .inventory-table-tiktok td:nth-child(7) {
         width: 70px;
+        text-align: center;
     }
 
     .inventory-table-tiktok th:nth-child(8),
     .inventory-table-tiktok td:nth-child(8) {
         width: 80px;
+        text-align: center;
     }
 
     .inventory-table-tiktok th:nth-child(9),
     .inventory-table-tiktok td:nth-child(9) {
         width: 90px;
+        text-align: center;
     }
 
     .inventory-table-tiktok th:nth-child(10),
     .inventory-table-tiktok td:nth-child(10) {
         width: 80px;
+        text-align: center;
     }
 
     .inventory-table-tiktok th:nth-child(11),
     .inventory-table-tiktok td:nth-child(11) {
         width: 150px;
+        text-align: center;
     }
 
     .inventory-table-tiktok th:nth-child(12),
     .inventory-table-tiktok td:nth-child(12) {
         width: 120px;
         white-space: nowrap;
+        text-align: center;
     }
 
 
@@ -3213,6 +3262,7 @@ $total_pages_tiktok = ceil($total_records_tiktok / $records_per_page);
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        text-align: center;
     }
 
     .inventory-table th {

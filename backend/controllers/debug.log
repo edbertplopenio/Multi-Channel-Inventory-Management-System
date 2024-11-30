@@ -679,3 +679,95 @@ Current Inventory Record: Array
 )
 
 Sale and Inventory Updated Successfully.
+Incoming Request: {"sale_id":"3556","sale_date":"2024-11-26","quantity":"4","total_price":"3392.00","channel":"shopee"}
+Current Sale Record: Array
+(
+    [sale_id] => 3556
+    [inventory_id] => 524
+    [variant_id] => 229
+    [product_id] => 110
+    [quantity] => 3
+    [price] => 848.00
+    [total_price] => 3392.00
+    [channel] => shopee
+    [sale_date] => 2024-11-27 00:00:00
+    [user_id] => 39
+    [is_archived] => 0
+)
+
+Current Inventory Record: Array
+(
+    [inventory_id] => 524
+    [quantity] => 2
+)
+
+Sale and Inventory Updated Successfully.
+Incoming Request: {"sale_id":"3574","sale_date":"2024-11-26","quantity":"4","total_price":"2544.00","channel":"shopee"}
+Current Sale Record: Array
+(
+    [sale_id] => 3574
+    [inventory_id] => 542
+    [variant_id] => 235
+    [product_id] => 110
+    [quantity] => 5
+    [price] => 848.00
+    [total_price] => 2544.00
+    [channel] => shopee
+    [sale_date] => 2024-11-27 00:00:00
+    [user_id] => 39
+    [is_archived] => 0
+)
+
+Current Inventory Record: Array
+(
+    [inventory_id] => 542
+    [quantity] => 1
+)
+
+Sale and Inventory Updated Successfully.
+Incoming Request: {"sale_id":"3562","sale_date":"2024-11-25","quantity":"3","total_price":"2544.00","channel":"shopee"}
+Current Sale Record: Array
+(
+    [sale_id] => 3562
+    [inventory_id] => 530
+    [variant_id] => 231
+    [product_id] => 110
+    [quantity] => 4
+    [price] => 848.00
+    [total_price] => 2544.00
+    [channel] => shopee
+    [sale_date] => 2024-11-26 00:00:00
+    [user_id] => 39
+    [is_archived] => 0
+)
+
+Current Inventory Record: Array
+(
+    [inventory_id] => 530
+    [quantity] => 1
+)
+
+Sale and Inventory Updated Successfully.
+Incoming Request: {"sale_id":"3563","sale_date":"2024-11-24","quantity":"3","total_price":"2544.00","channel":"tiktok"}
+Current Sale Record: Array
+(
+    [sale_id] => 3563
+    [inventory_id] => 531
+    [variant_id] => 231
+    [product_id] => 110
+    [quantity] => 4
+    [price] => 848.00
+    [total_price] => 2544.00
+    [channel] => tiktok
+    [sale_date] => 2024-11-25 00:00:00
+    [user_id] => 36
+    [is_archived] => 0
+)
+
+Current Inventory Record: Array
+(
+    [inventory_id] => 531
+    [quantity] => 1
+)
+
+Sale and Inventory Updated Successfully.
