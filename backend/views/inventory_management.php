@@ -609,28 +609,81 @@ $total_pages_tiktok = ceil($total_records_tiktok / $records_per_page);
                             <option value="L">L</option>
                             <option value="XL">XL</option>
                             <option value="XXL">XXL</option>
+                            <option value="XXXS">XXXS</option>
+                            <option value="XXS">XXS</option>
                             <option value="3XL">3XL</option>
-                            <option value="4XL">4XL</option>
+                            <option value="Freesize">Freesize</option>
+                            <option value="3in1Set-S-M">3in1 Set (S-M)</option>
+                            <option value="3in1Set-L">3in1 Set (Large)</option>
                         </select>
+
                     </div>
 
                     <div class="form-group">
                         <label for="color">Color:</label>
                         <select id="color" name="color" required>
                             <option value="" selected>Select Color</option>
-                            <option value="White">White</option>
+                            <option value="Almond">Almond</option>
+                            <option value="Amber">Amber</option>
+                            <option value="Apricot">Apricot</option>
+                            <option value="Army Green">Army Green</option>
+                            <option value="Asphalt Gray">Asphalt Gray</option>
                             <option value="Beige">Beige</option>
-                            <option value="Dark Choco">Dark Choco</option>
-                            <option value="Fushia Pink">Fushia Pink</option>
-                            <option value="Royal Blue">Royal Blue</option>
                             <option value="Black">Black</option>
-                            <option value="Tan">Tan</option>
-                            <option value="Raw Umber">Raw Umber</option>
+                            <option value="Blue">Blue</option>
+                            <option value="Brown">Brown</option>
+                            <option value="Cedar">Cedar</option>
+                            <option value="Choco Brown">Choco Brown</option>
+                            <option value="Cinnamon">Cinnamon</option>
+                            <option value="Cream">Cream</option>
+                            <option value="Dark Choco">Dark Choco</option>
+                            <option value="Dark Skintone">Dark Skintone</option>
+                            <option value="Dark Pink">Dark Pink</option>
+                            <option value="Espresso">Espresso</option>
+                            <option value="Fuchsia Pink">Fuchsia Pink</option>
+                            <option value="Golden Brown">Golden Brown</option>
                             <option value="Gray">Gray</option>
-                            <option value="Pale Mauve">Pale Mauve</option>
+                            <option value="Green">Green</option>
+                            <option value="Ivory">Ivory</option>
+                            <option value="Jet">Jet</option>
+                            <option value="Khaki">Khaki</option>
+                            <option value="Light Brown">Light Brown</option>
+                            <option value="Light Gray">Light Gray</option>
+                            <option value="Light Pink">Light Pink</option>
+                            <option value="Light Peach">Light Peach</option>
+                            <option value="Magenta">Magenta</option>
+                            <option value="Maple">Maple</option>
+                            <option value="Maroon">Maroon</option>
+                            <option value="Midnight Blue">Midnight Blue</option>
+                            <option value="Mocha">Mocha</option>
+                            <option value="Mud">Mud</option>
+                            <option value="Mustard Yellow">Mustard Yellow</option>
+                            <option value="Navy Blue">Navy Blue</option>
+                            <option value="Nude">Nude</option>
+                            <option value="Oatmeal">Oatmeal</option>
+                            <option value="Old Gray">Old Gray</option>
+                            <option value="Orange">Orange</option>
+                            <option value="Pantone Khaki">Pantone Khaki</option>
+                            <option value="Pantone Pink">Pantone Pink</option>
                             <option value="Pantone Simply Taupe">Pantone Simply Taupe</option>
+                            <option value="Peanut">Peanut</option>
+                            <option value="Pink">Pink</option>
+                            <option value="Pine">Pine</option>
+                            <option value="Raw Umber">Raw Umber</option>
+                            <option value="Red">Red</option>
+                            <option value="Royal Blue">Royal Blue</option>
+                            <option value="Rust Orange">Rust Orange</option>
                             <option value="Salmon Pink">Salmon Pink</option>
+                            <option value="Sage Green">Sage Green</option>
+                            <option value="Skintone">Skintone</option>
+                            <option value="Steel">Steel</option>
+                            <option value="Taupe">Taupe</option>
+                            <option value="Teal Blue">Teal Blue</option>
+                            <option value="Thunder">Thunder</option>
+                            <option value="White">White</option>
+                            <option value="Yellow">Yellow</option>
                         </select>
+
                     </div>
                 </div>
 
@@ -2313,7 +2366,6 @@ $total_pages_tiktok = ceil($total_records_tiktok / $records_per_page);
             }
         });
 
-        // Save changes and send data to the backend on clicking "Save Changes"
         document.getElementById('edit-modal-save-button').addEventListener('click', (event) => {
             event.preventDefault(); // Prevent default form submission
 
@@ -2377,197 +2429,170 @@ $total_pages_tiktok = ceil($total_records_tiktok / $records_per_page);
                 return;
             }
 
-            // Check if the name already exists in the database
-            fetch(`../../backend/controllers/check_item_name.php?name=${encodeURIComponent(name)}&variant_id=${editModal.querySelector('#edit-variant-id').value}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.exists) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Duplicate Name',
-                            text: 'An item with this name already exists. Please choose a different name.',
-                        });
-                        return;
-                    }
+            // Check if the data has actually changed
+            const originalRow = document.querySelector(`tr[data-item-id="${editModal.querySelector('#edit-variant-id').value}"]`);
+            const originalName = originalRow.querySelector('td:nth-child(3)').innerText.trim();
+            const originalCategory = originalRow.querySelector('td:nth-child(4)').innerText.trim();
+            const originalSize = originalRow.querySelector('td:nth-child(6)').innerText.trim();
+            const originalColor = originalRow.querySelector('td:nth-child(7)').innerText.trim();
+            const originalPrice = parseFloat(originalRow.querySelector('td:nth-child(8)').innerText.trim());
+            const originalDate = originalRow.querySelector('td:nth-child(9)').innerText.trim();
+            const originalPhysicalQuantity = parseInt(originalRow.querySelector('td:nth-child(5)').innerText.trim()) || 0;
 
-                    // Check if the data has actually changed
-                    const originalRow = document.querySelector(`tr[data-item-id="${editModal.querySelector('#edit-variant-id').value}"]`);
-                    const originalName = originalRow.querySelector('td:nth-child(3)').innerText.trim();
-                    const originalCategory = originalRow.querySelector('td:nth-child(4)').innerText.trim();
-                    const originalSize = originalRow.querySelector('td:nth-child(6)').innerText.trim();
-                    const originalColor = originalRow.querySelector('td:nth-child(7)').innerText.trim();
-                    const originalPrice = parseFloat(originalRow.querySelector('td:nth-child(8)').innerText.trim());
-                    const originalDate = originalRow.querySelector('td:nth-child(9)').innerText.trim();
-                    const originalPhysicalQuantity = parseInt(originalRow.querySelector('td:nth-child(5)').innerText.trim()) || 0;
+            // If no changes detected, show a message and prevent update
+            if (originalName === name &&
+                originalCategory === editModal.querySelector('#edit-category').value &&
+                originalSize === editModal.querySelector('#edit-size').value &&
+                originalColor === editModal.querySelector('#edit-color').value &&
+                originalPrice === price &&
+                originalDate === editModal.querySelector('#edit-date-added').value &&
+                originalPhysicalQuantity === (quantityPhysicalStore + quantityShopee + quantityTiktok)) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No Changes Detected',
+                    text: 'No changes were made to the item. The update was canceled.',
+                });
+                return; // Stop execution if no changes were made
+            }
 
-                    // If no changes detected, show a message and prevent update
-                    if (originalName === name &&
-                        originalCategory === editModal.querySelector('#edit-category').value &&
-                        originalSize === editModal.querySelector('#edit-size').value &&
-                        originalColor === editModal.querySelector('#edit-color').value &&
-                        originalPrice === price &&
-                        originalDate === editModal.querySelector('#edit-date-added').value &&
-                        originalPhysicalQuantity === (quantityPhysicalStore + quantityShopee + quantityTiktok)) {
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'No Changes Detected',
-                            text: 'No changes were made to the item. The update was canceled.',
-                        });
-                        return; // Stop execution if no changes were made
-                    }
-
-                    // If all validations pass, send the data to the server
-                    fetch('../../backend/controllers/update_item.php', {
-                            method: 'POST',
-                            body: formData,
-                        })
-                        .then((response) => response.json())
-                        .then((data) => {
-                            if (data.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Item Updated!',
-                                    text: 'The inventory item was updated successfully.',
-                                    showConfirmButton: false,
-                                    timer: 1500,
-                                });
-
-                                // Update the specific row fields in all tabs dynamically
-                                const itemId = editModal.querySelector('#edit-variant-id').value;
-                                const updatedName = editModal.querySelector('#edit-name').value;
-                                const updatedCategory = editModal.querySelector('#edit-category').value;
-                                const updatedSize = editModal.querySelector('#edit-size').value;
-                                const updatedColor = editModal.querySelector('#edit-color').value;
-                                const updatedPrice = editModal.querySelector('#edit-price').value;
-                                const updatedDate = editModal.querySelector('#edit-date-added').value;
-
-                                // Channel quantities
-                                const physicalQuantity = parseInt(editModal.querySelector('input[name="quantity-physical-store"]').value) || 0;
-                                const shopeeQuantity = parseInt(editModal.querySelector('input[name="quantity-shopee"]').value) || 0;
-                                const tiktokQuantity = parseInt(editModal.querySelector('input[name="quantity-tiktok"]').value) || 0;
-                                const totalQuantity = physicalQuantity + shopeeQuantity + tiktokQuantity;
-
-                                // Determine active channels
-                                const activeChannels = [];
-                                if (physicalQuantity > 0) activeChannels.push("Physical Store");
-                                if (shopeeQuantity > 0) activeChannels.push("Shopee");
-                                if (tiktokQuantity > 0) activeChannels.push("TikTok");
-                                const updatedChannels = activeChannels.length === 3 ? 'All Channels' : activeChannels.join(' and ');
-
-                                // Update rows in all tabs
-                                document.querySelectorAll(`tr[data-item-id="${itemId}"]`).forEach((row) => {
-                                    const table = row.closest('table');
-
-                                    if (table.classList.contains('inventory-table-all')) {
-                                        // All Inventory Table
-                                        row.querySelector('td:nth-child(3)').innerText = updatedName; // Name
-                                        row.querySelector('td:nth-child(4)').innerText = updatedCategory; // Category
-                                        row.querySelector('td:nth-child(6)').innerText = updatedSize; // Size
-                                        row.querySelector('td:nth-child(7)').innerText = updatedColor; // Color
-                                        row.querySelector('td:nth-child(8)').innerText = updatedPrice; // Price
-                                        row.querySelector('td:nth-child(9)').innerText = updatedDate; // Date Added
-                                        row.querySelector('td:nth-child(5)').innerText = totalQuantity; // Total Quantity
-                                        row.querySelector('td:nth-child(10)').innerText = updatedChannels; // Channels
-
-                                        // Update image in 11th column
-                                        const imagePreview = row.querySelector('td:nth-child(11) img');
-                                        if (imagePreview) {
-                                            if (data.image_url) {
-                                                // Append a timestamp to prevent caching
-                                                imagePreview.src = `${data.image_url}?t=${new Date().getTime()}`;
-                                            } else {
-                                                // If no new image was uploaded, keep the existing src from the preview
-                                                imagePreview.src = document.getElementById('edit-image-preview').src;
-                                            }
-                                        }
-                                    } else if (table.classList.contains('inventory-table-physical')) {
-                                        // Physical Store Table
-                                        row.querySelector('td:nth-child(3)').innerText = updatedName; // Name
-                                        row.querySelector('td:nth-child(4)').innerText = updatedCategory; // Category
-                                        row.querySelector('td:nth-child(6)').innerText = updatedSize; // Size
-                                        row.querySelector('td:nth-child(7)').innerText = updatedColor; // Color
-                                        row.querySelector('td:nth-child(8)').innerText = updatedPrice; // Price
-                                        row.querySelector('td:nth-child(9)').innerText = updatedDate; // Date Added
-                                        row.querySelector('td:nth-child(5)').innerText = physicalQuantity; // Quantity specific to Physical Store
-
-                                        // Update image in 10th column
-                                        const imagePreview = row.querySelector('td:nth-child(10) img');
-                                        if (imagePreview) {
-                                            if (data.image_url) {
-                                                imagePreview.src = `${data.image_url}?t=${new Date().getTime()}`;
-                                            } else {
-                                                imagePreview.src = document.getElementById('edit-image-preview').src;
-                                            }
-                                        }
-                                    } else if (table.classList.contains('inventory-table-shopee')) {
-                                        // Shopee Table
-                                        row.querySelector('td:nth-child(3)').innerText = updatedName; // Name
-                                        row.querySelector('td:nth-child(4)').innerText = updatedCategory; // Category
-                                        row.querySelector('td:nth-child(6)').innerText = updatedSize; // Size
-                                        row.querySelector('td:nth-child(7)').innerText = updatedColor; // Color
-                                        row.querySelector('td:nth-child(8)').innerText = updatedPrice; // Price
-                                        row.querySelector('td:nth-child(9)').innerText = updatedDate; // Date Added
-                                        row.querySelector('td:nth-child(5)').innerText = shopeeQuantity; // Quantity specific to Shopee
-
-                                        // Update image in 10th column
-                                        const imagePreview = row.querySelector('td:nth-child(10) img');
-                                        if (imagePreview) {
-                                            if (data.image_url) {
-                                                imagePreview.src = `${data.image_url}?t=${new Date().getTime()}`;
-                                            } else {
-                                                imagePreview.src = document.getElementById('edit-image-preview').src;
-                                            }
-                                        }
-                                    } else if (table.classList.contains('inventory-table-tiktok')) {
-                                        // TikTok Table
-                                        row.querySelector('td:nth-child(3)').innerText = updatedName; // Name
-                                        row.querySelector('td:nth-child(4)').innerText = updatedCategory; // Category
-                                        row.querySelector('td:nth-child(6)').innerText = updatedSize; // Size
-                                        row.querySelector('td:nth-child(7)').innerText = updatedColor; // Color
-                                        row.querySelector('td:nth-child(8)').innerText = updatedPrice; // Price
-                                        row.querySelector('td:nth-child(9)').innerText = updatedDate; // Date Added
-                                        row.querySelector('td:nth-child(5)').innerText = tiktokQuantity; // Quantity specific to TikTok
-
-                                        // Update image in 10th column
-                                        const imagePreview = row.querySelector('td:nth-child(10) img');
-                                        if (imagePreview) {
-                                            if (data.image_url) {
-                                                imagePreview.src = `${data.image_url}?t=${new Date().getTime()}`;
-                                            } else {
-                                                imagePreview.src = document.getElementById('edit-image-preview').src;
-                                            }
-                                        }
-                                    }
-                                });
-
-                                // Close the modal
-                                editModal.style.display = 'none';
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Update Failed',
-                                    text: data.message || 'An error occurred while updating the item.',
-                                });
-                            }
-                        })
-                        .catch((error) => {
-                            console.error('Error updating item:', error);
+            // If the name has changed, check for duplicates
+            if (name !== originalName) {
+                fetch(`../../backend/controllers/check_item_name.php?name=${encodeURIComponent(name)}&variant_id=${editModal.querySelector('#edit-variant-id').value}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Network Error',
-                                text: 'An error occurred while updating the item.',
+                                title: 'Duplicate Name',
+                                text: 'An item with this name already exists. Please choose a different name.',
                             });
+                            return;
+                        }
+
+                        // Proceed with the update if no name duplication
+                        submitUpdate(formData);
+                    })
+                    .catch(error => {
+                        console.error('Error checking item name:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Network Error',
+                            text: 'An error occurred while checking the item name.',
                         });
+                    });
+            } else {
+                // No name change, directly proceed with the update
+                submitUpdate(formData);
+            }
+        });
+
+        // Function to handle the actual update submission
+        function submitUpdate(formData) {
+            fetch('../../backend/controllers/update_item.php', {
+                    method: 'POST',
+                    body: formData,
                 })
-                .catch(error => {
-                    console.error('Error checking item name:', error);
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Item Updated!',
+                            text: 'The inventory item was updated successfully.',
+                            showConfirmButton: false,
+                            timer: 1500,
+                        });
+
+                        // Update the specific row fields in all tabs dynamically
+                        const editModal = document.getElementById('edit-item-modal');
+                        const itemId = editModal.querySelector('#edit-variant-id').value;
+                        const updatedName = editModal.querySelector('#edit-name').value;
+                        const updatedCategory = editModal.querySelector('#edit-category').value;
+                        const updatedSize = editModal.querySelector('#edit-size').value;
+                        const updatedColor = editModal.querySelector('#edit-color').value;
+                        const updatedPrice = editModal.querySelector('#edit-price').value;
+                        const updatedDate = editModal.querySelector('#edit-date-added').value;
+
+                        // Channel quantities
+                        const physicalQuantity = parseInt(editModal.querySelector('input[name="quantity-physical-store"]').value) || 0;
+                        const shopeeQuantity = parseInt(editModal.querySelector('input[name="quantity-shopee"]').value) || 0;
+                        const tiktokQuantity = parseInt(editModal.querySelector('input[name="quantity-tiktok"]').value) || 0;
+                        const totalQuantity = physicalQuantity + shopeeQuantity + tiktokQuantity;
+
+                        // Determine active channels
+                        const activeChannels = [];
+                        if (physicalQuantity > 0) activeChannels.push("Physical Store");
+                        if (shopeeQuantity > 0) activeChannels.push("Shopee");
+                        if (tiktokQuantity > 0) activeChannels.push("TikTok");
+                        const updatedChannels = activeChannels.length === 3 ? 'All Channels' : activeChannels.join(' and ');
+
+                        // Update rows in all tabs
+                        document.querySelectorAll(`tr[data-item-id="${itemId}"]`).forEach((row) => {
+                            const table = row.closest('table');
+
+                            if (table.classList.contains('inventory-table-all')) {
+                                // All Inventory Table
+                                row.querySelector('td:nth-child(3)').innerText = updatedName; // Name
+                                row.querySelector('td:nth-child(4)').innerText = updatedCategory; // Category
+                                row.querySelector('td:nth-child(6)').innerText = updatedSize; // Size
+                                row.querySelector('td:nth-child(7)').innerText = updatedColor; // Color
+                                row.querySelector('td:nth-child(8)').innerText = updatedPrice; // Price
+                                row.querySelector('td:nth-child(9)').innerText = updatedDate; // Date Added
+                                row.querySelector('td:nth-child(5)').innerText = totalQuantity; // Total Quantity
+                                row.querySelector('td:nth-child(10)').innerText = updatedChannels; // Channels
+
+                                // Update image in 11th column
+                                const imagePreview = row.querySelector('td:nth-child(11) img');
+                                if (imagePreview) {
+                                    if (data.image_url) {
+                                        // Append a timestamp to prevent caching
+                                        imagePreview.src = `${data.image_url}?t=${new Date().getTime()}`;
+                                    } else {
+                                        // If no new image was uploaded, keep the existing src from the preview
+                                        imagePreview.src = document.getElementById('edit-image-preview').src;
+                                    }
+                                }
+                            } else if (table.classList.contains('inventory-table-physical')) {
+                                // Physical Store Table
+                                row.querySelector('td:nth-child(3)').innerText = updatedName; // Name
+                                row.querySelector('td:nth-child(4)').innerText = updatedCategory; // Category
+                                row.querySelector('td:nth-child(6)').innerText = updatedSize; // Size
+                                row.querySelector('td:nth-child(7)').innerText = updatedColor; // Color
+                                row.querySelector('td:nth-child(8)').innerText = updatedPrice; // Price
+                                row.querySelector('td:nth-child(9)').innerText = updatedDate; // Date Added
+                                row.querySelector('td:nth-child(5)').innerText = physicalQuantity; // Quantity specific to Physical Store
+
+                                // Update image in 10th column
+                                const imagePreview = row.querySelector('td:nth-child(10) img');
+                                if (imagePreview) {
+                                    if (data.image_url) {
+                                        imagePreview.src = `${data.image_url}?t=${new Date().getTime()}`;
+                                    } else {
+                                        imagePreview.src = document.getElementById('edit-image-preview').src;
+                                    }
+                                }
+                            }
+                        });
+
+                        // Close the modal
+                        editModal.style.display = 'none';
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Update Failed',
+                            text: data.message || 'An error occurred while updating the item.',
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error updating item:', error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Network Error',
-                        text: 'An error occurred while checking the item name.',
+                        text: 'An error occurred while updating the item.',
                     });
                 });
-        });
+        }
     </script>
 
 

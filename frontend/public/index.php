@@ -67,7 +67,7 @@ mysqli_close($conn);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main System</title>
-    <link rel="stylesheet" href="styles/main.css">
+
     <link rel="icon" href="../../frontend/public/images/bmsuiticon.png" type="image/png">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js"></script> <!-- Include jQuery -->
@@ -431,4 +431,171 @@ $(document).ready(function() {
         max-height: 90%;
         /* Prevent overflow */
     }
+</style>
+
+
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Inter:100,200,300,regular,500,600,700,800,900');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100vh; /* Ensure the container takes full height */
+    flex-direction: row; /* Make sure the flex direction is row */
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 256px;
+    height: 100%;
+    background-color: white;
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar .head {
+    display: flex;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f6f6f6;
+}
+
+.user-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.user-img img {
+    width: 100%;
+    object-fit: cover;
+}
+
+.user-details .title {
+    font-size: 12px;
+    font-weight: 500;
+    color: #757575;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.user-details .name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.nav {
+    flex: 1;
+}
+
+.menu .title {
+    font-size: 12px;
+    font-weight: 500;
+    color: #757575;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.menu ul li {
+    list-style: none;
+    margin-bottom: 10px;
+}
+
+.menu ul li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #757575;
+    text-decoration: none;
+    padding: 12px 8px;
+    transition: all 0.3s;
+}
+
+.menu ul li a:hover,
+.menu ul li.active > a {
+    color: #000;
+    background-color: #f6f6f6;
+}
+
+.menu ul li .icon {
+    font-size: 20px;
+}
+
+.menu ul li .text {
+    flex: 1;
+}
+
+.menu ul li .arrow {
+    font-size: 14px;
+    transition: transform 0.3s ease; /* Ensure the arrow smoothly rotates */
+}
+
+.menu ul li.active .arrow {
+    transform: rotate(180deg); /* Rotate the arrow when the menu item is active */
+}
+
+.menu .sub-menu {
+    display: none;
+    margin-left: 20px;
+    padding-left: 20px;
+    padding-top: 5px;
+    border-left: 1px solid #f6f6f6;
+}
+
+.menu .sub-menu li a {
+    padding: 10px 8px;
+    font-size: 12px;
+}
+
+/* Highlight active submenu item */
+.menu .sub-menu li a.active {
+    background-color: #dcdcdc; /* Highlight color for active submenu item */
+    color: #000; /* Text color for active submenu item */
+}
+
+.menu:not(:last-child) {
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f6f6f6;
+}
+
+/* Account section styling */
+.account-section {
+    margin-top: auto; /* Pushes the account section to the bottom of the sidebar */
+}
+
+.account-section .menu {
+    padding-top: 20px; /* Space above the account section */
+    border-top: 2px solid #f6f6f6;
+}
+
+.account-section ul {
+    padding-top: 10px;
+}
+
+/* Main content styling */
+.main-content {
+    margin-left: 256px; /* Ensure the content starts next to the sidebar */
+    padding: 20px; /* Optional padding for some space around the content */
+    width: calc(100% - 256px); /* Adjust width to fill remaining space */
+}
+
 </style>
